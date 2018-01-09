@@ -24,7 +24,7 @@ function init({ router, morgan, passport }) {
 
   if (NODE_ENV === "development") app.use(morgan);
   //app.use(express.static(p.join(__dirname, "../client/build")));
-  app.use(_express2.default.static("/app/client/build"));
+  app.use(_express2.default.static("/app/public"));
   app.use(_express2.default.json());
   app.use(_express2.default.urlencoded({ extended: false }));
   app.use(passport.initialize());
