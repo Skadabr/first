@@ -1,12 +1,12 @@
 FROM node:alpine
 
-WORKDIR /app/server
+WORKDIR /app/client
 
 RUN apk add --no-cache tini
 
-COPY ./package.json .
+COPY ./client/package.json /app/client
 RUN yarn -s
 
-COPY . .
+COPY ./client .
 
 ENTRYPOINT ["/sbin/tini", "--"]

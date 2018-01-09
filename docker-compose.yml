@@ -1,25 +1,51 @@
 version: "3"
 
 services:
-  web:
+# common:
+#   build:
+#     context: .
+#     dockerfile: Dockerfile
+#   command: ["yarn", "start"]
+#   env_file: ./server/env
+#   ports:
+#     - "3030:3000"
+#   links:
+#     - mongodb
+#   depends_on:
+#     - mongodb
+
+  client:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.client
+    command: ["yarn", "build"]
+    volumes:
+      - "src-data:/app"
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
     command: ["yarn", "start"]
     restart: on-failure
-    env_file: ./server/.env.dev
+    env_file: ./server/env
     volumes:
       - "./server/src:/app/server/src"
       - "./server/dist:/app/server/dist"
       - "./client/build:/app/client/build"
+      - "src-data:/app"
     ports:
       - "3030:3000"
     links:
       - mongodb
     depends_on:
       - mongodb
+      - client
 
   mongodb:
     image: mongo:latest
     volumes:
       - "./data:/data"
+
+volumes:
+  src-data:
