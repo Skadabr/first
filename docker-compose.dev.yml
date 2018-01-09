@@ -1,18 +1,11 @@
 version: "3"
 
 services:
-  client:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    volumes:
-      - "src-data:/app"
-
   server:
     build:
       context: .
       dockerfile: Dockerfile.server
-    command: ["yarn", "start"]
+    command: ["yarn", "start:dev"]
     restart: on-failure
     env_file: ./server/env
     volumes:
@@ -28,10 +21,6 @@ services:
       - mongodb
       - client
 
-  mongodb:
-    image: mongo:latest
-    volumes:
-      - "./data:/data"
 
 volumes:
   src-data:
