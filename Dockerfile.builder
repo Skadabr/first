@@ -4,7 +4,7 @@ WORKDIR /app/client
 
 RUN apk add --no-cache tini
 
-COPY ./client/package.json /app/client
+COPY ./client/package.json .
 RUN yarn -s
 COPY ./client .
 RUN yarn build

@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  client:
+  builder:
     build:
       context: .
-      dockerfile: Dockerfile.client
+      dockerfile: Dockerfile.builder
     volumes:
-      - "src-data:/app"
+      - "src-data:/app/client/build"
 
   server:
     build:
@@ -16,17 +16,14 @@ services:
     restart: on-failure
     env_file: ./server/env
     volumes:
-      - "./server/src:/app/server/src"
-      - "./server/dist:/app/server/dist"
-      - "./client/build:/app/client/build"
-      - "src-data:/app"
+      - "src-data:/app/server/public"
     ports:
-      - "3030:3000"
+      - "0.0.0.0:80:3000"
     links:
       - mongodb
     depends_on:
       - mongodb
-      - client
+      - builder
 
   mongodb:
     image: mongo:latest
