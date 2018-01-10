@@ -2,21 +2,8 @@ version: "3"
 
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile.server
     command: ["yarn", "start:dev"]
-    restart: on-failure
-    env_file: ./server/env
     volumes:
       - "./server/src:/app/server/src"
       - "./client/build:/app/client/build"
-      - "src-data:/app/server/public"
-    ports:
-      - "3030:3000"
-    links:
-      - mongodb
-    depends_on:
-      - mongodb
-      - builder
-
+    env_file: ./server/env
