@@ -2,7 +2,7 @@
   "scripts": {
     "prestart": "babel src -d dist",
     "start": "node dist",
-    "prestart:dev": "babel src -d dist -w &",
+    "prestart:dev": "babel src -d dist --watch &",
     "start:dev": "babel src -d dist && nodemon dist",
     "precommit": "lint-staged"
   },

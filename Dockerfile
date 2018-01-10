@@ -15,6 +15,8 @@ RUN yarn build
 
 FROM node:alpine as server
 
+RUN apk add --no-cache tini
+
 WORKDIR /app/server
 
 COPY ./server/package.json .
