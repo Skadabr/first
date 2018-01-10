@@ -24,6 +24,7 @@
     "passport-jwt": "^3.0.1",
     "passport-local": "^1.0.0",
     "pino": "^4.10.3",
+    "socket.io": "^2.0.4",
     "validator": "^9.2.0"
   },
   "devDependencies": {

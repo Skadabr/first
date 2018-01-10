@@ -7,6 +7,7 @@ import Models from "./models";
 import Loggers from "./logger";
 import Passport from "./passport";
 import Router from "./router";
+import IO from "./io";
 
 const models = Models();
 const { logger, morgan } = Loggers();
@@ -16,6 +17,7 @@ const router = Router({ models, logger, passport });
 const app = initApp({ router, morgan, passport });
 
 const server = http.createServer(app);
+IO({ server, models, logger });
 
 server.listen(PORT);
 

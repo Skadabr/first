@@ -2,10 +2,9 @@ import axios from "axios";
 import toErrorMessage from "../utils/to-error-message";
 
 export default {
-  login(data) {
-    return axios
-      .post("/api/auth/local", data)
-      .then(r => r.data.data.token)
+  loadMessages() {
+    return axios("/api/messages", {params: {amount: 10}})
+      .then(r => r.data.data)
       .catch(toErrorMessage);
   }
 };

@@ -75,7 +75,7 @@ export default class LoginForm extends React.Component {
                 name="email"
                 type="email"
                 onChange={this.onChange}
-                value={this.state.email}
+                value={data.email}
               />
             </div>
             <div className="form-group">
@@ -85,7 +85,7 @@ export default class LoginForm extends React.Component {
                 name="password"
                 type="password"
                 onChange={this.onChange}
-                value={this.state.password}
+                value={data.password}
               />
             </div>
             <div>

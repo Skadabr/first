@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import UserController from "./controllers/user";
 import AuthController from "./controllers/auth";
+import MessageController from "./controllers/message";
 
 export default function setRoutes(opts) {
   const router = new Router();
@@ -9,6 +10,7 @@ export default function setRoutes(opts) {
 
   const user = UserController(opts);
   const auth = AuthController(opts);
+  const message = MessageController(opts);
 
   router.post("/api/users/", user.create);
   router.post(
@@ -17,6 +19,7 @@ export default function setRoutes(opts) {
     auth.authSuccess,
     auth.authFailure
   );
+  router.get("/api/messages", message.index);
 
   router.use("/api/user", passport.authenticate("jwt"));
 
