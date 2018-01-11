@@ -1,17 +1,24 @@
 import sio from "socket.io";
 
-import handleChat from "./chat.js";
+import handleOpponents from "./opponents.js";
 
-export default function(opts) {
-  const { server, logger } = opts;
-  const chat = sio(server);
+export default function(server, opts) {
+  const io = sio(server);
 
-  chat.on("connection", ws => {
-    logger.debug("new ws connection");
-    ws.on("disconnect", () => {
-      logger.debug("ws connection is closed");
-    });
+  handle(io.of("/opponents"), handleOpponents, opts);
+}
 
-    handleChat(ws, opts);
+//
+// ============ helper ============
+//
+
+function handle(nsp, handler, opts) {
+  const { logger } = opts;
+  nsp.on("connection", ws => {
+    logger.debug(`new ws connection: ${nsp.name}`);
+    ws.on("disconnect", () =>
+      logger.debug(`ws connection is closed: ${nsp.name}`)
+    );
+    handler(ws, opts);
   });
 }

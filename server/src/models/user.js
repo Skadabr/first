@@ -38,6 +38,13 @@ export default function() {
         },
         "Password to short"
       ]
+    },
+    socket: {
+      id: String,
+      nsp: String
+    },
+    accessible: {
+      type: Boolean
     }
   });
 

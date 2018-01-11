@@ -17,7 +17,7 @@ const router = Router({ models, logger, passport });
 const app = initApp({ router, morgan, passport });
 
 const server = http.createServer(app);
-IO({ server, models, logger });
+IO(server, { models, logger });
 
 server.listen(PORT);
 

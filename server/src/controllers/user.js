@@ -21,6 +21,8 @@ export default function UserController({ logger, models }) {
         logger.debug("create user error: ", message);
         resp.status(400).json({ error: { message } });
       }
-    }
+    },
+
+    async index(req, resp) {}
   };
 }

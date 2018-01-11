@@ -5,21 +5,34 @@ import { connect } from "react-redux";
 import MessageBoard from "./MessageBoard";
 import MessageInput from "./MessageInput";
 import ChatUsersList from "./ChatUsersList";
-import { sendMessage, loadMessages, loadChatUsers, userOnline, userOffline } from "../../actions/chat";
+import ChatHeader from "./ChatHeader";
+import {
+  sendMessage,
+  loadMessages,
+  loadChatUsers,
+  userOnline,
+  userOffline
+} from "../../actions/chat";
 
 import "../../css/Chat.css";
 
 class Chat extends React.Component {
   async componentDidMount() {
-    const {loadMessages, loadChatUsers, userOnline, userOffline, name} = this.props;
+    const {
+      loadMessages,
+      loadChatUsers,
+      userOnline,
+      userOffline,
+      name
+    } = this.props;
     await loadMessages();
     await loadChatUsers();
     userOnline(name);
-    window.onbeforeunload = (userOffline.bind(null, name));
+    window.onbeforeunload = userOffline.bind(null, name);
   }
 
   componentWillUnmount() {
-    const { userOffline, name} = this.props;
+    const { userOffline, name } = this.props;
     userOffline(name);
   }
 
@@ -32,11 +45,13 @@ class Chat extends React.Component {
 
     return (
       <div className="card">
-        <div className="card-header">Users chat</div>
+        <div className="card-header">
+          <ChatHeader />
+        </div>
         <div className="card-body">
           <div id="chat" className="Chat row">
             <div className="ChatUsersList col-12 col-sm-3">
-              <ChatUsersList users={users}></ChatUsersList>
+              <ChatUsersList users={users} />
             </div>
             <div className="ChatIO col-12 col-sm-9">
               <MessageBoard msgs={msgs} />

@@ -9,12 +9,11 @@ export default function setRoutes(opts) {
   const router = new Router();
   const { passport } = opts;
 
-  const user = UserController(opts);
-  const auth = AuthController(opts);
-  const message = MessageController(opts);
-  const chat_users = ChatUsersController(opts);
+  const userController = UserController(opts);
+  const authController = AuthController(opts);
+  const messageController = MessageController(opts);
 
-  router.post("/api/users/", user.create);
+  router.post("/api/users/", userController.create);
   router.post(
     "/api/auth/local",
     passport.authenticate("local"),
@@ -22,9 +21,12 @@ export default function setRoutes(opts) {
     auth.authFailure
   );
 
+  //
+  // api which require authentication
+  //
   router.use("/api", passport.authenticate("jwt"));
-  router.get("/api/messages", message.index);
-  router.get("/api/chat_users", chat_users.index);
+
+  router.get("/api/messages", messageController.index);
 
   return router;
 }

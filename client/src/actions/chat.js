@@ -25,27 +25,6 @@ export function sendMessage(msg, user) {
   };
 }
 
-export function userOnline(user) {
-  return dispatch => {
-    window.IO.userOnline(user);
-    dispatch(createNewUserOnline(user));
-  };
-}
-
-export function loadChatUsers() {
-  return async dispatch => {
-    const users = await chatApi.loadChatUsers();
-    dispatch(createLoadChatUsers(users));
-  };
-}
-
-export function userOffline(user) {
-  return dispatch => {
-    window.IO.userOffline(user);
-    dispatch(createUserOffline(user));
-  };
-}
-
 //
 // ============ creators ============
 //
@@ -68,25 +47,5 @@ export function createNewMessage(msg, user, created) {
   return {
     type: MESSAGE_NEW,
     payload: { msg, user, created }
-  };
-}
-
-export function createNewUserOnline(user) {
-  return {
-    type: CHAT_NEW_USER_ONLINE,
-    payload: user
-  };
-}
-function createLoadChatUsers(users) {
-  return {
-    type: CHAT_USERS,
-    payload: users
-  }
-}
-
-export function createUserOffline(user) {
-  return {
-    type: CHAT_USER_OFFLINE,
-    payload: user
   };
 }
