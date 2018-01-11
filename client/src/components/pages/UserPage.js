@@ -9,15 +9,15 @@ class UserPage extends React.Component {
     const { name, email } = this.props;
 
     return (
-      <div>
-        <div className="col-4">
+      <div className="row">
+        <div className="col-3">
           <div>Name: {name}</div>
           <div>Email: {email}</div>
           <button type="button" onClick={this.props.logout}>
             Logout
           </button>
         </div>
-        <div className="col-8">
+        <div className="col-9">
           <Chat />
         </div>
       </div>

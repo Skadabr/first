@@ -3,3 +3,7 @@ export const USER_LOGOUT = "USER_LOGOUT";
 export const MESSAGE_NEW = "MESSAGE_NEW";
 export const MESSAGE_LOAD = "MESSAGE_LOAD";
 export const MESSAGE_SEND = "MESSAGE_SEND";
+export const CHAT_USER_ONLINE = "CHAT_USER_ONLINE";
+export const CHAT_NEW_USER_ONLINE = "CHAT_NEW_USER_ONLINE";
+export const CHAT_USERS = "CHAT_USERS";
+export const CHAT_USER_OFFLINE = "CHAT_USER_OFFLINE";

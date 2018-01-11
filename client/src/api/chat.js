@@ -6,5 +6,11 @@ export default {
     return axios("/api/messages", {params: {amount: 10}})
       .then(r => r.data.data)
       .catch(toErrorMessage);
+  },
+
+  loadChatUsers() {
+    return axios("/api/chat_users")
+      .then(r => r.data.data)
+      .catch(toErrorMessage);
   }
 };

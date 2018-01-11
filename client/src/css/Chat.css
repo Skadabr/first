@@ -1,0 +1,22 @@
+.ChatMessage {
+  background-color: #eef;
+  border: 1px solid #ddf;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  word-wrap: break-word;
+}
+
+.ChatMessageName {
+  background-color: #ddf;
+  float: left;
+}
+
+.ChatMessageContent {
+  padding-left: 1rem;
+}
+
+.ChatMessageCreated {
+  background-color: #ddf;
+  float: right;
+  padding-left: 1rem;
+}

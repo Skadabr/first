@@ -1,11 +1,6 @@
 "use strict";
 
 import mongoose from "mongoose";
-import uniqueValidator from "mongoose-unique-validator";
-import jwt from "jsonwebtoken";
-import validator, { isEmail, isAlphanumeric } from "validator";
-
-const { JWT_SECRET } = process.env;
 
 export default function() {
   const schema = new mongoose.Schema({
