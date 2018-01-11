@@ -21,10 +21,10 @@ export default function setRoutes(opts) {
     auth.authSuccess,
     auth.authFailure
   );
+
+  router.use("/api", passport.authenticate("jwt"));
   router.get("/api/messages", message.index);
   router.get("/api/chat_users", chat_users.index);
-
-  router.use("/api/user", passport.authenticate("jwt"));
 
   return router;
 }
