@@ -16,7 +16,7 @@
     "socket.io-client": "^2.0.4"
   },
   "proxy": {
-    "/": {
+    "/api": {
       "target": "http://localhost:3030"
     },
     "/socket.io": {

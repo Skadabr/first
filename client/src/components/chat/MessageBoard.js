@@ -30,5 +30,5 @@ export default class MessageBoard extends React.Component {
 }
 
 MessageBoard.propTypes = {
-  msgs: PropTypes.arrayOf(PropTypes.string).isRequired
+  msgs: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired
 };

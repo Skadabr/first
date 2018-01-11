@@ -25,5 +25,5 @@ export default class ChatUsersList extends React.Component {
 }
 
 ChatUsersList.propTypes = {
-  msgs: PropTypes.arrayOf(PropTypes.string).isRequired
+  users: PropTypes.arrayOf(PropTypes.string).isRequired
 };

@@ -28,10 +28,10 @@ class Chat extends React.Component {
   };
 
   render() {
-    const { msgs, sendMessage, loadMessages, users } = this.props;
+    const { msgs, users } = this.props;
 
     return (
-      <div className className="card">
+      <div className="card">
         <div className="card-header">Users chat</div>
         <div className="card-body">
           <div id="chat" className="Chat row">

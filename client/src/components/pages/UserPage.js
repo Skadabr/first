@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 
 import Chat from "../chat/Chat";
-import { logout } from "../../actions/auth";
 
 class UserPage extends React.Component {
   render() {
@@ -13,9 +12,6 @@ class UserPage extends React.Component {
         <div className="col-3">
           <div>Name: {name}</div>
           <div>Email: {email}</div>
-          <button type="button" onClick={this.props.logout}>
-            Logout
-          </button>
         </div>
         <div className="col-9">
           <Chat />
@@ -30,4 +26,4 @@ function mapStateToProps(state) {
   return { name, email };
 }
 
-export default connect(mapStateToProps, { logout })(UserPage);
+export default connect(mapStateToProps)(UserPage);
