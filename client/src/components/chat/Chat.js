@@ -35,12 +35,12 @@ class Chat extends React.Component {
         <div className="card-header">Users chat</div>
         <div className="card-body">
           <div id="chat" className="Chat row">
-            <div className="ChatIO col-9">
+            <div className="ChatUsersList col-12 col-sm-3">
+              <ChatUsersList users={users}></ChatUsersList>
+            </div>
+            <div className="ChatIO col-12 col-sm-9">
               <MessageBoard msgs={msgs} />
               <MessageInput submit={this.onMessage} />
-            </div>
-            <div className="ChatUsersList col-3">
-              <ChatUsersList users={users}></ChatUsersList>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import Chat from "../chat/Chat";
+import UserInfo from "../user/UserInfo";
 
 class UserPage extends React.Component {
   render() {
@@ -9,11 +10,10 @@ class UserPage extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-3">
-          <div>Name: {name}</div>
-          <div>Email: {email}</div>
+        <div className="col-12 col-sm-3">
+          <UserInfo name={name} email={email} />
         </div>
-        <div className="col-9">
+        <div className="col-12 col-sm-9">
           <Chat />
         </div>
       </div>

@@ -1,0 +1,13 @@
+#app_header {
+  background-color: #F7F7F9;
+  margin-bottom: 1rem;
+}
+
+#app_header .nav-item:hover {
+  background-color: #E7E7E9;
+}
+
+#app_header .nav-link {
+  color: #333;
+}
+

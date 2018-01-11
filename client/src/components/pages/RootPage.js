@@ -11,7 +11,7 @@ class RootPage extends React.Component {
   render() {
     return (
       <div>
-        <div className="col-6 offset-3">
+        <div className="col-12 col-sm-6 offset-sm-3">
           <SignupForm submit={this.props.signup} />
           <LoginForm submit={this.props.login} />
         </div>

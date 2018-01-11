@@ -13,10 +13,15 @@ export default class ChatUsersList extends React.Component {
     const { users } = this.props;
     return (
       <div id="user_list" ref={el => (this.board = el)}>
+        <div className="ChatUsersHeader">
+          Users
+        </div>
         {users.length > 0 &&
-          users.map((user, i) => (
-            <div key={i}>
-              {user}
+          users.map(user => (
+            <div>
+              <span className="ChatUserName" key={user}>
+                {user}
+              </span>
             </div>
           ))}
       </div>
