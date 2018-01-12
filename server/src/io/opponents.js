@@ -16,13 +16,13 @@ export default function(ws, { models, logger }) {
         }
       }
     );
-    logger.debug(`${name} online`);
+    logger.debug(`${name} come`);
     ws.broadcast.emit(OPPONENT_COME, name);
   });
 
   ws.on(OPPONENT_REMOVE, async name => {
     await User.findOneAndUpdate({ name }, { socket: null });
-    logger.debug(`${name} offline`);
+    logger.debug(`${name} goes`);
     ws.broadcast.emit(OPPONENT_GOES, name);
   });
 

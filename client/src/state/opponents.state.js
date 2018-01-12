@@ -11,7 +11,7 @@ export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 export default function(state = [], { type, payload }) {
   switch (type) {
     case OPPONENTS_COME:
-      return [...state, payload];
+      return state.find(op => op === payload) ? state : [...state, payload];
     case OPPONENTS_LOAD:
       return payload;
     case OPPONENTS_GOES:

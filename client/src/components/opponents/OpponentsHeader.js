@@ -3,15 +3,16 @@ import PropTypes from "prop-types";
 
 export default class OpponentsHeader extends React.Component {
   render() {
-    const {toggle, active} = this.props;
+    const { toggle, active } = this.props;
+    const className = active ? "badge badge-success" : "badge badge-danger";
 
     return (
-        <div>
-          <div>Opponents</div>
-          <div className="UserStatus" onClick={toggle}>
-            {active ? "active" : "nonactive"}
-          </div>
-        </div>
+      <div>
+        <span>Opponents</span>
+        <span className="UserStatus" onClick={toggle} className={className} style={{float: 'right'}}>
+          {active ? "on" : "off"}
+        </span>
+      </div>
     );
   }
 }

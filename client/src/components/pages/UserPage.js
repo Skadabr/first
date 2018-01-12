@@ -12,9 +12,9 @@ class UserPage extends React.Component {
       <div className="row">
         <div className="col-12 col-sm-3">
           <UserInfo name={name} email={email} />
+          <Opponents />
         </div>
         <div className="col-12 col-sm-9">
-          <Opponents />
         </div>
       </div>
     );

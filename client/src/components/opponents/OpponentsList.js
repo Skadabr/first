@@ -15,10 +15,8 @@ export default class OpponentsList extends React.Component {
       <div id="opponent_list" ref={el => (this.board = el)}>
         {opponents.length > 0 &&
           opponents.map(opponent => (
-            <div>
-              <span key={opponent}>
-                {opponent}
-              </span>
+            <div key={opponent}>
+              {opponent}
             </div>
           ))}
       </div>
