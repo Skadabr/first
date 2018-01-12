@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { signup } from "../../actions/user";
-import { login } from "../../actions/auth";
+import { signup, login, logout } from "../../state/user.state";
 
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";

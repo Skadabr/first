@@ -2,12 +2,16 @@ import sio from "socket.io-client";
 
 import handleOpponents from "./opponents";
 
-export default function Socket(store) {
-  const io = sio("http://localhost:3000");
+let socket;
 
-  const opponents = handleOpponents(io.socket("/opponents"), store);
+export default function IO(store) {
+  return socket || (socket = Socket(store));
+}
+
+function Socket(store) {
+  const opponentsIO = handleOpponents(sio("http://localhost:3000/opponents"), store);
 
   return {
-    opponents
+    opponentsIO
   };
 }

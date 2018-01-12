@@ -17,8 +17,8 @@ export default function setRoutes(opts) {
   router.post(
     "/api/auth/local",
     passport.authenticate("local"),
-    auth.authSuccess,
-    auth.authFailure
+    authController.authSuccess,
+    authController.authFailure
   );
 
   //

@@ -1,23 +1,18 @@
 import decode from "jwt-decode";
 
 import setAuthHeader from "../utils/auth-header";
-import authApi from "../api/auth.js";
+import IO from "../socket";
+import { authApi, userApi } from "../api";
 
 export const USER_LOGIN = "USER_LOGIN";
 export const USER_LOGOUT = "USER_LOGOUT";
-export const USER_ONLINE = "USER_ONLINE";
-export const USER_OFFLINE = "USER_OFFLINE";
 
-export default function(state = {}, action) {
-  switch (action.type) {
+export default function(state = {}, {payload, type}) {
+  switch (type) {
     case USER_LOGIN:
-      return action.user;
+      return payload;
     case USER_LOGOUT:
       return {};
-    case USER_ONLINE:
-      return { ...state, online: true };
-    case USER_OFFLINE:
-      return { ...state, online: false };
 
     default:
       return state;
@@ -40,18 +35,23 @@ export function login(data) {
     const { name, email } = decode(token);
     localStorage.user_jwt = token;
     setAuthHeader(token);
+    IO().opponentsIO.add(name);
     dispatch(createLogin(name, email, token));
-    
   };
 }
 
-export function logout() {
+export function logout(name) {
   return dispatch => {
     setAuthHeader();
     localStorage.removeItem("user_jwt");
+    IO().opponentsIO.remove(name);
     dispatch({ type: USER_LOGOUT });
   };
 }
+
+//
+// ============ Action creators ============
+//
 
 export function createLogin(name, email, token) {
   return {

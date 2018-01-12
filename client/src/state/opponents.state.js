@@ -1,3 +1,5 @@
+import { opponentsApi } from "../api";
+
 export const OPPONENTS_COME = "OPPONENTS_COME";
 export const OPPONENTS_GOES = "OPPONENTS_GOES";
 export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
@@ -6,14 +8,14 @@ export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 // ============ Reducer ============
 //
 
-export default function (state = [], {type, payload}) {
-  switch(type) {
+export default function(state = [], { type, payload }) {
+  switch (type) {
     case OPPONENTS_COME:
-      return [...state, action.payload];
+      return [...state, payload];
     case OPPONENTS_LOAD:
-      return action.payload;
+      return payload;
     case OPPONENTS_GOES:
-      return state.filter(name => name !== action.payload);
+      return state.filter(name => name !== payload);
     default:
       return state;
   }
@@ -23,24 +25,22 @@ export default function (state = [], {type, payload}) {
 // ============ Actions ============
 //
 
-export function userOnline(user) {
+export function opponentCome(user) {
   return dispatch => {
-    window.IO.userOnline(user);
-    dispatch(createNewUserOnline(user));
+    dispatch(createOpponentCome(user));
   };
 }
 
-export function loadChatUsers() {
+export function loadOpponents() {
   return async dispatch => {
-    const users = await chatApi.loadChatUsers();
-    dispatch(createLoadChatUsers(users));
+    const users = await opponentsApi.loadOpponents();
+    dispatch(createLoadOpponents(users));
   };
 }
 
-export function userOffline(user) {
+export function opponentGoes(user) {
   return dispatch => {
-    window.IO.userOffline(user);
-    dispatch(createUserOffline(user));
+    dispatch(createOpponentGoes(user));
   };
 }
 
@@ -48,22 +48,23 @@ export function userOffline(user) {
 // ============ Action creators ============
 //
 
-export function createNewUserOnline(user) {
+export function createOpponentCome(user) {
   return {
-    type: CHAT_NEW_USER_ONLINE,
+    type: OPPONENTS_COME,
     payload: user
   };
 }
-function createLoadChatUsers(users) {
+
+function createLoadOpponents(users) {
   return {
-    type: CHAT_USERS,
+    type: OPPONENTS_LOAD,
     payload: users
-  }
+  };
 }
 
-export function createUserOffline(user) {
+export function createOpponentGoes(user) {
   return {
-    type: CHAT_USER_OFFLINE,
+    type: OPPONENTS_GOES,
     payload: user
   };
 }

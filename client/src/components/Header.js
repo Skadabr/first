@@ -3,14 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import "../css/Header.css";
-
-import { logout } from "../actions/auth";
+import { logout } from "../state/user.state";
 
 export class Header extends React.Component {
   exit = e => {
     e.preventDefault();
-    this.props.logout();
+    this.props.logout(this.props.name);
   };
 
   render() {
@@ -44,7 +42,8 @@ Header.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: !!state.user.token
+    isAuthenticated: !!state.user.token,
+    name: state.user.name
   };
 }
 

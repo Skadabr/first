@@ -1,7 +1,7 @@
 import axios from "axios";
 import toErrorMessage from "../utils/to-error-message";
 
-export default {
+export const authApi = {
   login(data) {
     return axios
       .post("/api/auth/local", data)

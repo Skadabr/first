@@ -4,7 +4,6 @@ const { MONGO_URL, NODE_ENV = "development" } = process.env;
 
 import user from "./user";
 import message from "./message";
-import chat_users from "./chat_users";
 
 export default function Mongo() {
   const mongoose = require("mongoose");
@@ -17,7 +16,6 @@ export default function Mongo() {
 
   user();
   message();
-  chat_users();
 
   return mongoose;
 }

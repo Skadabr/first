@@ -8,10 +8,10 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import decode from "jwt-decode";
 
-import reducer from "./reducers";
+import reducer from "./state/reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import setAuthHeader from "./utils/auth-header";
-import { USER_LOGIN } from "./constants";
+import { createLogin } from "./state/user.state";
 import Socket from "./socket";
 import App from "./App";
 
@@ -22,12 +22,8 @@ const IO = Socket(store);
 const token = localStorage.user_jwt;
 if (token) {
   const { email, name } = decode(token);
-  const user = { token, email, name };
   setAuthHeader(token);
-  store.dispatch({
-    type: USER_LOGIN,
-    user
-  });
+  store.dispatch(createLogin(name, email, token));
 }
 
 const app = (

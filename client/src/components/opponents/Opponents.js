@@ -2,30 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import MessageBoard from "./MessageBoard";
-import MessageInput from "./MessageInput";
-import ChatUsersList from "./ChatUsersList";
-import ChatHeader from "./ChatHeader";
 import {
-  sendMessage,
-  loadMessages,
-  loadChatUsers,
-  userOnline,
-  userOffline
+  loadOpponents,
 } from "../../actions/chat";
 
-class Chat extends React.Component {
+class Opponents extends React.Component {
   async componentDidMount() {
     const {
-      loadMessages,
-      loadChatUsers,
-      userOnline,
-      userOffline,
+      loadOpponents,
       name
     } = this.props;
-    await loadMessages();
-    await loadChatUsers();
-    userOnline(name);
+    await loadOpponents();
     window.onbeforeunload = userOffline.bind(null, name);
   }
 

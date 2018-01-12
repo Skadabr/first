@@ -1,28 +1,29 @@
 import _, {
-  createNewMessage,
-  createNewUserOnline,
-  createUserOffline
-} from "../actions/chat";
+  createOpponentCome,
+  createOpponentGoes
+} from "../state/opponents.state";
 
-const OPPONENT_ADD = "USER_ADD";
-const OPPONENT_REMOVE = "USER_REMOVE";
+const OPPONENT_ADD = "OPPONENT_ADD";
+const OPPONENT_REMOVE = "OPPONENT_REMOVE";
+const OPPONENT_COME = "OPPONENT_ONLINE";
+const OPPONENT_GOES = "OPPONENT_OFFLINE";
 
 export default function Opponents(ws, store) {
-  ws.on("chat user online", val => {
-    store.dispatch(createNewUserOnline(val));
+  ws.on(OPPONENT_COME, val => {
+    store.dispatch(createOpponentCome(val));
   });
 
-  ws.on("chat user offline", val => {
-    store.dispatch(createUserOffline(val));
+  ws.on(OPPONENT_GOES, val => {
+    store.dispatch(createOpponentGoes(val));
   });
 
   return {
-    userOnline(user) {
-      io.emit(OPPONENT_ADD, user);
+    add(user) {
+      ws.emit(OPPONENT_ADD, user);
     },
 
-    userOffline(user) {
-      io.emit(OPPONENT_REMOVE, user);
+    remove(user) {
+      ws.emit(OPPONENT_REMOVE, user);
     }
   };
 }
