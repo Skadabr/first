@@ -8,9 +8,9 @@ export const opponentsApi = {
   //    .catch(toErrorMessage);
   //},
 
-  loadOpponents() {
-    return axios("/api/chat_users")
-      .then(r => r.data.data)
+  loadOpponents(name) {
+    return axios("/api/users")
+      .then(r => r.data.data.filter(n => n !== name))
       .catch(toErrorMessage);
   }
 };

@@ -23,6 +23,15 @@ export default function UserController({ logger, models }) {
       }
     },
 
-    async index(req, resp) {}
+    async index(req, resp) {
+      try {
+        const users = await User.find({ socket: { $ne: null } }).exec();
+        const data = users.map(u => u.name);
+        resp.status(200).json({ data });
+      } catch (err) {
+        logger.debug("can't load users: " + err.message);
+        resp.status(400).json({ error: { message: err.message } });
+      }
+    }
   };
 }

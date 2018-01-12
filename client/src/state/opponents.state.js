@@ -31,9 +31,9 @@ export function opponentCome(user) {
   };
 }
 
-export function loadOpponents() {
+export function loadOpponents(name) {
   return async dispatch => {
-    const users = await opponentsApi.loadOpponents();
+    const users = await opponentsApi.loadOpponents(name);
     dispatch(createLoadOpponents(users));
   };
 }

@@ -6,13 +6,19 @@ import { authApi, userApi } from "../api";
 
 export const USER_LOGIN = "USER_LOGIN";
 export const USER_LOGOUT = "USER_LOGOUT";
+export const USER_ACTIVE = "USER_ACTIVE";
+export const USER_NONACTIVE = "USER_NONACTIVE";
 
-export default function(state = {}, {payload, type}) {
+export default function(state = {}, { payload, type }) {
   switch (type) {
     case USER_LOGIN:
       return payload;
     case USER_LOGOUT:
       return {};
+    case USER_ACTIVE:
+      return {...state, active: true};
+    case USER_NONACTIVE:
+      return {...state, active: false};
 
     default:
       return state;
@@ -49,13 +55,27 @@ export function logout(name) {
   };
 }
 
+export function beActive(name) {
+  return dispatch => {
+    IO().opponentsIO.add(name);
+    dispatch({ type: USER_ACTIVE });
+  };
+}
+
+export function beNonActive(name) {
+  return dispatch => {
+    IO().opponentsIO.remove(name);
+    dispatch({ type: USER_NONACTIVE });
+  };
+}
+
 //
 // ============ Action creators ============
 //
 
-export function createLogin(name, email, token) {
+export function createLogin(name, email, token, active = true) {
   return {
     type: USER_LOGIN,
-    payload: { name, email, token }
+    payload: { name, email, token, active }
   };
 }

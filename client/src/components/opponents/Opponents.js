@@ -2,47 +2,39 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import {
-  loadOpponents,
-} from "../../actions/chat";
+import OpponentsHeader from "./OpponentsHeader";
+import OpponentsList from "./OpponentsList";
+
+import { beNonActive, beActive } from "../../state/user.state";
+import { loadOpponents } from "../../state/opponents.state";
 
 class Opponents extends React.Component {
   async componentDidMount() {
-    const {
-      loadOpponents,
-      name
-    } = this.props;
-    await loadOpponents();
-    window.onbeforeunload = userOffline.bind(null, name);
+    const { loadOpponents, name } = this.props;
+    await loadOpponents(name);
+    window.onbeforeunload = beNonActive.bind(null, name);
   }
 
   componentWillUnmount() {
-    const { userOffline, name } = this.props;
-    userOffline(name);
+    const { nonactive, name } = this.props;
+    beNonActive(name);
   }
 
-  onMessage = msg => {
-    this.props.sendMessage(msg, this.props.name);
-  };
+  toggle = () => {
+    const { beActive, beNonActive, active, name } = this.props;
+    active ? beNonActive(name) : beActive(name);
+  }
 
   render() {
-    const { msgs, users } = this.props;
+    const { active, opponents } = this.props;
 
     return (
       <div className="card">
         <div className="card-header">
-          <ChatHeader />
+          <OpponentsHeader toggle={this.toggle} active={active} />
         </div>
         <div className="card-body">
-          <div id="chat" className="Chat row">
-            <div className="ChatUsersList col-12 col-sm-3">
-              <ChatUsersList users={users} />
-            </div>
-            <div className="ChatIO col-12 col-sm-9">
-              <MessageBoard msgs={msgs} />
-              <MessageInput submit={this.onMessage} />
-            </div>
-          </div>
+          <OpponentsList opponents={opponents} />
         </div>
       </div>
     );
@@ -51,16 +43,14 @@ class Opponents extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    msgs: state.chat_messages,
     name: state.user.name,
-    users: state.chat_users
+    active: state.user.active,
+    opponents: state.opponents
   };
 }
 
 export default connect(mapStateToProps, {
-  sendMessage,
-  loadMessages,
-  userOnline,
-  loadChatUsers,
-  userOffline
-})(Chat);
+  beActive,
+  beNonActive,
+  loadOpponents
+})(Opponents);

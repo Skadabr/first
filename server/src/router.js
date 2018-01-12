@@ -26,7 +26,7 @@ export default function setRoutes(opts) {
   //
   router.use("/api", passport.authenticate("jwt"));
 
-  router.get("/api/messages", messageController.index);
+  router.get("/api/users", userController.index);
 
   return router;
 }
