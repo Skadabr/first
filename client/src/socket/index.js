@@ -2,16 +2,31 @@ import sio from "socket.io-client";
 
 import handleOpponents from "./opponents";
 
-let socket;
+let socket, store, token;
 
-export default function IO(store) {
-  return socket || (socket = Socket(store));
+export default function IO(_token, _store) {
+  if (socket) return socket;
+
+  token = token || _token;
+  store = store || _store;
+
+  if (!token || !store) return;
+
+  return (socket = Socket(token, store));
 }
 
-function Socket(store) {
-  const opponentsIO = handleOpponents(sio("http://localhost:3000/opponents"), store);
+function Socket(token, store) {
+  const opponentsIO = handleOpponents(
+    sio(`http://localhost:3000/game`, { query: { token } }),
+    store,
+  );
 
-  return {
+  function close() {
+    Object.values(close).forEach(sock => sock.ws.close());
+    socket = null;
+  }
+
+  return Object.assign(close, {
     opponentsIO
-  };
+  });
 }

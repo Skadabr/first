@@ -17,13 +17,11 @@ import App from "./App";
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
-const IO = Socket(store);
-
 const token = localStorage.user_jwt;
+const IO = Socket(token, store);
 if (token) {
   const { email, name } = decode(token);
   setAuthHeader(token);
-  IO.opponentsIO.add(name);
   store.dispatch(createLogin(name, email,  token ));
 }
 

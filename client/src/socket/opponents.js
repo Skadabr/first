@@ -1,14 +1,21 @@
-import _, {
+import {
   createOpponentCome,
-  createOpponentGoes
+  createOpponentGoes,
+  createLoadOpponents
 } from "../state/opponents.state";
 
 const OPPONENT_ADD = "OPPONENT_ADD";
 const OPPONENT_REMOVE = "OPPONENT_REMOVE";
 const OPPONENT_COME = "OPPONENT_ONLINE";
 const OPPONENT_GOES = "OPPONENT_OFFLINE";
+const OPPONENTS_LIST_REQ = "OPPONENTS_LIST_REQ";
+const OPPONENTS_LIST_RESP = "OPPONENTS_LIST_RESP";
 
-export default function Opponents(ws, store) {
+export default function Game(ws, store) {
+  ws.on("connect", () => {
+    ws.emit(OPPONENTS_LIST_REQ);
+  });
+
   ws.on(OPPONENT_COME, val => {
     store.dispatch(createOpponentCome(val));
   });
@@ -17,13 +24,24 @@ export default function Opponents(ws, store) {
     store.dispatch(createOpponentGoes(val));
   });
 
+  ws.on(OPPONENTS_LIST_RESP, val => {
+    console.log(val);
+    if (val.error) {
+      console.error(val.error.message);
+    } else {
+      store.dispatch(createLoadOpponents(val.data));
+    }
+  });
+
   return {
-    add(user) {
-      ws.emit(OPPONENT_ADD, user);
+    ws,
+
+    add() {
+      ws.emit(OPPONENT_ADD);
     },
 
-    remove(user) {
-      ws.emit(OPPONENT_REMOVE, user);
+    remove() {
+      ws.emit(OPPONENT_REMOVE);
     }
   };
 }

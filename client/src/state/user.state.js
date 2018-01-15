@@ -16,9 +16,9 @@ export default function(state = {}, { payload, type }) {
     case USER_LOGOUT:
       return {};
     case USER_ACTIVE:
-      return {...state, active: true};
+      return { ...state, active: true };
     case USER_NONACTIVE:
-      return {...state, active: false};
+      return { ...state, active: false };
 
     default:
       return state;
@@ -41,16 +41,17 @@ export function login(data) {
     const { name, email } = decode(token);
     localStorage.user_jwt = token;
     setAuthHeader(token);
-    IO().opponentsIO.add(name);
+    IO(token);
     dispatch(createLogin(name, email, token));
   };
 }
 
 export function logout(name) {
   return dispatch => {
+    const io = IO();
+    io();
     setAuthHeader();
     localStorage.removeItem("user_jwt");
-    IO().opponentsIO.remove(name);
     dispatch({ type: USER_LOGOUT });
   };
 }

@@ -6,20 +6,8 @@ import OpponentsHeader from "./OpponentsHeader";
 import OpponentsList from "./OpponentsList";
 
 import { beNonActive, beActive } from "../../state/user.state";
-import { loadOpponents } from "../../state/opponents.state";
 
 class Opponents extends React.Component {
-  async componentDidMount() {
-    const { loadOpponents, name } = this.props;
-    await loadOpponents(name);
-    window.onbeforeunload = beNonActive.bind(null, name);
-  }
-
-  componentWillUnmount() {
-    const { nonactive, name } = this.props;
-    beNonActive(name);
-  }
-
   toggle = () => {
     const { beActive, beNonActive, active, name } = this.props;
     active ? beNonActive(name) : beActive(name);
@@ -52,5 +40,4 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   beActive,
   beNonActive,
-  loadOpponents
 })(Opponents);

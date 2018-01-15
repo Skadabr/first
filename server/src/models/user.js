@@ -39,10 +39,7 @@ export default function() {
         "Password to short"
       ]
     },
-    socket: {
-      id: String,
-      nsp: String
-    },
+    socket_id: String,
     accessible: {
       type: Boolean
     }

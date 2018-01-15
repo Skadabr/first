@@ -1,5 +1,3 @@
-import { opponentsApi } from "../api";
-
 export const OPPONENTS_COME = "OPPONENTS_COME";
 export const OPPONENTS_GOES = "OPPONENTS_GOES";
 export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
@@ -31,13 +29,6 @@ export function opponentCome(user) {
   };
 }
 
-export function loadOpponents(name) {
-  return async dispatch => {
-    const users = await opponentsApi.loadOpponents(name);
-    dispatch(createLoadOpponents(users));
-  };
-}
-
 export function opponentGoes(user) {
   return dispatch => {
     dispatch(createOpponentGoes(user));
@@ -55,7 +46,7 @@ export function createOpponentCome(user) {
   };
 }
 
-function createLoadOpponents(users) {
+export function createLoadOpponents(users) {
   return {
     type: OPPONENTS_LOAD,
     payload: users
