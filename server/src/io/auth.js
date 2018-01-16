@@ -10,14 +10,17 @@ export default function authIO({ logger, models }) {
   return async (ws, next) => {
     try {
       const { id, handshake } = ws;
-      const user = jwt.verify(handshake.query.token, JWT_SECRET);
-      await User.updateOne({ name: user.name }, { socket_id: id });
+      const { name } = jwt.verify(handshake.query.token, JWT_SECRET);
+      const user = await User.findOneAndUpdate({ name }, { socket_id: id });
       logger.debug(
-        `authenticate new ws connection(${ws.nsp.name}). User "${
-          user.name
-        }" is coming`
+        `authenticate new ws connection(${
+          ws.nsp.name
+        }). User "${name}" is coming`
       );
-      ws.broadcast.emit(OPPONENT_COME, user.name);
+      ws.broadcast.emit(OPPONENT_COME, {
+        name: user.name,
+        status: user.status
+      });
       next();
     } catch (err) {
       logger.error(`fail to authenticate new ws connection: ${err.message}`);

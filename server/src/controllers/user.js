@@ -23,6 +23,9 @@ export default function UserController({ logger, models }) {
       }
     },
 
-    async index(req, resp) {}
+    user(req, resp) {
+      const data = req.user.toJSON();
+      resp.status(200).json({ data });
+    }
   };
 }

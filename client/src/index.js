@@ -22,7 +22,7 @@ const IO = Socket(token, store);
 if (token) {
   const { email, name } = decode(token);
   setAuthHeader(token);
-  store.dispatch(createLogin(name, email,  token ));
+  store.dispatch(createLogin(name, email, token ));
 }
 
 const app = (

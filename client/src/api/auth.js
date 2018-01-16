@@ -5,7 +5,7 @@ export const authApi = {
   login(data) {
     return axios
       .post("/api/auth/local", data)
-      .then(r => r.data.data.token)
+      .then(r => r.data.data)
       .catch(toErrorMessage);
   }
 };

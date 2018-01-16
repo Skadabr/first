@@ -3,7 +3,6 @@ import { Router } from "express";
 import UserController from "./controllers/user";
 import AuthController from "./controllers/auth";
 import MessageController from "./controllers/message";
-import ChatUsersController from "./controllers/chat_users";
 
 export default function setRoutes(opts) {
   const router = new Router();
@@ -26,7 +25,7 @@ export default function setRoutes(opts) {
   //
   router.use("/api", passport.authenticate("jwt"));
 
-  router.get("/api/users", userController.index);
+  router.get("/api/user", userController.user);
 
   return router;
 }

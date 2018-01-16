@@ -13,7 +13,7 @@ export default function(state = [], { type, payload }) {
     case OPPONENTS_LOAD:
       return payload;
     case OPPONENTS_GOES:
-      return state.filter(name => name !== payload);
+      return state.filter(user => user.name !== payload);
     default:
       return state;
   }

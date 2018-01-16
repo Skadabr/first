@@ -5,21 +5,27 @@ import { connect } from "react-redux";
 import OpponentsHeader from "./OpponentsHeader";
 import OpponentsList from "./OpponentsList";
 
-import { beNonActive, beActive } from "../../state/user.state";
+import { readyToFight } from "../../state/user.state";
+import { PEACE, READY, FIGHT } from "../../state/user.state";
+
 
 class Opponents extends React.Component {
-  toggle = () => {
-    const { beActive, beNonActive, active, name } = this.props;
-    active ? beNonActive(name) : beActive(name);
-  }
+  toggle = ev => {
+    const { readyToFight, user_status } = this.props;
+
+    switch (user_status) {
+      case PEACE:
+        return readyToFight();
+    }
+  };
 
   render() {
-    const { active, opponents } = this.props;
+    const { opponents, readyToFight, user_status } = this.props;
 
     return (
       <div className="card">
         <div className="card-header">
-          <OpponentsHeader toggle={this.toggle} active={active} />
+          <OpponentsHeader toggle={this.toggle} user_status={user_status} />
         </div>
         <div className="card-body">
           <OpponentsList opponents={opponents} />
@@ -31,13 +37,11 @@ class Opponents extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    name: state.user.name,
-    active: state.user.active,
-    opponents: state.opponents
+    user_status: state.user.status,
+    opponents: state.opponents.filter(op => op.name !== state.user.name)
   };
 }
 
 export default connect(mapStateToProps, {
-  beActive,
-  beNonActive,
+  readyToFight
 })(Opponents);

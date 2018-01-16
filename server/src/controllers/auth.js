@@ -2,7 +2,8 @@ module.exports = function AuthController() {
   return {
     async authSuccess(req, resp) {
       const token = req.user.generateJWT();
-      resp.status(200).json({ data: { token } });
+      const user = req.user.toJSON();
+      resp.status(200).json({ data: { token, ...user } });
     },
 
     // eslint-disable-next-line

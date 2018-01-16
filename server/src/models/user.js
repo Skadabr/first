@@ -8,6 +8,10 @@ import validator, { isEmail, isAlphanumeric } from "validator";
 
 const { JWT_SECRET } = process.env;
 
+const PEACE = "peace";
+const READY = "ready";
+const FIGHT = "fight";
+
 export default function() {
   const schema = new mongoose.Schema({
     name: {
@@ -40,12 +44,19 @@ export default function() {
       ]
     },
     socket_id: String,
-    accessible: {
-      type: Boolean
+    status: {
+      type: String,
+      enum: [PEACE, READY, FIGHT],
+      default: PEACE
     }
   });
 
   Object.assign(schema.methods, {
+    toJSON() {
+      const { name, email, status } = this;
+      return { name, email, status };
+    },
+
     async setPassword(password) {
       this._password = password;
       this.phash = await bcrypt.hash(password, 8);

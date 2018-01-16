@@ -1,6 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+const colors = {
+  peace: "badge badge-success",
+  ready: "badge badge-warning",
+  fight: "badge badge-danger"
+};
+
 export default class OpponentsList extends React.Component {
   componentDidUpdate() {
     const { board } = this;
@@ -15,8 +21,8 @@ export default class OpponentsList extends React.Component {
       <div id="opponent_list" ref={el => (this.board = el)}>
         {opponents.length > 0 &&
           opponents.map(opponent => (
-            <div key={opponent}>
-              {opponent}
+            <div key={opponent.name}>
+              <span className={colors[opponent.status]}>{opponent.name}</span>
             </div>
           ))}
       </div>
@@ -25,5 +31,5 @@ export default class OpponentsList extends React.Component {
 }
 
 OpponentsList.propTypes = {
-  opponents: PropTypes.arrayOf(PropTypes.string).isRequired
+  opponents: PropTypes.arrayOf(PropTypes.object).isRequired
 };

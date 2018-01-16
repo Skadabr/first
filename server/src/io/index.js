@@ -1,7 +1,7 @@
 import sio from "socket.io";
 
 import auth from "./auth";
-import handleGame from "./opponents";
+import handleGame from "./game";
 
 export default function(server, opts) {
   const io = sio(server);
