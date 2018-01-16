@@ -10,12 +10,13 @@ export default function IO(_token, _store) {
   token = token || _token;
   store = store || _store;
 
+
   if (!token || !store) return;
 
-  return (socket = Socket(token, store));
+  return (socket = Socket());
 }
 
-function Socket(token, store) {
+function Socket() {
   const gameIO = handleGame(
     sio(`http://localhost:3000/game`, { query: { token } }),
     store,

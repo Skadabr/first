@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { PEACE, READY, FIGHT } from "../../state/user.state";
 
 const colors = {
-  peace: "badge badge-success",
-  ready: "badge badge-warning",
-  fight: "badge badge-danger"
+  [PEACE]: "badge badge-success",
+  [READY]: "badge badge-warning",
+  [FIGHT]: "badge badge-danger"
 };
 
 export default class OpponentsHeader extends React.Component {
@@ -20,9 +20,14 @@ export default class OpponentsHeader extends React.Component {
           className={colors[user_status]}
           style={{ float: "right" }}
         >
-        { user_status }
+        { user_status.toLowerCase() }
         </span>
       </div>
     );
   }
+}
+
+OpponentsHeader.propTypes = {
+  toggle: PropTypes.func.isRequired,
+  user_status: PropTypes.string.isRequired,
 }

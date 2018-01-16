@@ -11,11 +11,11 @@ export default class MessageBoard extends React.Component {
   }
 
   render() {
-    const { msgs } = this.props;
+    const { messages } = this.props;
     return (
-      <div id="board" ref={el => (this.board = el)}>
-        {msgs.length > 0 &&
-          msgs.map((msg, i) => (
+      <div ref={el => (this.board = el)}>
+        {messages.length > 0 &&
+          messages.map((msg, i) => (
             <div key={i}>
               <div className="ChatMessage">
                 <span className="ChatMessageName">{msg.user}:</span>
@@ -30,5 +30,5 @@ export default class MessageBoard extends React.Component {
 }
 
 MessageBoard.propTypes = {
-  msgs: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired
+  messages: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired
 };

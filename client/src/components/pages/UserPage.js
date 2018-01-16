@@ -10,11 +10,11 @@ class UserPage extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-12 col-sm-3">
+        <div className="col-12 col-sm-12 col-md-3">
           <UserInfo name={name} email={email} />
           <Opponents />
         </div>
-        <div className="col-12 col-sm-9">
+        <div className="col-12 col-sm-12 col-md-6">
         </div>
       </div>
     );

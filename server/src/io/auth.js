@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken";
 
 const { JWT_SECRET } = process.env;
 
-const OPPONENT_COME = "OPPONENT_ONLINE";
+const OPPONENT_UPSERT = "OPPONENT_UPSERT";
+
+const ESCAPE_AUTH = ["OPPONENTS_LIST"];
 
 export default function authIO({ logger, models }) {
   const User = models.model("User");
@@ -17,7 +19,17 @@ export default function authIO({ logger, models }) {
           ws.nsp.name
         }). User "${name}" is coming`
       );
-      ws.broadcast.emit(OPPONENT_COME, {
+      ws.use(async ([event_name], next) => {
+        if (ESCAPE_AUTH.includes(event_name)) return next();
+        try {
+          ws.user = await User.findOne({ name, socket_id: id });
+          logger.debug(`ws user("${name}") is authenticated`);
+          next();
+        } catch (err) {
+          next(err);
+        }
+      });
+      ws.broadcast.emit(OPPONENT_UPSERT, {
         name: user.name,
         status: user.status
       });

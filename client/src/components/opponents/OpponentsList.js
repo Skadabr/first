@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const colors = {
-  peace: "badge badge-success",
-  ready: "badge badge-warning",
-  fight: "badge badge-danger"
+  PEACE: "alert-success",
+  READY: "alert-warning",
+  FIGHT: "alert-danger"
 };
 
 export default class OpponentsList extends React.Component {

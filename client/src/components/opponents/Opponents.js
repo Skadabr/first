@@ -35,6 +35,12 @@ class Opponents extends React.Component {
   }
 }
 
+Opponents.propTypes = {
+  user_status: PropTypes.string.isRequired,
+  opponents: PropTypes.arrayOf(PropTypes.object),
+  readyToFight: PropTypes.func
+}
+
 function mapStateToProps(state) {
   return {
     user_status: state.user.status,

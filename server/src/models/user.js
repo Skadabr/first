@@ -8,9 +8,9 @@ import validator, { isEmail, isAlphanumeric } from "validator";
 
 const { JWT_SECRET } = process.env;
 
-const PEACE = "peace";
-const READY = "ready";
-const FIGHT = "fight";
+export const PEACE = "PEACE";
+export const READY = "READY";
+export const FIGHT = "FIGHT";
 
 export default function() {
   const schema = new mongoose.Schema({
@@ -33,7 +33,7 @@ export default function() {
       unique: true,
       validate: [{ isAsync: false, validator: isEmail, msg: "Invalid email" }]
     },
-    phash: {
+    password_hash: {
       type: String,
       required: true,
       validate: [
@@ -53,13 +53,17 @@ export default function() {
 
   Object.assign(schema.methods, {
     toJSON() {
-      const { name, email, status } = this;
-      return { name, email, status };
+      const { name, email, status, socket_id } = this;
+      return { name, email, status, socket_id };
     },
 
     async setPassword(password) {
       this._password = password;
-      this.phash = await bcrypt.hash(password, 8);
+      this.password_hash = await bcrypt.hash(password, 8);
+    },
+
+    comparePassword(password) {
+      return bcrypt.compare(password, this.password_hash);
     },
 
     generateJWT() {

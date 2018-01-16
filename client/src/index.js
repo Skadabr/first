@@ -18,7 +18,7 @@ import App from "./App";
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 const token = localStorage.user_jwt;
-const IO = Socket(token, store);
+Socket(token, store);
 if (token) {
   const { email, name } = decode(token);
   setAuthHeader(token);

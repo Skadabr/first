@@ -1,5 +1,5 @@
-export const OPPONENTS_COME = "OPPONENTS_COME";
-export const OPPONENTS_GOES = "OPPONENTS_GOES";
+export const OPPONENT_UPSERT = "OPPONENT_UPSERT";
+export const OPPONENT_GOES = "OPPONENT_GOES";
 export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 
 //
@@ -8,11 +8,18 @@ export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 
 export default function(state = [], { type, payload }) {
   switch (type) {
-    case OPPONENTS_COME:
-      return state.find(op => op === payload) ? state : [...state, payload];
+    case OPPONENT_UPSERT:
+      const idx = state.findIndex(op => op.name === payload.name);
+      if (idx === -1) {
+        return [...state, payload];
+      } else {
+        state = [...state];
+        state[idx] = { ...state[idx], ...payload };
+        return state;
+      }
     case OPPONENTS_LOAD:
       return payload;
-    case OPPONENTS_GOES:
+    case OPPONENT_GOES:
       return state.filter(user => user.name !== payload);
     default:
       return state;
@@ -23,9 +30,9 @@ export default function(state = [], { type, payload }) {
 // ============ Actions ============
 //
 
-export function opponentCome(user) {
+export function opponentUpsert(user) {
   return dispatch => {
-    dispatch(createOpponentCome(user));
+    dispatch(createOpponentUpsert(user));
   };
 }
 
@@ -35,27 +42,37 @@ export function opponentGoes(user) {
   };
 }
 
+export function loadOpponents(val) {
+  return dispatch => {
+    if (val.error) {
+      console.error(val.error.message);
+    } else {
+      dispatch(createLoadOpponents(val.data));
+    }
+  };
+}
+
 //
 // ============ Action creators ============
 //
 
-export function createOpponentCome(user) {
+function createOpponentUpsert(user) {
   return {
-    type: OPPONENTS_COME,
+    type: OPPONENT_UPSERT,
     payload: user
   };
 }
 
-export function createLoadOpponents(users) {
+function createLoadOpponents(users) {
   return {
     type: OPPONENTS_LOAD,
     payload: users
   };
 }
 
-export function createOpponentGoes(user) {
+function createOpponentGoes(user) {
   return {
-    type: OPPONENTS_GOES,
+    type: OPPONENT_GOES,
     payload: user
   };
 }

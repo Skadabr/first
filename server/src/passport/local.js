@@ -13,7 +13,7 @@ export default function local(User, logger) {
 
     logger.debug(`user ${user.email} is found`);
 
-    let auth = await bcrypt.compare(pass, user.phash);
+    const auth = await user.comparePassword(pass);
 
     if (!auth) {
       return done({ status: 401, message: "Email/Password is wrong" });
