@@ -10,6 +10,8 @@ import { USER_READY, USER_UPDATE, update } from "../state/user.state";
 import { START_FIGHT, startFight } from "../state/game.state";
 import { ADD_MESSAGE, addMessage } from "../state/game_chat.state";
 
+const SEND_MESSAGE = "SEND_MESSAGE";
+
 export default function Game(ws, store) {
   ws.on("connect", () => {
     ws.emit(OPPONENTS_LOAD, val => loadOpponents(val)(store.dispatch));
@@ -22,13 +24,21 @@ export default function Game(ws, store) {
 
   ws.on(START_FIGHT, val => startFight(val)(store.dispatch));
 
-  ws.on(ADD_MESSAGE, val => addMessage(val)(store.dispatch));
+  ws.on(ADD_MESSAGE, val => {
+    val.date = new Date(parseInt(val.date));
+    addMessage(val)(store.dispatch);
+  });
 
   return {
     ws,
 
     readyToFight() {
       ws.emit(USER_READY);
+    },
+
+    sendMessage(msg, name, date) {
+      date = date.getTime();
+      ws.emit(SEND_MESSAGE, { msg, name, date });
     }
   };
 }

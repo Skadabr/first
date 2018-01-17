@@ -9,6 +9,10 @@ const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const USER_READY = "USER_READY";
 const USER_UPDATE = "USER_UPDATE";
 const START_FIGHT = "START_FIGHT";
+const SEND_MESSAGE = "SEND_MESSAGE";
+const ADD_MESSAGE = "ADD_MESSAGE";
+const ME = "ME";
+const OPPONENT = "OPPONENT";
 
 export default function(ws, { models, logger }) {
   const User = models.model("User");
@@ -52,28 +56,34 @@ export default function(ws, { models, logger }) {
       return;
     }
 
+    ws.opponent_id = opponent.socket_id;
+    ws.nsp.connected[opponent.socket_id].opponent_id = ws.id;
+
     ws.user.status = FIGHT;
     await ws.user.update({ status: FIGHT });
 
     ws.emit(OPPONENT_UPSERT, only(opponent, "name status"));
     ws.broadcast.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-    ws.broadcast.emit(OPPONENT_UPSERT, only(user, "name status"));
+    ws.broadcast.emit(OPPONENT_UPSERT, only(ws.user, "name status"));
 
-    const my_data = only(user, "name socket_id");
-    const opponent_data = only(opponent, "name socket_id");
+    logger.debug(
+      `${ws.user.name}(${ws.id}) fights with ${opponent.name}(${opponent.id})`
+    );
 
-    ws.emit(START_FIGHT, { me: my_data, opponent: opponent_data });
+    ws.emit(START_FIGHT, {
+      [ME]: { name: ws.user.name },
+      [OPPONENT]: { name: opponent.name }
+    });
     ws
-      .to(opponent.socket_id)
-      .emit(START_FIGHT, { me: opponent_data, opponent: my_data });
+      .to(ws.opponent_id)
+      .emit(START_FIGHT, {
+        [ME]: { name: opponent.name },
+        [OPPONENT]: { name: ws.user.name }
+      });
   });
 
-  //const Message = models.model("Message");
-  //ws.on("chat message", async val => {
-  //  const { msg, user_name } = val;
-  //  const created = new Date();
-  //  await Message.create({ msg, user_name, created });
-  //  logger.debug(`message from ${user_name} created`);
-  //  ws.broadcast.emit("chat response", { msg, user, created });
-  //});
+  ws.on(SEND_MESSAGE, data => {
+    if (!ws.opponent_id) return;
+    ws.to(ws.opponent_id).emit(ADD_MESSAGE, data);
+  });
 }

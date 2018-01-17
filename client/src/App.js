@@ -9,7 +9,7 @@ import Header from "./components/Header";
 class App extends Component {
   render() {
     return (
-      <div className="App container">
+      <div className="App container-fluid">
         <Header />
         <Guest path="/" exact component={RootPage} />
         <User path="/user" exact component={UserPage} />

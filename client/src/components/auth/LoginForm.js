@@ -33,10 +33,6 @@ export default class LoginForm extends React.Component {
 
     try {
       await this.props.submit(this.state.data);
-      this.setState({
-        data: EMPTY_DATA,
-        errors: EMPTY
-      });
     } catch (e) {
       this.setState({
         data: EMPTY_DATA,

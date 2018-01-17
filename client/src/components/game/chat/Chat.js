@@ -4,27 +4,30 @@ import { connect } from "react-redux";
 
 import MessageBoard from "./MessageBoard";
 import MessageInput from "./MessageInput";
-import {
-  sendMessage,
-} from "../../state/game_chat";
+import ChatHeader from "./ChatHeader";
+import { sendMessage } from "../../../state/game_chat.state";
 
 class Chat extends React.Component {
   onMessage = msg => {
-    this.props.sendMessage(msg, this.props.name);
+    const { sendMessage, name } = this.props;
+    sendMessage(msg, name, new Date());
   };
 
   render() {
-    const { messages } = this.props;
+    const { messages, show_chat } = this.props;
+
+    if (!show_chat) return null;
 
     return (
       <div className="card">
+        <div className="card-header">
+          <ChatHeader />
+        </div>
         <div className="card-body">
-          <div id="chat" className="Chat row">
-            <div className="ChatIO col-12 col-sm-9">
-              <MessageBoard messages={messages} />
-              <MessageInput submit={this.onMessage} />
-            </div>
-          </div>
+          <MessageBoard messages={messages} />
+        </div>
+        <div className="card-footer">
+          <MessageInput submit={this.onMessage} />
         </div>
       </div>
     );
@@ -33,15 +36,12 @@ class Chat extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    messages: state.game_chat.messages,
+    messages: state.game_chat,
+    show_chat: state.game.show_chat,
     name: state.user.name
   };
 }
 
 export default connect(mapStateToProps, {
-  sendMessage,
-  loadMessages,
-  userOnline,
-  loadChatUsers,
-  userOffline
+  sendMessage
 })(Chat);

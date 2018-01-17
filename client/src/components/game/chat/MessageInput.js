@@ -6,16 +6,16 @@ export default function MessageInput({ submit }) {
 
   return (
     <form className="form-inline" onSubmit={onSubmit}>
-      <div className="form-group">
+      <div className="input-group">
         <input
-          className="form-control"
+          className="form-control input-sm"
           type="text"
           autoComplete="off"
           ref={el => (input = el)}
         />
       </div>
-      <div className="form-group">
-        <button className="btn">Send</button>
+      <div className="input-group-btn">
+        <button id="btn-chat" className="btn btn-sm">Send</button>
       </div>
     </form>
   );

@@ -5,27 +5,30 @@ import { connect } from "react-redux";
 import OpponentsHeader from "./OpponentsHeader";
 import OpponentsList from "./OpponentsList";
 
-import { readyToFight } from "../../state/user.state";
-import { PEACE, READY, FIGHT } from "../../state/user.state";
-
+import { readyToFight } from "../../../state/user.state";
+import { PEACE, READY, FIGHT } from "../../../state/user.state";
 
 class Opponents extends React.Component {
   toggle = ev => {
-    const { readyToFight, user_status } = this.props;
+    const { readyToFight, user } = this.props;
 
-    switch (user_status) {
+    switch (user.status) {
       case PEACE:
         return readyToFight();
     }
   };
 
   render() {
-    const { opponents, readyToFight, user_status } = this.props;
+    const { opponents, readyToFight, user } = this.props;
 
     return (
       <div className="card">
+        <div className="card-header">{user.name}</div>
+        <div className="card-body">
+          <div className="card-block"> Email: {user.email}</div>
+        </div>
         <div className="card-header">
-          <OpponentsHeader toggle={this.toggle} user_status={user_status} />
+          <OpponentsHeader toggle={this.toggle} user_status={user.status} />
         </div>
         <div className="card-body">
           <OpponentsList opponents={opponents} />
@@ -36,14 +39,18 @@ class Opponents extends React.Component {
 }
 
 Opponents.propTypes = {
-  user_status: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+  }).isRequired,
   opponents: PropTypes.arrayOf(PropTypes.object),
   readyToFight: PropTypes.func
-}
+};
 
 function mapStateToProps(state) {
   return {
-    user_status: state.user.status,
+    user: state.user,
     opponents: state.opponents.filter(op => op.name !== state.user.name)
   };
 }

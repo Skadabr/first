@@ -1,8 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import Opponents from "../opponents/Opponents";
-import UserInfo from "../user/UserInfo";
+
+import Opponents from "../game/opponents/Opponents";
+import GameBoard from '../game/board/GameBoard';
+import Chat from '../game/chat/Chat';
 
 class UserPage extends React.Component {
   render() {
@@ -10,11 +12,14 @@ class UserPage extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-12 col-sm-12 col-md-3">
-          <UserInfo name={name} email={email} />
+        <div className="col-12 col-sm-12 col-md-2">
           <Opponents />
         </div>
-        <div className="col-12 col-sm-12 col-md-6">
+        <div className="col-12 col-sm-12 col-md-7">
+          <GameBoard />
+        </div>
+        <div className="col-12 col-sm-12 col-md-3">
+          <Chat />
         </div>
       </div>
     );

@@ -8,10 +8,12 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import decode from "jwt-decode";
 
+import "./index.css";
+
 import reducer from "./state/reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import setAuthHeader from "./utils/auth-header";
-import {createLogin} from "./state/user.state";
+import { createLogin } from "./state/user.state";
 import Socket from "./socket";
 import App from "./App";
 
@@ -22,7 +24,7 @@ Socket(token, store);
 if (token) {
   const { email, name } = decode(token);
   setAuthHeader(token);
-  store.dispatch(createLogin(name, email, token ));
+  store.dispatch(createLogin(name, email, token));
 }
 
 const app = (

@@ -21,7 +21,7 @@ export default class OpponentsList extends React.Component {
       <div id="opponent_list" ref={el => (this.board = el)}>
         {opponents.length > 0 &&
           opponents.map(opponent => (
-            <div key={opponent.name}>
+            <div className="card-block" key={opponent.name}>
               <span className={colors[opponent.status]}>{opponent.name}</span>
             </div>
           ))}

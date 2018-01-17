@@ -8,6 +8,8 @@ export const ADD_MESSAGE = "ADD_MESSAGE";
 
 export default function(state = [], { type, payload }) {
   switch (type) {
+    case ADD_MESSAGE:
+      return [...state, payload];
     default:
       return state;
   }
@@ -23,9 +25,9 @@ export function addMessage(payload) {
   };
 }
 
-export function sendMessage(msg, name) {
+export function sendMessage(msg, name, date) {
   return dispatch => {
-    IO().gameIO.sendMessage(msg, name);
-    addMessage({ msg, name })(dispatch);
+    IO().gameIO.sendMessage(msg, name, date);
+    addMessage({ msg, name, date })(dispatch);
   };
 }
