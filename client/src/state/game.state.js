@@ -15,8 +15,8 @@ export default function(state = EMPTY, { type, payload }) {
       return { ...payload, show_chat: true };
 
     case ADD_WARRIOR:
-      const { who, warriors } = payload;
-      const gamer = { ...state[who], warriors };
+      const { who, warriors, last_warrior } = payload;
+      const gamer = { ...state[who], warriors, last_warrior };
       return { ...state, [who]: gamer };
 
     default:
@@ -39,6 +39,7 @@ export function startFight(payload) {
 export function addWarrior(who, game, warrior) {
   return dispatch => {
     let warriors = game[who].warriors;
+    let last_warrior = game[who].last_warrior;
 
     if (warriors.length > 5) return;
     //throw Error("too much warriors on the battle field");
@@ -47,7 +48,17 @@ export function addWarrior(who, game, warrior) {
       warrior.position = 4;
       return dispatch({
         type: ADD_WARRIOR,
-        payload: { who, warriors: [warrior] }
+        payload: { who, last_warrior: warrior, warriors: [warrior] }
+      });
+    }
+
+    if (last_warrior) {
+      warriors = [...warriors];
+      warrior.position = warriors[warriors.length - 1].position;
+      warriors[warriors.length - 1] = warrior;
+      return dispatch({
+        type: ADD_WARRIOR,
+        payload: { who, warriors, last_warrior: warrior }
       });
     }
 
@@ -55,7 +66,10 @@ export function addWarrior(who, game, warrior) {
     warriors = warriors.map(w => ({ ...w, position: w.position - 1 }));
     warriors.push(warrior);
 
-    dispatch({ type: ADD_WARRIOR, payload: { who, warriors } });
+    dispatch({
+      type: ADD_WARRIOR,
+      payload: { who, warriors, last_warrior: warrior }
+    });
   };
 }
 

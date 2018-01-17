@@ -13,7 +13,7 @@ export default class GameBoard extends React.Component {
 
   render() {
     return (
-      <div className="card">
+      <div>
         <div
           data-type="pawn"
           data-health={6}
@@ -26,13 +26,13 @@ export default class GameBoard extends React.Component {
         </div>
         <div
           data-type="officer"
-          data-health={5}
+          data-health={4}
           data-damage={2}
           className="card-block"
           onClick={this.onClick}
         >
           <strong className="primary-font">Officer</strong>
-          <small className="float-right text-muted">5 / 2</small>
+          <small className="float-right text-muted">4 / 2</small>
         </div>
       </div>
     );

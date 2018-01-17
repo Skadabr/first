@@ -47,12 +47,11 @@ export default function(ws, { models, logger }) {
     );
 
     if (!opponent) {
-      ws.user.status = READY;
-      await ws.user.update({ status: READY });
-      const { status, name } = ws.user;
-      logger.debug(`user "${name}" ${status} to fight`);
-      ws.broadcast.emit(OPPONENT_UPSERT, { name, status });
-      ws.emit(USER_UPDATE, { status });
+      await ws.user.update({ status: READY, challenger: false });
+      const { name } = ws.user;
+      logger.debug(`user "${name}" ready to fight`);
+      ws.broadcast.emit(OPPONENT_UPSERT, { name, status: READY });
+      ws.emit(USER_UPDATE, { status: READY });
       return;
     }
 
@@ -74,12 +73,10 @@ export default function(ws, { models, logger }) {
       [ME]: { name: ws.user.name },
       [OPPONENT]: { name: opponent.name }
     });
-    ws
-      .to(ws.opponent_id)
-      .emit(START_FIGHT, {
-        [ME]: { name: opponent.name },
-        [OPPONENT]: { name: ws.user.name }
-      });
+    ws.to(ws.opponent_id).emit(START_FIGHT, {
+      [ME]: { name: opponent.name },
+      [OPPONENT]: { name: ws.user.name }
+    });
   });
 
   ws.on(SEND_MESSAGE, data => {

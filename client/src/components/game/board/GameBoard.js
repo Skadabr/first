@@ -6,6 +6,7 @@ import { EMPTY, ME, addWarrior } from "../../../state/game.state";
 
 import BattleField from "./BattleField";
 import WarriorList from "./WarriorList";
+import Turn from "./Turn";
 
 class GameBoard extends React.Component {
   addWarrior = data => {
@@ -14,6 +15,10 @@ class GameBoard extends React.Component {
     damage = damage | 0;
     this.props.addWarrior(ME, this.props.game, { type, health, damage });
   };
+
+  turn = () => {
+
+  }
 
   render() {
     const { fight, game } = this.props;
@@ -26,8 +31,10 @@ class GameBoard extends React.Component {
           <BattleField game={game} />
         </div>
         <div className="col-3">
-          <Turn >
-          <WarriorList submit={this.addWarrior} />
+          <div className="card">
+            <Turn turn={this.turn} />
+            <WarriorList submit={this.addWarrior} />
+          </div>
         </div>
       </div>
     );

@@ -48,7 +48,8 @@ export default function() {
       type: String,
       enum: [PEACE, READY, FIGHT],
       default: PEACE
-    }
+    },
+    challenger: Boolean
   });
 
   Object.assign(schema.methods, {

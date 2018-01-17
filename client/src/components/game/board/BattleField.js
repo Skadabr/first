@@ -10,6 +10,7 @@ class BattleField extends React.Component {
     const opponent = game[OPPONENT];
     const me = game[ME];
     const myWarriors = game[ME].warriors;
+    const opponentWarriors = game[OPPONENT].warriors;
 
     return (
       <div className="card">
@@ -18,9 +19,14 @@ class BattleField extends React.Component {
           className="card-block"
           style={{ display: "flex", flexDirection: "row" }}
         >
+          {[...getWarriorLogos(opponentWarriors)]}
+        </div>
+        <div
+          className="card-block"
+          style={{ display: "flex", flexDirection: "row" }}
+        >
           {[...getWarriorLogos(myWarriors)]}
         </div>
-        <div className="card-block" />
         <div className="card-footer">{me.name}</div>
       </div>
     );
