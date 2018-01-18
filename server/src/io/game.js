@@ -9,6 +9,7 @@ const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const USER_READY = "USER_READY";
 const USER_UPDATE = "USER_UPDATE";
 const START_FIGHT = "START_FIGHT";
+const END_OF_FIGHT = "END_OF_FIGHT";
 const SEND_MESSAGE = "SEND_MESSAGE";
 const ADD_MESSAGE = "ADD_MESSAGE";
 const ME = "ME";
@@ -16,13 +17,21 @@ const OPPONENT = "OPPONENT";
 
 export default function(ws, { models, logger }) {
   const User = models.model("User");
-  const Game = models.model("Game");
 
   ws.on("disconnect", async () => {
     const user = await User.findOneAndUpdate(
       { socket_id: ws.id },
-      { socket_id: null, status: PEACE }
+      { socket_id: null, status: PEACE, game: null }
     );
+
+    if (ws.opponent_id) {
+      const opponent = await User.findOneAndUpdate(
+        { socket_id: ws.opponent_id },
+        { socket_id: null, status: PEACE, game: null }
+      );
+      ws.to(ws.opponent_id).emit(END_OF_FIGHT);
+    }
+
     logger.debug(`${user.name}(id: ${ws.id}) goes`);
     ws.broadcast.emit(OPPONENT_GOES, user.name);
   });
@@ -51,8 +60,8 @@ export default function(ws, { models, logger }) {
       return;
     }
 
-    //  ws.opponent_id = opponent.socket_id;
-    //  ws.nsp.connected[opponent.socket_id].opponent_id = ws.id;
+    ws.opponent_id = opponent.socket_id;
+    ws.nsp.connected[opponent.socket_id].opponent_id = ws.id;
 
     await ws.user.readyToFight();
 
@@ -66,13 +75,15 @@ export default function(ws, { models, logger }) {
       })`
     );
 
-    await Game.createGame(ws.user, opponent);
+    //await ws.user.startGame(opponent);
 
     ws.emit(START_FIGHT, {
+      turn: true,
       [ME]: { name: ws.user.name },
       [OPPONENT]: { name: opponent.name }
     });
     ws.to(opponent.socket_id).emit(START_FIGHT, {
+      turn: false,
       [ME]: { name: opponent.name },
       [OPPONENT]: { name: ws.user.name }
     });

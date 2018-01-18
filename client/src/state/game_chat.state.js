@@ -1,5 +1,8 @@
 import IO from "../socket";
 
+import { END_OF_FIGHT } from "./game.state";
+import { USER_LOGOUT } from "./user.state";
+
 export const ADD_MESSAGE = "ADD_MESSAGE";
 
 //
@@ -10,6 +13,10 @@ export default function(state = [], { type, payload }) {
   switch (type) {
     case ADD_MESSAGE:
       return [...state, payload];
+    case END_OF_FIGHT:
+      return [];
+    case USER_LOGOUT:
+      return [];
     default:
       return state;
   }

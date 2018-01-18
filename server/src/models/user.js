@@ -6,11 +6,14 @@ import uniqueValidator from "mongoose-unique-validator";
 import jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-const { JWT_SECRET } = process.env;
-
 export const PEACE = "PEACE";
 export const READY = "READY";
 export const FIGHT = "FIGHT";
+
+export const PAWN = "PAWN";
+export const OFFICER = "OFFICER";
+
+const { JWT_SECRET } = process.env;
 
 export default function() {
   const { Schema } = mongoose;
@@ -50,9 +53,25 @@ export default function() {
       type: String,
       enum: [PEACE, READY, FIGHT],
       default: PEACE
-    },
-    challenger: Boolean,
-    game_id: Schema.ObjectId
+    }
+    //game: {
+    //  opponent_id: {
+    //    type: Schema.ObjectId,
+    //    ref: "User"
+    //  },
+    //  warriors: {
+    //    type: [
+    //      {
+    //        position: Number,
+    //        health: Number,
+    //        t: {
+    //          type: String,
+    //          enum: [PAWN, OFFICER]
+    //        }
+    //      }
+    //    ]
+    //  }
+    //}
   });
 
   Object.assign(schema.methods, {
@@ -77,15 +96,28 @@ export default function() {
 
     availableForFight() {
       this.status = READY;
-      this.challenger = false;
-      return this.update({ status: READY, challenger: false }).then(() => this);
+      return this.update({ status: READY }).then(() => this);
     },
 
     readyToFight() {
       this.status = FIGHT;
-      this.challenger = true;
-      return this.update({ status: FIGHT, challenger: true }).then(() => this);
+      return this.update({ status: FIGHT }).then(() => this);
     }
+
+    //async startGame(opponent) {
+    //  await this.update({
+    //    game: {
+    //      opponent_id: opponent._id,
+    //      warriors: []
+    //    }
+    //  });
+    //  await opponent.update({
+    //    game: {
+    //      opponent_id: this._id,
+    //      warriors: []
+    //    }
+    //  });
+    //}
   });
 
   Object.assign(schema.statics, {

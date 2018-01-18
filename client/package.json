@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.17.1",
+    "deep-copy": "^1.4.2",
     "jwt-decode": "^2.2.0",
     "moment": "^2.20.1",
     "react": "^16.2.0",

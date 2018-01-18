@@ -1,3 +1,5 @@
+import { USER_LOGOUT } from "./user.state";
+
 export const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 export const OPPONENT_GOES = "OPPONENT_GOES";
 export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
@@ -21,6 +23,8 @@ export default function(state = [], { type, payload }) {
       return payload;
     case OPPONENT_GOES:
       return state.filter(user => user.name !== payload);
+    case USER_LOGOUT:
+      return [];
     default:
       return state;
   }

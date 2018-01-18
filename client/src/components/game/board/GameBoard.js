@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { EMPTY, ME, addWarrior } from "../../../state/game.state";
+import { EMPTY, ME, addWarrior, toTurn } from "../../../state/game.state";
 
 import BattleField from "./BattleField";
 import WarriorList from "./WarriorList";
@@ -10,13 +10,20 @@ import Turn from "./Turn";
 
 class GameBoard extends React.Component {
   addWarrior = data => {
+    const { game, addWarrior } = this.props;
+    if (!game.turn) return;
+
     let { type, health, damage } = data;
     health = health | 0;
     damage = damage | 0;
     this.props.addWarrior(ME, this.props.game, { type, health, damage });
   };
 
-  turn = () => {
+  onTurn = () => {
+    const { game, toTurn } = this.props;
+    if (!game.turn) return;
+
+    //toTurn()
 
   }
 
@@ -32,7 +39,7 @@ class GameBoard extends React.Component {
         </div>
         <div className="col-3">
           <div className="card">
-            <Turn turn={this.turn} />
+            <Turn onTurn={this.onTurn} turn={game.turn} />
             <WarriorList submit={this.addWarrior} />
           </div>
         </div>
@@ -48,4 +55,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { addWarrior })(GameBoard);
+export default connect(mapStateToProps, { addWarrior, toTurn })(GameBoard);

@@ -2,7 +2,7 @@ import setAuthHeader from "../utils/auth-header";
 import IO from "../socket";
 import { authApi, userApi } from "../api";
 
-import { START_FIGHT } from "./game.state";
+import { START_FIGHT, END_OF_FIGHT } from "./game.state";
 
 export const USER_LOGIN = "USER_LOGIN";
 export const USER_LOGOUT = "USER_LOGOUT";
@@ -23,6 +23,8 @@ export default function(state = {}, { payload, type }) {
       return {...state, ...payload}
     case START_FIGHT:
       return { ...state, status: FIGHT };
+    case END_OF_FIGHT:
+      return { ...state, status: PEACE };
 
     default:
       return state;
