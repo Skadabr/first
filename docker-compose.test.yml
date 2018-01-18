@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  server:
+    command: ["yarn", "start:dev"]
+    volumes:
+      - "./server/src:/app/server/src"
+      - "./client/build:/app/client/build"
+    env_file: ./server/env
+
+  test: 

@@ -63,7 +63,7 @@ export default class LoginForm extends React.Component {
               ))}
             </div>
           )}
-          <form onSubmit={this.onSubmit}>
+          <form id="login" onSubmit={this.onSubmit}>
             <div className="form-group">
               <label htmlFor="login_email">Email:</label>
               <input

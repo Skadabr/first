@@ -68,7 +68,7 @@ export default class SignupForm extends React.Component {
               ))}
             </div>
           )}
-          <form onSubmit={this.onSubmit}>
+          <form id="signup" onSubmit={this.onSubmit}>
             <div className="form-group">
               <label htmlFor="signup_email">Email:</label>
               <input
