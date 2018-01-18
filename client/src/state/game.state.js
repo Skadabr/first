@@ -1,14 +1,19 @@
 import deepClone from "deep-copy";
 
+import IO from "../socket";
 import { USER_LOGOUT } from "./user.state";
+import gamerReducer, { createGamerUpdate } from "./gamer.state";
 
 export const START_FIGHT = "START_FIGHT";
 export const END_OF_FIGHT = "END_OF_FIGHT";
 export const ADD_WARRIOR = "ADD_WARRIOR";
+export const GAME_UPDATE = "GAME_UPDATE";
+export const ACQUIRE_TURN = "ACQUIRE_TURN";
 
 export const EMPTY = {};
 export const ME = "ME";
 export const OPPONENT = "OPPONENT";
+export const TURN = "TURN";
 
 //
 // ============ Reducer ============
@@ -21,8 +26,28 @@ export default function(state = EMPTY, { type, payload }) {
 
     case ADD_WARRIOR:
       const { who, warriors, last_warrior } = payload;
-      const gamer = { ...state[who], warriors, last_warrior };
+      const gamer = gamerReducer(
+        state[who],
+        createGamerUpdate({ warriors, last_warrior })
+      );
       return { ...state, [who]: gamer };
+
+    case TURN:
+      const me = gamerReducer(
+        state[ME],
+        createGamerUpdate({ last_warrior: null })
+      );
+      return { ...state, [ME]: me, [OPPONENT]: payload, turn: false };
+
+    case ACQUIRE_TURN: {
+      let { me, opponent } = payload;
+      return {
+        ...state,
+        [ME]: gamerReducer(state[ME], createGamerUpdate(me)),
+        [OPPONENT]: gamerReducer(state[OPPONENT], createGamerUpdate(opponent)),
+        turn: true
+      };
+    }
 
     case END_OF_FIGHT:
     case USER_LOGOUT:
@@ -85,22 +110,39 @@ export function addWarrior(who, game, warrior) {
 }
 
 export function toTurn(game) {
-  const myWarriors = deepClone(game[ME]);
-  const opponentWarriors = deepClone(game[OPPONENT]);
+  return dispatch => {
+    const me = deepClone(game[ME]);
+    const opponent = deepClone(game[OPPONENT]);
 
-  if (opponentWarriors.length === 0) {
-    myWarriors.forEach(({damage}) => {
-
-    })
-  }
-
-  myWarriors.forEach(({ position, damage }) => {
-    const op = opponentWarriors.find(op => op.position === position);
-    if (op) {
-      op.health -= damage;
+    if (opponent.warriors.length === 0) {
+      me.warriors.forEach(({ damage }) => {
+        opponent.health -= damage;
+      });
     } else {
+      me.warriors.forEach(({ position, damage }) => {
+        const op = opponent.warriors.find(op => op.position === position);
+        if (op) {
+          op.health -= damage;
+        } else {
+          const ops = opponent.warriors.filter(
+            op => op.position === position - 1 || op.position === position + 1
+          );
+          ops.forEach(op => {
+            op.health -= damage;
+          });
+        }
+      });
     }
-  });
+
+    IO().gameIO.toTurn(me, opponent);
+    dispatch({ type: TURN, payload: opponent });
+  };
+}
+
+export function acquireTurn(me, opponent) {
+  return dispatch => {
+    dispatch({ type: ACQUIRE_TURN, payload: { me, opponent } });
+  };
 }
 
 export function endOfFight() {

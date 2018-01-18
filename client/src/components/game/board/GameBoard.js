@@ -23,8 +23,7 @@ class GameBoard extends React.Component {
     const { game, toTurn } = this.props;
     if (!game.turn) return;
 
-    //toTurn()
-
+    toTurn(game);
   }
 
   render() {

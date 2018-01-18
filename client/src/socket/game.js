@@ -4,9 +4,8 @@ import {
   loadOpponents
 } from "../state/opponents.state";
 import { update } from "../state/user.state";
-import { startFight } from "../state/game.state";
+import { startFight, endOfFight, acquireTurn } from "../state/game.state";
 import { addMessage } from "../state/game_chat.state";
-import { endOfFight } from "../state/game.state";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
@@ -17,6 +16,11 @@ const USER_UPDATE = "USER_UPDATE";
 const START_FIGHT = "START_FIGHT";
 const ADD_MESSAGE = "ADD_MESSAGE";
 const END_OF_FIGHT = "END_OF_FIGHT";
+const TURN = "TURN";
+const ACQUIRE_TURN = "ACQUIRE_TURN";
+
+const ME = "ME";
+const OPPONENT = "OPPONENT";
 
 export default function Game(ws, store) {
   ws.on("connect", () => {
@@ -30,7 +34,11 @@ export default function Game(ws, store) {
 
   ws.on(START_FIGHT, val => startFight(val)(store.dispatch));
   ws.on(END_OF_FIGHT, val => endOfFight(val)(store.dispatch));
-
+  ws.on(ACQUIRE_TURN, val => {
+    const me = val[ME];
+    const opponent = val[OPPONENT];
+    acquireTurn(me, opponent)(store.dispatch);
+  });
   ws.on(ADD_MESSAGE, val => {
     val.date = new Date(parseInt(val.date));
     addMessage(val)(store.dispatch);
@@ -46,6 +54,13 @@ export default function Game(ws, store) {
     sendMessage(msg, name, date) {
       date = date.getTime();
       ws.emit(SEND_MESSAGE, { msg, name, date });
+    },
+
+    toTurn(me, opponent) {
+      ws.emit(TURN, {
+        me: { health: me.health, warriors: me.warriors },
+        opponent: { health: opponent.health, warriors: opponent.warriors }
+      });
     }
   };
 }

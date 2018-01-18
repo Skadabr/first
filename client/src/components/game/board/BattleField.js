@@ -14,7 +14,9 @@ class BattleField extends React.Component {
 
     return (
       <div className="card">
-        <div className="card-header">{opponent.name}</div>
+        <div className="card-header">
+          {opponent.name}: {opponent.health}
+        </div>
         <div
           className="card-block"
           style={{ display: "flex", flexDirection: "row" }}
@@ -27,7 +29,9 @@ class BattleField extends React.Component {
         >
           {[...getWarriorLogos(myWarriors)]}
         </div>
-        <div className="card-footer">{me.name}</div>
+        <div className="card-footer">
+          {me.name}: {me.health}
+        </div>
       </div>
     );
   }

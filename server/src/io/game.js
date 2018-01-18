@@ -12,6 +12,9 @@ const START_FIGHT = "START_FIGHT";
 const END_OF_FIGHT = "END_OF_FIGHT";
 const SEND_MESSAGE = "SEND_MESSAGE";
 const ADD_MESSAGE = "ADD_MESSAGE";
+const TURN = "TURN";
+const ACQUIRE_TURN = "ACQUIRE_TURN";
+
 const ME = "ME";
 const OPPONENT = "OPPONENT";
 
@@ -32,8 +35,10 @@ export default function(ws, { models, logger }) {
       ws.to(ws.opponent_id).emit(END_OF_FIGHT);
     }
 
-    logger.debug(`${user.name}(id: ${ws.id}) goes`);
-    ws.broadcast.emit(OPPONENT_GOES, user.name);
+    if (user) {
+      logger.debug(`${user.name}(id: ${ws.id}) goes`);
+      ws.broadcast.emit(OPPONENT_GOES, user.name);
+    }
   });
 
   ws.on(OPPONENTS_LOAD, cb => {
@@ -92,5 +97,12 @@ export default function(ws, { models, logger }) {
   ws.on(SEND_MESSAGE, data => {
     if (!ws.opponent_id) return;
     ws.to(ws.opponent_id).emit(ADD_MESSAGE, data);
+  });
+
+  ws.on(TURN, data => {
+    const { me, opponent } = data;
+    ws
+      .to(ws.opponent_id)
+      .emit(ACQUIRE_TURN, { [ME]: opponent, [OPPONENT]: me });
   });
 }
