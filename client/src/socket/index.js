@@ -18,7 +18,7 @@ export default function IO(_token, _store) {
 
 function Socket() {
   const gameIO = handleGame(
-    sio(`http://localhost:3000/game`, { query: { token } }),
+    sio('/game', { query: { token } }),
     store,
   );
 
