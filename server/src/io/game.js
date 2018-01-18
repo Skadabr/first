@@ -16,6 +16,7 @@ const OPPONENT = "OPPONENT";
 
 export default function(ws, { models, logger }) {
   const User = models.model("User");
+  const Game = models.model("Game");
 
   ws.on("disconnect", async () => {
     const user = await User.findOneAndUpdate(
@@ -40,40 +41,38 @@ export default function(ws, { models, logger }) {
   });
 
   ws.on(USER_READY, async () => {
-    const opponent = await User.findOneAndUpdate(
-      { status: READY, name: { $ne: ws.user.name } },
-      { status: FIGHT },
-      { new: true }
-    );
+    const opponent = await User.getOpponent(ws.user);
 
     if (!opponent) {
-      await ws.user.update({ status: READY, challenger: false });
-      const { name } = ws.user;
+      const { name, status } = await ws.user.availableForFight();
       logger.debug(`user "${name}" ready to fight`);
-      ws.broadcast.emit(OPPONENT_UPSERT, { name, status: READY });
-      ws.emit(USER_UPDATE, { status: READY });
+      ws.broadcast.emit(OPPONENT_UPSERT, { name, status });
+      ws.emit(USER_UPDATE, { status });
       return;
     }
 
-    ws.opponent_id = opponent.socket_id;
-    ws.nsp.connected[opponent.socket_id].opponent_id = ws.id;
+    //  ws.opponent_id = opponent.socket_id;
+    //  ws.nsp.connected[opponent.socket_id].opponent_id = ws.id;
 
-    ws.user.status = FIGHT;
-    await ws.user.update({ status: FIGHT });
+    await ws.user.readyToFight();
 
     ws.emit(OPPONENT_UPSERT, only(opponent, "name status"));
     ws.broadcast.emit(OPPONENT_UPSERT, only(opponent, "name status"));
     ws.broadcast.emit(OPPONENT_UPSERT, only(ws.user, "name status"));
 
     logger.debug(
-      `${ws.user.name}(${ws.id}) fights with ${opponent.name}(${opponent.id})`
+      `${ws.user.name}(${ws.id}) fights with ${opponent.name}(${
+        opponent.socket_id
+      })`
     );
+
+    await Game.createGame(ws.user, opponent);
 
     ws.emit(START_FIGHT, {
       [ME]: { name: ws.user.name },
       [OPPONENT]: { name: opponent.name }
     });
-    ws.to(ws.opponent_id).emit(START_FIGHT, {
+    ws.to(opponent.socket_id).emit(START_FIGHT, {
       [ME]: { name: opponent.name },
       [OPPONENT]: { name: ws.user.name }
     });

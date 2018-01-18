@@ -8,7 +8,7 @@ export const OFFICER = "OFFICER";
 export default function() {
   const schema = new mongoose.Schema({
     challenger: {
-      id: mongoose.Schema.Types.ObjectId,
+      socket_id: String,
       warriors: [
         {
           position: Number,
@@ -20,14 +20,16 @@ export default function() {
         }
       ]
     },
-    snd: {
-      id: {
-        type: mongoose.Schema.Types.ObjectId
-      },
+    challenged: {
+      socket_id: String,
       warriors: [
         {
           position: Number,
-          health: Number
+          health: Number,
+          t: {
+            type: String,
+            enum: [PAWN, OFFICER]
+          }
         }
       ]
     }
@@ -37,10 +39,25 @@ export default function() {
     toJSON() {
       const { msg, user, created } = this;
       return { msg, user, created };
-    },
-
-    addWarrior() {}
+    }
   });
 
-  mongoose.model("Message", schema);
+  Object.assign(schema.statics, {
+    async createGame(challenger, challenged) {
+      const game = await this.create({
+        challenger: {
+          socket_id: challenger.socket_id,
+          warriors: []
+        },
+        challenged: {
+          socket_id: challenged.socket_id,
+          warriors: []
+        }
+      });
+      await challenger.update({ game_id: game.id });
+      return challenged.update({ game_id: game.id });
+    }
+  });
+
+  mongoose.model("Game", schema);
 }

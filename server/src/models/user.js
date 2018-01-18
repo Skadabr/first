@@ -13,7 +13,9 @@ export const READY = "READY";
 export const FIGHT = "FIGHT";
 
 export default function() {
-  const schema = new mongoose.Schema({
+  const { Schema } = mongoose;
+
+  const schema = new Schema({
     name: {
       type: String,
       required: true,
@@ -49,7 +51,8 @@ export default function() {
       enum: [PEACE, READY, FIGHT],
       default: PEACE
     },
-    challenger: Boolean
+    challenger: Boolean,
+    game_id: Schema.ObjectId
   });
 
   Object.assign(schema.methods, {
@@ -70,6 +73,28 @@ export default function() {
     generateJWT() {
       const { email, name } = this;
       return jwt.sign({ email, name }, JWT_SECRET);
+    },
+
+    availableForFight() {
+      this.status = READY;
+      this.challenger = false;
+      return this.update({ status: READY, challenger: false }).then(() => this);
+    },
+
+    readyToFight() {
+      this.status = FIGHT;
+      this.challenger = true;
+      return this.update({ status: FIGHT, challenger: true }).then(() => this);
+    }
+  });
+
+  Object.assign(schema.statics, {
+    getOpponent(user) {
+      return this.findOneAndUpdate(
+        { status: READY, name: { $ne: user.name } },
+        { status: FIGHT },
+        { new: true }
+      ).exec();
     }
   });
 

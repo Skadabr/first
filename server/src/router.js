@@ -2,7 +2,6 @@ import { Router } from "express";
 
 import UserController from "./controllers/user";
 import AuthController from "./controllers/auth";
-import MessageController from "./controllers/message";
 
 export default function setRoutes(opts) {
   const router = new Router();
@@ -10,7 +9,6 @@ export default function setRoutes(opts) {
 
   const userController = UserController(opts);
   const authController = AuthController(opts);
-  const messageController = MessageController(opts);
 
   router.post("/api/users/", userController.create);
   router.post(
