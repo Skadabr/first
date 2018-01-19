@@ -1,11 +1,19 @@
 version: "3"
 
 services:
-  server:
-    command: ["yarn", "start:dev"]
-    volumes:
-      - "./server/src:/app/server/src"
-      - "./client/build:/app/client/build"
-    env_file: ./server/env
+  testing:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    command: ["yarn", "start"]
+    env_file: ./server/env.test
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
 
-  test: 
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - "./data:/data"
+

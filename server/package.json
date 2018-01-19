@@ -2,6 +2,7 @@
   "scripts": {
     "prestart": "babel src -d dist",
     "start": "node dist",
+    "test:front": "mocha --require babel-register -b -R min test/acceptance/**/*.js",
     "prestart:dev": "babel src -d dist --watch &",
     "start:dev": "babel src -d dist && nodemon dist",
     "precommit": "lint-staged"
@@ -26,7 +27,6 @@
     "passport-local": "^1.0.0",
     "pino": "^4.10.3",
     "socket.io": "^2.0.4",
-    "socketio-jwt": "^4.5.0",
     "validator": "^9.2.0"
   },
   "devDependencies": {
@@ -34,6 +34,7 @@
     "babel-eslint": "^8.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
     "del": "^3.0.0",
     "eslint": "^4.15.0",
     "eslint-config-prettier": "^2.9.0",
@@ -41,8 +42,11 @@
     "eslint-plugin-prettier": "^2.4.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
+    "mocha": "^5.0.0",
     "nodemon": "^1.14.9",
-    "prettier": "^1.9.2"
+    "prettier": "^1.9.2",
+    "puppeteer": "^1.0.0",
+    "sinon": "^4.1.6"
   },
   "name": "first-server",
   "version": "1.0.0",
