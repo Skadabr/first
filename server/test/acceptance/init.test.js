@@ -10,7 +10,7 @@ before(async function() {
   });
   this.page = await this.browser.newPage();
   this.conn = await MongoClient.connect(MONGO_URL);
-  this.db = conn.db("test");
+  this.db = this.conn.db("test");
 });
 
 after(async function() {
