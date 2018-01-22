@@ -1,14 +1,16 @@
 import React from "react";
+import { expect } from "chai";
+import sinon from "sinon";
 import { shallow } from "enzyme";
 
-import LoginForm from "../../auth/LoginForm";
+import LoginForm from "../../src/components/auth/LoginForm";
 
 describe("<LoginForm />", function() {
   describe("when data is valid", function() {
     let login, submit;
 
     beforeEach(function() {
-      submit = jest.fn();
+      submit = sinon.spy();
       login = shallow(<LoginForm submit={submit} />);
 
       login.find('form input[name="email"]').simulate("change", {
@@ -21,15 +23,15 @@ describe("<LoginForm />", function() {
     });
 
     it("submit data", function() {
-      expect(submit.mock.calls).toHaveLength(1);
-      expect(submit.mock.calls[0][0]).toEqual({email: "acc@mail.com", password: "deadbeef"});
+      expect(submit.callCount).to.equal(1);
+      expect(submit.args[0][0]).to.deep.equal({email: "acc@mail.com", password: "deadbeef"});
     });
   });
 
   describe("when input invalid password", function() {
     let login, submit;
     beforeEach(function() {
-      submit = jest.fn();
+      submit = sinon.spy();
       login = shallow(<LoginForm submit={submit} />);
       //login.find("form #login_email").instance().value = "acc@mail.com";
       //login.find("form #login_password").instance().value = "short";
@@ -44,23 +46,21 @@ describe("<LoginForm />", function() {
     });
 
     it("show validation error about short password", function() {
-      expect(login.find("#login_validation_errors")).toHaveLength(1);
+      expect(login.find("#login_validation_errors").length).to.equal(1);
       expect(
         login
           .find("#login_validation_errors .list-group-item-danger")
           .at(0)
           .text()
-      ).toBe("Password too short");
+      ).to.equal("Password too short");
     });
   });
 
   describe("when server return authentication failure", function() {
     let login, submit;
     beforeEach(function(done) {
-      submit = jest
-        .fn()
-        //.mockReturnValue(Promise.reject(new Error("Email/Password is wrong")));
-        .mockImplementation(async () => {
+      submit = sinon
+        .spy(async () => {
           throw new Error("Email/Password is wrong");
         });
 
@@ -89,7 +89,7 @@ describe("<LoginForm />", function() {
           .find("#login_validation_errors .list-group-item-danger")
           .at(0)
           .text()
-      ).toBe("Email/Password is wrong");
+      ).to.equal("Email/Password is wrong");
     });
   });
 });

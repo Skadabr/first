@@ -7,7 +7,6 @@ export default function init({ router, morgan, passport }) {
   const app = express();
 
   if (NODE_ENV === "development") app.use(morgan);
-  //app.use(express.static(p.join(__dirname, "../client/build")));
   app.use(express.static("/app/server/public"));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
