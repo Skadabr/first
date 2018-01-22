@@ -16,6 +16,7 @@ export default class OpponentsHeader extends React.Component {
       <div>
         <span>Opponents</span>
         <span
+          id="user_status_badge"
           onClick={toggle}
           className={colors[user_status]}
           style={{ float: "right" }}

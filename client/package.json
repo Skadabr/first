@@ -17,7 +17,7 @@
     "socket.io-client": "^2.0.4"
   },
   "scripts": {
-    "test": "mocha --require babel-register -b test/**/*.js test/*.js",
+    "test": "mocha --require babel-register -b",
     "build": "webpack"
   },
   "proxy": {

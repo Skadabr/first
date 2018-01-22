@@ -8,7 +8,7 @@ import OpponentsList from "./OpponentsList";
 import { readyToFight } from "../../../state/user.state";
 import { PEACE, READY, FIGHT } from "../../../state/user.state";
 
-class Opponents extends React.Component {
+export class Opponents extends React.Component {
   toggle = ev => {
     const { readyToFight, user } = this.props;
 

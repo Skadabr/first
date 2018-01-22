@@ -1,31 +1,47 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export default function MessageInput({ submit }) {
-  let input;
+const EMPTY = {message: ""}
 
-  return (
-    <form className="form-inline" onSubmit={onSubmit}>
-      <div className="input-group">
-        <input
-          className="form-control input-sm"
-          type="text"
-          autoComplete="off"
-          ref={el => (input = el)}
-        />
-      </div>
-      <div className="input-group-btn">
-        <button id="btn-chat" className="btn btn-sm">Send</button>
-      </div>
-    </form>
-  );
+export default class MessageInput extends React.Component {
+  state = EMPTY ;
 
-  function onSubmit(ev) {
+  onChange = e => {
+    const target = e.target;
+    this.setState(prev => ({ message: prev.message + e.value }));
+  };
+
+  onSubmit = ev => {
     ev.preventDefault();
-    const value = input.value;
+    const value = this.state.message;
     if (value === "") return;
-    input.value = "";
-    submit(value);
+    this.setState(EMPTY);
+    this.props.submit(value);
+  };
+
+  render() {
+    const { submit } = this.props;
+    const { message } = this.state;
+
+    return (
+      <form className="form-inline" onSubmit={this.onSubmit}>
+        <div className="input-group">
+          <input
+            className="form-control input-sm"
+            name="message"
+            type="text"
+            autoComplete="off"
+            value={message}
+            onChange={this.onChange}
+          />
+        </div>
+        <div className="input-group-btn">
+          <button id="btn-chat" className="btn btn-sm">
+            Send
+          </button>
+        </div>
+      </form>
+    );
   }
 }
 
