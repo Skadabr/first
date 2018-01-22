@@ -4,6 +4,28 @@ import { shallow } from "enzyme";
 import LoginForm from "../../auth/LoginForm";
 
 describe("<LoginForm />", function() {
+  describe("when data is valid", function() {
+    let login, submit;
+
+    beforeEach(function() {
+      submit = jest.fn();
+      login = shallow(<LoginForm submit={submit} />);
+
+      login.find('form input[name="email"]').simulate("change", {
+        target: { value: "acc@mail.com", name: "email" }
+      });
+      login.find('form input[name="password"]').simulate("change", {
+        target: { name: "password", value: "deadbeef" }
+      });
+      login.find("form").simulate("submit", { preventDefault() {} });
+    });
+
+    it("submit data", function() {
+      expect(submit.mock.calls).toHaveLength(1);
+      expect(submit.mock.calls[0][0]).toEqual({email: "acc@mail.com", password: "deadbeef"});
+    });
+  });
+
   describe("when input invalid password", function() {
     let login, submit;
     beforeEach(function() {
