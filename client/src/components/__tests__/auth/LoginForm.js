@@ -34,24 +34,30 @@ describe("<LoginForm />", function() {
 
   describe("when server return authentication failure", function() {
     let login, submit;
-    beforeEach(function() {
+    beforeEach(function(done) {
       submit = jest
         .fn()
         //.mockReturnValue(Promise.reject(new Error("Email/Password is wrong")));
-        .mockImplementation(() => {
+        .mockImplementation(async () => {
           throw new Error("Email/Password is wrong");
         });
 
       login = shallow(<LoginForm submit={submit} />);
 
+      const loginInstance = login.instance();
+      const onSubmit = loginInstance.onSubmit;
+      loginInstance.onSubmit = (...args) =>
+        onSubmit.call(loginInstance, ...args).then(() => {
+          login.update();
+          done();
+        });
+
       login.find("#login_email").simulate("change", {
         target: { value: "acc@mail.com", name: "email" }
       });
-      login
-        .find("#login_password")
-        .simulate("change", {
-          target: { value: "deadbeaf", name: "password" }
-        });
+      login.find("#login_password").simulate("change", {
+        target: { value: "deadbeaf", name: "password" }
+      });
       login.find("form").simulate("submit", { preventDefault() {} });
     });
 
