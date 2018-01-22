@@ -23,8 +23,8 @@ class Opponents extends React.Component {
 
     return (
       <div className="card">
-        <div className="card-header">{user.name}</div>
-        <div className="card-body">
+        <div id="user_name" className="card-header">{user.name}</div>
+        <div id="user_email" className="card-body">
           <div className="card-block"> Email: {user.email}</div>
         </div>
         <div className="card-header">

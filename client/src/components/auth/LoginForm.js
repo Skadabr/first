@@ -49,10 +49,10 @@ export default class LoginForm extends React.Component {
 
     return (
       <div className="card">
-        <div className="card-header">Sign up</div>
+        <div className="card-header">Log in</div>
         <div className="card-body">
           {errKeys.length > 0 && (
-            <div className="list-group">
+            <div id="login_validation_errors" className="list-group">
               {errKeys.map(key => (
                 <div
                   key={key}

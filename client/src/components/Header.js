@@ -24,7 +24,7 @@ export class Header extends React.Component {
           </li>
           {isAuthenticated && (
             <li className="nav-item">
-              <a className="nav-link" onClick={this.exit}>
+              <a id="logout" className="nav-link" onClick={this.exit}>
                 Exit
               </a>
             </li>
