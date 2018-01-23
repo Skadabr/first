@@ -25,7 +25,9 @@ describe("<MessageInput />", function() {
       this.input = shallow(<MessageInput submit={this.submit} />);
       this.input
         .find('form input[type="text"]')
-        .simulate("change", { target: { name: "message", value: "some text" } });
+        .simulate("change", {
+          target: { name: "message", value: "some text" }
+        });
     });
 
     it("submit data", function() {

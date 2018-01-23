@@ -1,4 +1,5 @@
 module.exports = {
+  name: "client",
   entry: __dirname + "/src/index.js",
   output: {
     path: __dirname + "/build",

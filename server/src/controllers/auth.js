@@ -1,4 +1,4 @@
-module.exports = function AuthController() {
+export default function AuthController() {
   return {
     async authSuccess(req, resp) {
       const token = req.user.generateJWT();
@@ -11,4 +11,4 @@ module.exports = function AuthController() {
       resp.status(err.status).json({ error: { message: err.message } });
     }
   };
-};
+}

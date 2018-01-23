@@ -19,7 +19,7 @@ export const TURN = "TURN";
 // ============ Reducer ============
 //
 
-export default function(state = EMPTY, { type, payload }) {
+export default function GameReducer(state = EMPTY, { type, payload }) {
   switch (type) {
     case START_FIGHT:
       return { ...payload, show_chat: true };

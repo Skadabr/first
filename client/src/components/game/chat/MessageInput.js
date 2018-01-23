@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const EMPTY = {message: ""}
+const EMPTY = { message: "" };
 
 export default class MessageInput extends React.Component {
-  state = EMPTY ;
+  state = EMPTY;
 
   onChange = e => {
     const target = e.target;
-    this.setState(prev => ({ message: prev.message + e.value }));
+    this.setState({ message: target.value });
   };
 
   onSubmit = ev => {
@@ -36,7 +36,7 @@ export default class MessageInput extends React.Component {
           />
         </div>
         <div className="input-group-btn">
-          <button id="btn-chat" className="btn btn-sm">
+          <button id="btn-chat" className="btn">
             Send
           </button>
         </div>

@@ -1,13 +1,13 @@
 import http from "http";
 import initApp from "./app";
 
-const { PORT = 3000 } = process.env;
-
 import Models from "./models";
 import Loggers from "./logger";
 import Passport from "./passport";
 import Router from "./router";
 import IO from "./io";
+
+const { PORT = 3000 } = process.env;
 
 const models = Models();
 const { logger, morgan } = Loggers();

@@ -1,12 +1,24 @@
-import SRR from "/app/server/public/ssr";
+"use strict";
 
-export default function MiscController() {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = MiscController;
+
+var _ssr = require("/app/server/public/ssr");
+
+var _ssr2 = _interopRequireDefault(_ssr);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function MiscController() {
   return {
     index(req, resp) {
       const token = req.user ? req.user.generateJWT() : undefined;
-      const html = SSR(req.url, token);
-
-      resp.send(`<html>
+      resp.send(`
+        <html>
           <head>
               <meta charset="utf-8">
               <meta name="viewport"
@@ -27,7 +39,7 @@ export default function MiscController() {
               <noscript>
                 You need to enable JavaScript to run this app.
               </noscript>
-              <div id="root"></div>
+              <div id="root">${(0, _ssr2.default)(req.url, token)}</div>
               <script src="/main.js" type="text/javascript"></script>
           </body>
         </html>

@@ -6,7 +6,7 @@
         "targets": {
           "browsers": ["chrome 63", "firefox 57"]
         },
-        "useBuiltIns": false
+        "useBuiltIns": true
       }
     ]
   ],
