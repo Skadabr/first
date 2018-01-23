@@ -1,3 +1,5 @@
+const Jarvis = require("webpack-jarvis");
+
 module.exports = {
   name: "client",
   entry: __dirname + "/src/index.js",
@@ -17,5 +19,8 @@ module.exports = {
         use: ["style-loader", "css-loader"]
       }
     ]
-  }
+  },
+  plugins: [
+    new Jarvis({port: 1337})
+  ]
 };

@@ -1,3 +1,4 @@
+const Jarvis = require("webpack-jarvis");
 const webpack = require("webpack");
 const nodeExternals = require("webpack-node-externals");
 
@@ -43,4 +44,5 @@ module.exports = {
       }
     ]
   },
+  plugins: [new Jarvis({ port: 1337 })]
 };

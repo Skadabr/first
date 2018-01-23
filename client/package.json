@@ -18,7 +18,7 @@
   "scripts": {
     "test:dev": "mocha --require babel-register -b ./test/init.test.js",
     "test": "mocha --require babel-register -b -R min",
-    "build": "webpack --config webpack.config.js --config webpack.config.ssr.js"
+    "build": "webpack --config webpack.config.js --config webpack.config.ssr.js --display-modules"
   },
   "proxy": {
     "/api": {
@@ -31,18 +31,24 @@
   },
   "devDependencies": {
     "babel-core": "6",
+    "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
+    "css-loader": "^0.28.9",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "mocha": "^5.0.0",
     "prop-types": "^15.6.0",
     "redux-devtools-extension": "^2.13.2",
     "sinon": "^4.2.0",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1",
+    "webpack-jarvis": "^0.2.2",
     "webpack-node-externals": "^1.6.0"
   }
 }
