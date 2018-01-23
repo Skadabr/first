@@ -3,12 +3,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { EMPTY, ME, addWarrior, toTurn } from "../../../state/game.state";
+import { GameType } from "../types";
 
 import BattleField from "./BattleField";
 import WarriorList from "./WarriorList";
 import Turn from "./Turn";
 
-class GameBoard extends React.Component {
+export class GameBoard extends React.Component {
+  static propTypes = GameType;
+
   addWarrior = data => {
     const { game, addWarrior } = this.props;
     if (!game.turn) return;
@@ -24,7 +27,7 @@ class GameBoard extends React.Component {
     if (!game.turn) return;
 
     toTurn(game);
-  }
+  };
 
   render() {
     const { fight, game } = this.props;

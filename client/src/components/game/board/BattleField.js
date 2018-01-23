@@ -3,8 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { ME, OPPONENT } from "../../../state/game.state";
+import { GameType } from "../types";
 
-class BattleField extends React.Component {
+export class BattleField extends React.Component {
+  static propTypes = {
+    game: GameType
+  };
+
   render() {
     const { game } = this.props;
     const opponent = game[OPPONENT];
@@ -18,12 +23,14 @@ class BattleField extends React.Component {
           {opponent.name}: {opponent.health}
         </div>
         <div
+          id="opponent_warriors_positions"
           className="card-block"
           style={{ display: "flex", flexDirection: "row" }}
         >
           {[...getWarriorLogos(opponentWarriors)]}
         </div>
         <div
+          id="my_warriors_positions"
           className="card-block"
           style={{ display: "flex", flexDirection: "row" }}
         >
