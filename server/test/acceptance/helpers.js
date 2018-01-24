@@ -33,3 +33,15 @@ export async function makePage(ctx) {
   });
   ctx.page = await ctx.browser.newPage();
 }
+
+export async function becomeUser(ctx, name, email, password) {
+  const token = await authUser(name, email, password);
+
+  await ctx.page.goto(ORIGIN);
+  await setToken(ctx.page, token);
+}
+
+export async function clearPage(page) {
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+}

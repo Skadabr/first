@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+import { clearPage } from "./helpers";
+
 const { expect } = require("chai");
 
 const { ORIGIN, JWT_SECRET } = process.env;
@@ -18,9 +20,7 @@ describe("Authentication", function() {
       await this.page.focus("form input#signup_password");
       await this.page.keyboard.type("deadbeef");
       await this.page.click("#signup_submit_btn");
-      this.resp = await new Promise(resolve =>
-        this.page.once("response", resolve)
-      );
+      this.resp = await new Promise(ok => this.page.once("response", ok));
     });
 
     it("receive successfull response", async function() {
@@ -34,9 +34,7 @@ describe("Authentication", function() {
         await this.page.focus("form input#login_password");
         await this.page.keyboard.type("deadbeef");
         await this.page.click("form#login button");
-        this.resp = await new Promise(resolve =>
-          this.page.once("response", resolve)
-        );
+        this.resp = await new Promise(ok => this.page.once("response", ok));
       });
 
       it("receive successfull responce", async function() {
@@ -75,19 +73,8 @@ describe("Authentication", function() {
     });
 
     after(async function() {
+      await clearPage(this.page);
       await this.db.dropDatabase();
-      await this.page.evaluate(() => {
-        window.localStorage.clear();
-      });
     });
   });
 });
-
-//await page.click(USERNAME_SELECTOR);
-//await page.keyboard.type(CREDS.username);
-//
-//await page.click(PASSWORD_SELECTOR);
-//await page.keyboard.type(CREDS.password);
-//
-//await page.click(BUTTON_SELECTOR);
-//await page.waitForNavigation();

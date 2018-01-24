@@ -6,15 +6,16 @@ import { makePage } from "./helpers";
 const { MONGO_URL } = process.env;
 
 before(async function() {
+  this.other = {};
   await makePage(this);
+  await makePage(this.other);
 
-  this.conn = await MongoClient.connect(MONGO_URL);
-  this.db = this.conn.db("test");
+  this.mongoConn = await MongoClient.connect(MONGO_URL);
+  this.db = this.mongoConn.db("test");
 });
 
 after(async function() {
+  await this.other.browser.close();
   await this.browser.close();
-  await this.conn.close();
+  await this.mongoConn.close();
 });
-
-process.on("unhandledRejection", console.error);

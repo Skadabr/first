@@ -1,16 +1,13 @@
 import puppeteer from "puppeteer";
 import axios from "axios";
 import { expect } from "chai";
-import { makePage, authUser, setToken } from "./helpers";
+import { clearPage, becomeUser, makePage, authUser, setToken } from "./helpers";
 
 const { ORIGIN, JWT_SECRET } = process.env;
 
-describe("game process", function() {
-  before(async function userIsAuthenticated() {
-    const token = await authUser("John", "john@mail.com", "deadbeef");
-
-    await this.page.goto(ORIGIN);
-    await setToken(this.page, token);
+describe("start game", function() {
+  before(function userIsAuthenticated() {
+    return becomeUser(this, "John", "john@mail.com", "deadbeef");
   });
 
   it.skip("we are on user page", async function() {
@@ -48,12 +45,8 @@ describe("game process", function() {
 
     context("when another user click on state badge", function() {
       before(async function() {
-        this.other = {};
-        await makePage(this.other);
-        const token = await authUser("Other", "other@mail.com", "deadbeef");
+        await becomeUser(this.other, "Other", "other@mail.com", "deadbeef");
 
-        await this.other.page.goto(ORIGIN);
-        await setToken(this.other.page, token);
         await this.other.page.click("#user_status_badge");
         await this.other.page.waitFor(200); // wait for ws response
       });
@@ -65,15 +58,12 @@ describe("game process", function() {
         );
         expect(text).to.be.equal("fight");
       });
-
-      after(function() {
-        return this.other.browser.close();
-      });
     });
   });
 
   after(async function() {
-    await this.page.evaluate(() => localStorage.clear());
+    await clearPage(this.page);
+    await clearPage(this.other.page);
     await this.db.dropDatabase();
   });
 });

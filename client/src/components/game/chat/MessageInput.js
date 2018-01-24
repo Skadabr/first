@@ -27,6 +27,7 @@ export default class MessageInput extends React.Component {
       <form className="form-inline" onSubmit={this.onSubmit}>
         <div className="input-group">
           <input
+            id="chat_message_input"
             className="form-control input-sm"
             name="message"
             type="text"
