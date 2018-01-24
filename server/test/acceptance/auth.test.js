@@ -10,20 +10,17 @@ describe("Authentication", function() {
   });
 
   context("submit correct data for signup", function() {
-    before(function(done) {
-      (async () => {
-        await this.page.focus("form input#signup_email");
-        await this.page.keyboard.type("john@mail.com");
-        await this.page.focus("form input#signup_name");
-        await this.page.keyboard.type("John");
-        await this.page.focus("form input#signup_password");
-        await this.page.keyboard.type("deadbeef");
-        await this.page.click("#signup_submit_btn");
-        this.page.once("response", resp => {
-          this.resp = resp;
-          done();
-        });
-      })();
+    before(async function() {
+      await this.page.focus("form input#signup_email");
+      await this.page.keyboard.type("john@mail.com");
+      await this.page.focus("form input#signup_name");
+      await this.page.keyboard.type("John");
+      await this.page.focus("form input#signup_password");
+      await this.page.keyboard.type("deadbeef");
+      await this.page.click("#signup_submit_btn");
+      this.resp = await new Promise(resolve =>
+        this.page.once("response", resolve)
+      );
     });
 
     it("receive successfull response", async function() {
@@ -31,18 +28,15 @@ describe("Authentication", function() {
     });
 
     context("submit correct data for login", function() {
-      before(function(done) {
-        (async () => {
-          await this.page.focus("form input#login_email");
-          await this.page.keyboard.type("john@mail.com");
-          await this.page.focus("form input#login_password");
-          await this.page.keyboard.type("deadbeef");
-          await this.page.click("form#login button");
-          this.page.once("response", resp => {
-            this.resp = resp;
-            done();
-          });
-        })();
+      before(async function() {
+        await this.page.focus("form input#login_email");
+        await this.page.keyboard.type("john@mail.com");
+        await this.page.focus("form input#login_password");
+        await this.page.keyboard.type("deadbeef");
+        await this.page.click("form#login button");
+        this.resp = await new Promise(resolve =>
+          this.page.once("response", resolve)
+        );
       });
 
       it("receive successfull responce", async function() {

@@ -44,5 +44,4 @@ module.exports = {
       }
     ]
   },
-  plugins: [new Jarvis({ port: 1337 })]
 };

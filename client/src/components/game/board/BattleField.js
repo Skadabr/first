@@ -18,7 +18,7 @@ export class BattleField extends React.Component {
     const opponentWarriors = game[OPPONENT].warriors;
 
     return (
-      <div className="card">
+      <div id="battle_field" className="card">
         <div className="card-header">
           {opponent.name}: {opponent.health}
         </div>

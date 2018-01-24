@@ -21,14 +21,16 @@ global.SSR = function SSR(url, token) {
   if (token) {
     const { email, name } = decode(token);
     setAuthHeader(token);
-    store.dispatch(createLogin(name, email, token)); }
+    store.dispatch(createLogin(name, email, token));
+  }
+
   const app = (
     <Provider store={store}>
-      <Router>
+      <Router location={url} context={{}}>
         <App />
       </Router>
     </Provider>
   );
 
   return renderToString(app);
-}
+};

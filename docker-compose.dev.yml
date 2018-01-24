@@ -14,10 +14,12 @@ services:
       dockerfile: Dockerfile.test
     command: ["yarn", "start:dev"]
     volumes:
+      - "./test-data:/data"
       - "./server/src:/app/server/src"
       - "./server/test:/app/server/test"
       - "./client/build:/app/server/public"
     env_file: ./server/env.test
+    restart: on-failure
     links:
       - mongodb
     depends_on:
