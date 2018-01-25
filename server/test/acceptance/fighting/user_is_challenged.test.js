@@ -69,7 +69,6 @@ describe("fighting: when user was challenged", function() {
     context("when click on turn", function() {
       before(async function() {
         await this.page.click("button#turn");
-        await this.other.page.waitFor(100);
         await this.other.page.waitForSelector("button#turn:not([disabled])");
       });
 
@@ -98,6 +97,11 @@ describe("fighting: when user was challenged", function() {
             ).length
         );
         expect(len).to.be.equal(1);
+      });
+
+      it("user can't click turn button again until next turn", async function() {
+        const button = await this.page.$("button#turn[disabled]");
+        expect(button).is.exist;
       });
     });
   });
