@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
 
-import { clearPage } from "./helpers";
+import { goToPage, clearState } from "./helpers";
 
 const { expect } = require("chai");
 
 const { ORIGIN, JWT_SECRET } = process.env;
 
 describe("Authentication", function() {
-  before(function() {
-    return this.page.goto(ORIGIN);
+  before(async function() {
+    this.page = await goToPage(this.browser, ORIGIN);
   });
 
   context("submit correct data for signup", function() {
@@ -73,7 +73,7 @@ describe("Authentication", function() {
     });
 
     after(async function() {
-      await clearPage(this.page);
+      await clearState(this.page);
       await this.db.dropDatabase();
     });
   });

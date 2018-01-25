@@ -1,30 +1,36 @@
 import puppeteer from "puppeteer";
 import axios from "axios";
 import { expect } from "chai";
-import { clearPage, becomeUser, makePage, authUser, setToken } from "./helpers";
+import {
+  clearState,
+  becomeUser,
+  makePage,
+  authUser,
+  goToPage
+} from "./helpers";
 
 const { ORIGIN, JWT_SECRET } = process.env;
 
 describe("start game", function() {
-  before(function userIsAuthenticated() {
-    return becomeUser(this, "John", "john@mail.com", "deadbeef");
+  before(async function userIsAuthenticated() {
+    this.page = await goToPage(this.browser, ORIGIN);
+    return becomeUser(this.page, "John", "john@mail.com", "deadbeef");
   });
 
   it.skip("we are on user page", async function() {
-    await this.page.waitForSelector("#user_mail");
+    await this.page.waitForSelector("#user_email");
     expect(this.page.url()).to.be.equal(ORIGIN + "/user");
   });
 
   it("see user info", async function() {
-    const email = await this.page.$("#user_email");
-    const text = await this.page.evaluate(e => e.textContent, email);
+    const text = await this.page.$eval("#user_email", e => e.textContent);
     expect(text).to.be.equal("Email: john@mail.com");
   });
 
   context("when click on state badge", function() {
     before(async function() {
       await this.page.click("#user_status_badge");
-      await this.page.waitFor(200); // wait for ws response
+      await this.page.waitFor(300); // wait for ws response
     });
 
     it("badge become yellow", async function() {
@@ -45,7 +51,13 @@ describe("start game", function() {
 
     context("when another user click on state badge", function() {
       before(async function() {
-        await becomeUser(this.other, "Other", "other@mail.com", "deadbeef");
+        this.other.page = await goToPage(this.other.browser, ORIGIN);
+        await becomeUser(
+          this.other.page,
+          "Other",
+          "other@mail.com",
+          "deadbeef"
+        );
 
         await this.other.page.click("#user_status_badge");
         await this.other.page.waitFor(200); // wait for ws response
@@ -62,8 +74,8 @@ describe("start game", function() {
   });
 
   after(async function() {
-    await clearPage(this.page);
-    await clearPage(this.other.page);
+    await clearState(this.page);
+    await clearState(this.other.page);
     await this.db.dropDatabase();
   });
 });

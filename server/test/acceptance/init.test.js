@@ -1,14 +1,14 @@
 import puppeteer from "puppeteer";
 import { MongoClient } from "mongodb";
 
-import { makePage } from "./helpers";
+import { launch } from "./helpers";
 
-const { MONGO_URL } = process.env;
+const { TESTS_DEBUG, MONGO_URL } = process.env;
 
 before(async function() {
   this.other = {};
-  await makePage(this);
-  await makePage(this.other);
+  this.browser = await launch();
+  this.other.browser = await launch();
 
   this.mongoConn = await MongoClient.connect(MONGO_URL);
   this.db = this.mongoConn.db("test");
@@ -19,3 +19,5 @@ after(async function() {
   await this.browser.close();
   await this.mongoConn.close();
 });
+
+process.on("unhandledRejection", console.error);

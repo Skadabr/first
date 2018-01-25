@@ -24,24 +24,29 @@ export async function setToken(page, token) {
   await page.evaluate(t => {
     localStorage.user_jwt = t;
   }, token);
-  await page.reload();
 }
 
-export async function makePage(ctx) {
-  ctx.browser = await puppeteer.launch({
+export function launch() {
+  return puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"]
   });
-  ctx.page = await ctx.browser.newPage();
 }
 
-export async function becomeUser(ctx, name, email, password) {
+export async function goToPage(browser, url, opts) {
+  const page = await browser.newPage();
+  await page.goto(url, opts);
+  return page;
+}
+
+export async function becomeUser(page, name, email, password) {
   const token = await authUser(name, email, password);
 
-  await ctx.page.goto(ORIGIN);
-  await setToken(ctx.page, token);
+  await page.goto(ORIGIN);
+  await setToken(page, token);
+  await page.reload();
 }
 
-export async function clearPage(page) {
+export async function clearState(page) {
   await page.evaluate(() => localStorage.clear());
-  await page.reload();
+  await page.close();
 }

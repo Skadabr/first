@@ -1,15 +1,17 @@
 import puppeteer from "puppeteer";
 import axios from "axios";
 import { expect } from "chai";
-import { becomeUser, makePage, authUser, clearPage } from "./helpers";
+import { becomeUser, goToPage, clearState } from "./helpers";
 
 const { ORIGIN, JWT_SECRET } = process.env;
 const msg = "hello man";
 
 describe("chatting", function() {
   before(async function() {
-    await becomeUser(this, "John", "john@mail.com", "deadbeef");
-    await becomeUser(this.other, "Other", "other@mail.com", "deadbeef");
+    this.page = await goToPage(this.browser, ORIGIN);
+    this.other.page = await goToPage(this.other.browser, ORIGIN);
+    await becomeUser(this.page, "John", "john@mail.com", "deadbeef");
+    await becomeUser(this.other.page, "Other", "other@mail.com", "deadbeef");
     await this.page.click("#user_status_badge");
     await this.page.waitFor(200); // wait for ws response
     await this.other.page.click("#user_status_badge");
@@ -44,8 +46,8 @@ describe("chatting", function() {
   });
 
   after(async function() {
-    await clearPage(this.page);
-    await clearPage(this.other.page);
+    await clearState(this.page);
+    await clearState(this.other.page);
     await this.db.dropDatabase();
   });
 });
