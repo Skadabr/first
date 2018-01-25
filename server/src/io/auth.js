@@ -13,11 +13,15 @@ export default function authIO({ logger, models }) {
     try {
       const { id, handshake } = ws;
       const { name } = jwt.verify(handshake.query.token, JWT_SECRET);
-      const user = await User.findOneAndUpdate({ name }, { socket_id: id });
+      const user = await User.findOneAndUpdate(
+        { name },
+        { socket_id: id },
+        { new: true }
+      );
       logger.debug(
-        `authenticate new ws connection(${
-          ws.nsp.name
-        }). User "${name}" is coming`
+        `authenticate new ws connection(${ws.nsp.name}). User "${
+          user.name
+        }"-"${id} aka ${user.socket_id}" is coming`
       );
       ws.use(async ([event_name], next) => {
         if (ESCAPE_AUTH.includes(event_name)) return next();

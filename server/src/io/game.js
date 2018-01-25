@@ -22,15 +22,16 @@ export default function(ws, { models, logger }) {
   const User = models.model("User");
 
   ws.on("disconnect", async () => {
+    logger.debug("disconnect of ", ws.id);
     const user = await User.findOneAndUpdate(
       { socket_id: ws.id },
-      { socket_id: null, status: PEACE, game: null }
+      { socket_id: null, status: PEACE }
     );
 
     if (ws.opponent_id) {
       const opponent = await User.findOneAndUpdate(
         { socket_id: ws.opponent_id },
-        { socket_id: null, status: PEACE, game: null }
+        { status: PEACE }
       );
       ws.to(ws.opponent_id).emit(END_OF_FIGHT);
     }
