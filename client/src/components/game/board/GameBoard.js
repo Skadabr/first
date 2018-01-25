@@ -35,7 +35,7 @@ export class GameBoard extends React.Component {
     if (!fight) return null;
 
     return (
-      <div className="board card-group">
+      <div id="game_board" className="board card-group">
         <div className="col-9">
           <BattleField game={game} />
         </div>

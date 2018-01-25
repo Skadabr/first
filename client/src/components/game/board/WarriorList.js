@@ -13,7 +13,7 @@ export default class GameBoard extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="warriors_list">
         <div
           data-type="pawn"
           data-health={6}
