@@ -10,7 +10,7 @@ export default function Mongo() {
   mongoose.Promise = Promise;
   mongoose.connect(MONGO_URL, {
     useMongoClient: true,
-    autoIndex: NODE_ENV === "development"
+    autoIndex: NODE_ENV !== "production"
   });
 
   user();

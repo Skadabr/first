@@ -6,7 +6,7 @@ const { LOG_LEVEL = "info", NODE_ENV = "development" } = process.env;
 export default function Logger() {
   const logger = new Pino({
     level: LOG_LEVEL,
-    prettyPrint: NODE_ENV === "development",
+    prettyPrint: NODE_ENV !== "production",
     base: null
   });
 

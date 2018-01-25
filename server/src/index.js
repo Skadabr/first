@@ -25,7 +25,7 @@ server.on("error", onError);
 server.on("listening", onListening);
 
 process.on("unhandledRejection", e => {
-  logger.debug("unhandledRejection", e.stack);
+  logger.error("unhandledRejection", e.stack);
   process.exit(1);
 });
 
@@ -54,7 +54,7 @@ function onError(error) {
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  logger.debug("Listening on " + bind);
+  logger.info("Listening on " + bind);
 }
 
 export default server;
