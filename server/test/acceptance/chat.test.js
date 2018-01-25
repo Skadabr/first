@@ -13,9 +13,9 @@ describe("chatting", function() {
     await becomeUser(this.page, "John", "john@mail.com", "deadbeef");
     await becomeUser(this.other.page, "Other", "other@mail.com", "deadbeef");
     await this.page.click("#user_status_badge");
-    await this.page.waitFor(200); // wait for ws response
+    await this.page.waitFor(100); // make sure user is challenger (become ready first)
     await this.other.page.click("#user_status_badge");
-    await this.other.page.waitFor(200); // wait for ws response
+    await this.other.page.waitForSelector("#game_board");
   });
 
   context("when user type message", function() {
@@ -23,12 +23,12 @@ describe("chatting", function() {
       await this.page.focus("#chat_message_input");
       await this.page.keyboard.type(msg);
       await this.page.click("#btn-chat");
-      await this.page.waitFor(300);
+      await this.other.page.waitFor("#chat_message");
     });
 
     it("other user see the message", async function() {
       const { len, text } = await this.other.page.$eval(
-        "#chat_messages",
+        "#message_board",
         el => ({ len: el.children.length, text: el.firstChild.textContent })
       );
       expect(len).to.be.equal(1);
@@ -36,7 +36,7 @@ describe("chatting", function() {
     });
 
     it("current user see the message", async function() {
-      const { len, text } = await this.page.$eval("#chat_messages", el => ({
+      const { len, text } = await this.page.$eval("#message_board", el => ({
         len: el.children.length,
         text: el.firstChild.textContent
       }));

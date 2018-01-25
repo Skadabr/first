@@ -13,10 +13,10 @@ export default class MessageBoard extends React.Component {
   render() {
     const { messages } = this.props;
     return (
-      <ul className="chat" ref={el => (this.board = el)}>
+      <ul id="message_board" ref={el => (this.board = el)}>
         {messages.length > 0 &&
           messages.map((msg, i) => (
-            <li id="chat_messages" className="card-block" key={i}>
+            <li id="chat_message" className="card-block" key={i}>
               <div className="chat-body">
                 <div className="header">
                   <strong className="primary-font">{msg.name}</strong>

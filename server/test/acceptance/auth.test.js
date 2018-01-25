@@ -39,7 +39,7 @@ describe("Authentication", function() {
 
       it("receive successfull responce", async function() {
         const body = await this.resp.json();
-        expect(() => jwt.verify(body.data.token, JWT_SECRET)).not.to.throw();
+        expect(() => jwt.verify(body.data.token, JWT_SECRET)).does.not.throw();
         expect(this.resp.status()).to.be.equal(200);
       });
 

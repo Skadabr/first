@@ -20,12 +20,6 @@ export async function authUser(name, email, password) {
     .then(r => r.data.data.token);
 }
 
-export async function setToken(page, token) {
-  await page.evaluate(t => {
-    localStorage.user_jwt = t;
-  }, token);
-}
-
 export function launch() {
   return puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"]
@@ -49,4 +43,10 @@ export async function becomeUser(page, name, email, password) {
 export async function clearState(page) {
   await page.evaluate(() => localStorage.clear());
   await page.close();
+}
+
+async function setToken(page, token) {
+  await page.evaluate(t => {
+    localStorage.user_jwt = t;
+  }, token);
 }

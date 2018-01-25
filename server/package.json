@@ -2,8 +2,8 @@
   "scripts": {
     "prestart": "babel src -d dist",
     "start": "node dist",
-    "test:front": "mocha --require babel-register -b -R min test/acceptance/**/*.test.js",
-    "test:front:i": "mocha --require babel-register -b test/acceptance/init.test.js",
+    "test:ui": "mocha --require babel-register -b -R min test/acceptance/*.js test/acceptance/**/*.test.js",
+    "test:ui:i": "mocha --require babel-register -b test/acceptance/init.test.js",
     "prestart:dev": "babel src -s -d dist --watch &",
     "start:dev": "babel src -d dist && nodemon dist",
     "precommit": "lint-staged"
