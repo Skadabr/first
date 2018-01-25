@@ -19,7 +19,7 @@ export class BattleField extends React.Component {
 
     return (
       <div id="battle_field" className="card">
-        <div className="card-header">
+        <div id="opponent_game_stats" className="card-header" data-health={opponent.health}>
           {opponent.name}: {opponent.health}
         </div>
         <div
@@ -36,7 +36,7 @@ export class BattleField extends React.Component {
         >
           {[...getWarriorLogos(myWarriors)]}
         </div>
-        <div className="card-footer">
+        <div id="my_game_stats" data-health={me.health} className="card-footer">
           {me.name}: {me.health}
         </div>
       </div>
