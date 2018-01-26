@@ -38,7 +38,7 @@ describe("fighting: when user was challenged", function() {
     expect(his).to.equal("30");
   });
 
-  describe("pick a warrior", function() {
+  describe("picking a warrior", function() {
     before(function() {
       return clickOnPawn(this.page);
     });

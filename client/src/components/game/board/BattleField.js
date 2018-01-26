@@ -49,7 +49,7 @@ function* getWarriorLogos(warriors) {
     const w = warriors.find(w => w.position === i);
     if (w) {
       yield (
-        <div key={i} style={{ maxWidth: "10%", minWidth: "10%" }}>
+        <div id="warrior_on_field" key={i} style={{ maxWidth: "10%", minWidth: "10%" }}>
           <strong className="primary-font">{w.type}</strong>
           <small className="float-right text-muted">
             {w.health} / {w.damage}

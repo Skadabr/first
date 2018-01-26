@@ -1,19 +1,17 @@
 import { expect } from "chai";
 import { clearState, becomeUser, goToPage, authUser } from "../helpers";
-import { challenge, clickOnPawn, clickOnOfficer } from "./helpers";
+import {
+  challenge,
+  clickOnPawn,
+  clickOnOfficer,
+  startAFightAsChallanger,
+  turn
+} from "./helpers";
 
 const { ORIGIN } = process.env;
 
 describe("fighting: when user was challenger", function() {
-  before(async function userIsAuthenticated() {
-    this.page = await goToPage(this.browser, ORIGIN);
-    this.other.page = await goToPage(this.other.browser, ORIGIN);
-    await becomeUser(this.page, "John", "john@mail.com", "deadbeef");
-    await becomeUser(this.other.page, "Other", "other@mail.com", "deadbeef");
-
-    // when use was challenger
-    await challenge(this.page, this.other.page);
-  });
+  before(startAFightAsChallanger);
 
   it("user can't pick a warrior", async function() {
     await clickOnPawn(this.page);
@@ -28,6 +26,22 @@ describe("fighting: when user was challenger", function() {
   it("user can't click on turn button", async function() {
     const button = await this.page.$("button#turn[disabled]");
     expect(button).is.exist;
+  });
+
+  context("when opponent make his step", async function() {
+    before(async function() {
+      await turn(this.other.page, this.page);
+    });
+
+    it("user can pick yet another warrior", async function() {
+      await clickOnPawn(this.page);
+      const len = await this.page.evaluate(
+        () =>
+          document.querySelectorAll("#my_warriors_positions #warrior_on_field")
+            .length
+      );
+      expect(len).to.be.equal(1);
+    });
   });
 
   after(async function() {
