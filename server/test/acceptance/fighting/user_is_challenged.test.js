@@ -1,19 +1,16 @@
 import { expect } from "chai";
 import { clearState, becomeUser, goToPage, authUser } from "../helpers";
-import { challenge, clickOnPawn, clickOnOfficer } from "./helpers";
+import {
+  challenge,
+  clickOnPawn,
+  clickOnOfficer,
+  startAFightAsChallanged
+} from "./helpers";
 
 const { ORIGIN } = process.env;
 
 describe("fighting: when user was challenged", function() {
-  before(async function() {
-    this.page = await goToPage(this.browser, ORIGIN);
-    this.other.page = await goToPage(this.other.browser, ORIGIN);
-    await becomeUser(this.page, "John", "john@mail.com", "deadbeef");
-    await becomeUser(this.other.page, "Other", "other@mail.com", "deadbeef");
-
-    // when user was challenged
-    await challenge(this.other.page, this.page);
-  });
+  before(startAFightAsChallanged);
 
   it("all warriors positions is empty", async function() {
     const len = await this.page.evaluate(() => {
@@ -43,7 +40,7 @@ describe("fighting: when user was challenged", function() {
       return clickOnPawn(this.page);
     });
 
-    it("user can see the warrior", async function() {
+    it("user can see the warrior on the field", async function() {
       const len = await this.page.evaluate(
         () =>
           document.querySelectorAll("#my_warriors_positions div:not(:empty)")

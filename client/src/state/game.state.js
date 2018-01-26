@@ -127,12 +127,18 @@ export function toTurn(game) {
           const ops = opponent.warriors.filter(
             op => op.position === position - 1 || op.position === position + 1
           );
+          if (ops.length === 0) {
+            opponent.health -= damage;
+            return;
+          }
           ops.forEach(op => {
             op.health -= damage;
           });
         }
       });
     }
+
+    opponent.warriors = adjustPositions(opponent.warriors);
 
     IO().gameIO.toTurn(me, opponent);
     dispatch({ type: TURN, payload: opponent });
@@ -152,5 +158,15 @@ export function endOfFight() {
 }
 
 //
-// ============ Action creators ============
+// ============ helpers ============
 //
+
+function adjustPositions(warriors) {
+  warriors = warriors.filter(op => op.health > 0);
+  let shift = 5 - warriors.length;
+  for (const w of warriors) {
+    w.position = shift;
+    shift += 2;
+  }
+  return warriors;
+}

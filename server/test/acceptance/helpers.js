@@ -45,6 +45,13 @@ export async function clearState(page) {
   await page.close();
 }
 
+export async function initGamers(ctx, otherCtx) {
+  ctx.page = await goToPage(ctx.browser, ORIGIN);
+  otherCtx.page = await goToPage(otherCtx.browser, ORIGIN);
+  await becomeUser(ctx.page, "John", "john@mail.com", "deadbeef");
+  await becomeUser(otherCtx.page, "Other", "other@mail.com", "deadbeef");
+}
+
 async function setToken(page, token) {
   await page.evaluate(t => {
     localStorage.user_jwt = t;

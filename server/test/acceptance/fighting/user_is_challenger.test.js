@@ -11,7 +11,13 @@ import {
 const { ORIGIN } = process.env;
 
 describe("fighting: when user was challenger", function() {
-  before(startAFightAsChallanger);
+  before(async function() {
+    this.page = await goToPage(this.browser, ORIGIN);
+    this.other.page = await goToPage(this.other.browser, ORIGIN);
+    await becomeUser(this.page, "John", "john@mail.com", "deadbeef");
+    await becomeUser(this.other.page, "Other", "other@mail.com", "deadbeef");
+    await challenge(this.page, this.other.page); // when user was challenger
+  });
 
   it("user can't pick a warrior", async function() {
     await clickOnPawn(this.page);
