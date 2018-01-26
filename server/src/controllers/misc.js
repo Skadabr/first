@@ -1,10 +1,10 @@
-import SRR from "/app/server/public/ssr";
+import ssr from "/app/server/public/ssr";
 
 export default function MiscController() {
   return {
     index(req, resp) {
       const token = req.user ? req.user.generateJWT() : undefined;
-      const html = SSR(req.url, token);
+      const html = ssr(req.url, token);
 
       resp.send(`<html>
           <head>

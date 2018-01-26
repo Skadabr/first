@@ -5,7 +5,7 @@ import { challenge, clickOnPawn, clickOnOfficer } from "./helpers";
 const { ORIGIN } = process.env;
 
 describe("fighting: when user was challenged", function() {
-  before(async function userIsAuthenticated() {
+  before(async function() {
     this.page = await goToPage(this.browser, ORIGIN);
     this.other.page = await goToPage(this.other.browser, ORIGIN);
     await becomeUser(this.page, "John", "john@mail.com", "deadbeef");

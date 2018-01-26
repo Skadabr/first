@@ -14,7 +14,7 @@ import { createLogin } from "./state/user.state";
 import Socket from "./socket";
 import App from "./App";
 
-global.SSR = function SSR(url, token) {
+export default function SSR(url, token) {
   const store = createStore(reducer, applyMiddleware(thunk));
 
   Socket(token, store);
