@@ -18,6 +18,7 @@ const ADD_MESSAGE = "ADD_MESSAGE";
 const END_OF_FIGHT = "END_OF_FIGHT";
 const TURN = "TURN";
 const ACQUIRE_TURN = "ACQUIRE_TURN";
+const FINISH_FIGHT = "FINISH_FIGHT";
 
 const ME = "ME";
 const OPPONENT = "OPPONENT";
@@ -58,9 +59,13 @@ export default function Game(ws, store) {
 
     toTurn(me, opponent) {
       ws.emit(TURN, {
-        me: { health: me.health, warriors: me.warriors },
+        me: { health: me.health, warriors: me.warriors, money: me.money },
         opponent: { health: opponent.health, warriors: opponent.warriors }
       });
+    },
+
+    finishFight(cb) {
+      ws.emit(FINISH_FIGHT);
     }
   };
 }

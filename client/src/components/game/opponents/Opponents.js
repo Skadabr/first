@@ -27,6 +27,9 @@ export class Opponents extends React.Component {
         <div id="user_email" className="card-body">
           <div className="card-block">Email: {user.email}</div>
         </div>
+        <div id="user_money" className="card-body">
+          <div className="card-block">Money: {user.money}</div>
+        </div>
         <div className="card-header">
           <OpponentsHeader toggle={this.toggle} user_status={user.status} />
         </div>

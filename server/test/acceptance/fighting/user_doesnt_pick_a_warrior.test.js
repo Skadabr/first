@@ -4,14 +4,14 @@ import {
   challenge,
   clickOnPawn,
   clickOnOfficer,
-  startAFightAsChallanger,
+  startAFightAsChallanged,
   turn
 } from "./helpers";
 
 const { ORIGIN } = process.env;
 
 describe("fighting: user click turn button but doesn't pick a warrior", function() {
-  before(startAFightAsChallanger);
+  before(startAFightAsChallanged);
 
   before(async function() {
     turn(this.page, this.other.page);

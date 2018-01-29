@@ -53,6 +53,12 @@ export default function() {
       type: String,
       enum: [PEACE, READY, FIGHT],
       default: PEACE
+    },
+    money: {
+      type: Number,
+      default: 50,
+      required: true,
+      min: [0, "You can't have money amount less than 0"]
     }
     //game: {
     //  opponent_id: {
@@ -76,8 +82,8 @@ export default function() {
 
   Object.assign(schema.methods, {
     toJSON() {
-      const { name, email, status, socket_id } = this;
-      return { name, email, status, socket_id };
+      const { name, email, status, socket_id, money } = this;
+      return { name, email, status, socket_id, money };
     },
 
     async setPassword(password) {
@@ -94,8 +100,8 @@ export default function() {
       return jwt.sign({ email, name }, JWT_SECRET);
     },
 
-    availableForFight() {
-      this.status = READY;
+    updateStatus(status) {
+      this.status = status;
       return this.update({ status: READY }).then(() => this);
     },
 

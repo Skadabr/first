@@ -13,6 +13,7 @@ import "./index.css";
 import reducer from "./state/reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import setAuthHeader from "./utils/auth-header";
+import { userApi } from "./api";
 import { createLogin } from "./state/user.state";
 import Socket from "./socket";
 import App from "./App";
@@ -22,9 +23,12 @@ const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 const token = localStorage.user_jwt;
 Socket(token, store);
 if (token) {
-  const { email, name } = decode(token);
   setAuthHeader(token);
-  store.dispatch(createLogin(name, email, token));
+  userApi
+    .user()
+    .then(({ name, email, status, money }) =>
+      store.dispatch(createLogin({ name, email, status, money, token }))
+    );
 }
 
 const app = (

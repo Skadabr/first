@@ -37,7 +37,7 @@ export default class MessageInput extends React.Component {
           />
         </div>
         <div className="input-group-btn">
-          <button id="btn-chat" className="btn">
+          <button id="btn-chat" className="btn btn-secondary">
             Send
           </button>
         </div>

@@ -18,13 +18,14 @@ export async function challenge(pageFrom, pageTo) {
 }
 
 export async function startAFightAsChallanged() {
-  initGamers(this, this.other);
-  await challenge(this.other.page, this.page); // when user was challenger
+  await initGamers(this, this.other);
+  await challenge(this.other.page, this.page);
 }
 
 export async function turn(page, otherPage) {
   await page.click("button#turn");
-  await otherPage.waitForSelector("button#turn:not([disabled])", {
-    timeout: 2000
-  });
+  await otherPage.waitForSelector("button#turn:not([disabled])");
+  //await otherPage.waitForSelector("button#turn:not([disabled])", {
+  //  timeout: 2000
+  //});
 }

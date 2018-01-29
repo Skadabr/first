@@ -6,14 +6,13 @@ import gamerReducer, { createGamerUpdate } from "./gamer.state";
 
 export const START_FIGHT = "START_FIGHT";
 export const END_OF_FIGHT = "END_OF_FIGHT";
-export const ADD_WARRIOR = "ADD_WARRIOR";
-export const GAME_UPDATE = "GAME_UPDATE";
+export const GAMER_UPDATE = "GAMER_UPDATE";
+export const TURN = "TURN";
 export const ACQUIRE_TURN = "ACQUIRE_TURN";
 
 export const EMPTY = {};
 export const ME = "ME";
 export const OPPONENT = "OPPONENT";
-export const TURN = "TURN";
 
 //
 // ============ Reducer ============
@@ -24,20 +23,16 @@ export default function GameReducer(state = EMPTY, { type, payload }) {
     case START_FIGHT:
       return { ...payload, show_chat: true };
 
-    case ADD_WARRIOR:
-      const { who, warriors, last_warrior } = payload;
-      const gamer = gamerReducer(
-        state[who],
-        createGamerUpdate({ warriors, last_warrior })
-      );
+    case GAMER_UPDATE: {
+      const { who, data } = payload;
+      const gamer = gamerReducer(state[who], createGamerUpdate(data));
       return { ...state, [who]: gamer };
+    }
 
-    case TURN:
-      const me = gamerReducer(
-        state[ME],
-        createGamerUpdate({ last_warrior: null })
-      );
-      return { ...state, [ME]: me, [OPPONENT]: payload, turn: false };
+    case TURN: {
+      const me = gamerReducer(state[ME], createGamerUpdate(payload.me));
+      return { ...state, [ME]: me, [OPPONENT]: payload.opponent, turn: false };
+    }
 
     case ACQUIRE_TURN: {
       let { me, opponent } = payload;
@@ -65,17 +60,16 @@ export default function GameReducer(state = EMPTY, { type, payload }) {
 export function startFight(payload) {
   return dispatch => {
     payload[ME].warriors = [];
-    payload[ME].health = 30;
+    payload[ME].health = 10;
     payload[OPPONENT].warriors = [];
-    payload[OPPONENT].health = 30;
+    payload[OPPONENT].health = 10;
     dispatch({ type: START_FIGHT, payload });
   };
 }
 
-export function addWarrior(who, game, warrior) {
+export function addWarrior(me, warrior) {
   return dispatch => {
-    let warriors = game[who].warriors;
-    let last_warrior = game[who].last_warrior;
+    let { warriors, last_warrior } = me;
 
     if (warriors.length > 5) return;
     //throw Error("too much warriors on the battle field");
@@ -83,8 +77,11 @@ export function addWarrior(who, game, warrior) {
     if (warriors.length === 0) {
       warrior.position = 4;
       return dispatch({
-        type: ADD_WARRIOR,
-        payload: { who, last_warrior: warrior, warriors: [warrior] }
+        type: GAMER_UPDATE,
+        payload: {
+          who: ME,
+          data: { last_warrior: warrior, warriors: [warrior] }
+        }
       });
     }
 
@@ -93,8 +90,8 @@ export function addWarrior(who, game, warrior) {
       warrior.position = warriors[warriors.length - 1].position;
       warriors[warriors.length - 1] = warrior;
       return dispatch({
-        type: ADD_WARRIOR,
-        payload: { who, warriors, last_warrior: warrior }
+        type: GAMER_UPDATE,
+        payload: { who: ME, data: { warriors, last_warrior: warrior } }
       });
     }
 
@@ -103,16 +100,16 @@ export function addWarrior(who, game, warrior) {
     warriors.push(warrior);
 
     dispatch({
-      type: ADD_WARRIOR,
-      payload: { who, warriors, last_warrior: warrior }
+      type: GAMER_UPDATE,
+      payload: { who: ME, data: { warriors, last_warrior: warrior } }
     });
   };
 }
 
-export function toTurn(game) {
+export function toTurn(me, opponent) {
   return dispatch => {
-    const me = deepClone(game[ME]);
-    const opponent = deepClone(game[OPPONENT]);
+    me = deepClone(me);
+    opponent = deepClone(opponent);
 
     if (opponent.warriors.length === 0) {
       me.warriors.forEach(({ damage }) => {
@@ -138,10 +135,18 @@ export function toTurn(game) {
       });
     }
 
-    opponent.warriors = adjustPositions(opponent.warriors);
+    if (opponent.health < 1) {
+      return IO().gameIO.finishFight();
+    }
 
-    IO().gameIO.toTurn(me, opponent);
-    dispatch({ type: TURN, payload: opponent });
+    opponent.warriors = adjustPositions(opponent.warriors);
+    const money = me.money - (me.last_warrior ? me.last_warrior.price : 0);
+
+    IO().gameIO.toTurn({ ...me, money }, opponent);
+    dispatch({
+      type: TURN,
+      payload: { me: { money, last_warrior: null }, opponent }
+    });
   };
 }
 
@@ -151,9 +156,9 @@ export function acquireTurn(me, opponent) {
   };
 }
 
-export function endOfFight() {
+export function endOfFight(payload) {
   return dispatch => {
-    dispatch({ type: END_OF_FIGHT });
+    dispatch({ type: END_OF_FIGHT, payload });
   };
 }
 

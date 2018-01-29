@@ -6,7 +6,7 @@ import { EMPTY } from "../../../state/game.state";
 import BattleField from "./BattleField";
 
 
-export default class GameBoard extends React.Component {
+export default class WarriorList extends React.Component {
   onClick = ev => {
     this.props.submit(ev.currentTarget.dataset)
   };
@@ -18,6 +18,7 @@ export default class GameBoard extends React.Component {
           data-type="pawn"
           data-health={6}
           data-damage={1}
+          data-price={3}
           className="card-block"
           onClick={this.onClick}
         >
@@ -28,6 +29,7 @@ export default class GameBoard extends React.Component {
           data-type="officer"
           data-health={4}
           data-damage={2}
+          data-price={5}
           className="card-block"
           onClick={this.onClick}
         >

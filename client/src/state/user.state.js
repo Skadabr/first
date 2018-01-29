@@ -20,11 +20,16 @@ export default function(state = {}, { payload, type }) {
     case USER_LOGOUT:
       return {};
     case USER_UPDATE:
-      return {...state, ...payload}
+      return { ...state, ...payload };
     case START_FIGHT:
       return { ...state, status: FIGHT };
     case END_OF_FIGHT:
-      return { ...state, status: PEACE };
+      return {
+        ...state,
+        status: PEACE,
+        money: payload.money,
+        last_fight_status: payload.status
+      };
 
     default:
       return state;
@@ -43,11 +48,12 @@ export function signup(data) {
 
 export function login(data) {
   return async dispatch => {
-    let { name, email, token, status } = await authApi.login(data);
-    localStorage.user_jwt = token;
+    const token = await authApi.login(data);
     setAuthHeader(token);
+    localStorage.user_jwt = token;
+    const { name, email, status, money } = await userApi.user();
     IO(token);
-    dispatch(createLogin(name, email, token, status));
+    dispatch(createLogin({ name, email, token, money, status }));
   };
 }
 
@@ -62,13 +68,19 @@ export function logout(name) {
 
 export function update(data) {
   return dispatch => {
-    dispatch({type: USER_UPDATE, payload: data});
-  }
-} 
+    dispatch({ type: USER_UPDATE, payload: data });
+  };
+}
 
 export function readyToFight() {
   return dispatch => {
     IO().gameIO.readyToFight();
+  };
+}
+
+export function eliminateStatus() {
+  return dispatch => {
+    dispatch({ type: USER_UPDATE, payload: {last_fight_status: undefined} });
   };
 }
 
@@ -84,10 +96,10 @@ export function readyToFight() {
 // ============ Action creators ============
 //
 
-export function createLogin(name, email, token, status = PEACE) {
+export function createLogin({ name, email, token, money, status = PEACE }) {
   return {
     type: USER_LOGIN,
-    payload: { name, email, token, status }
+    payload: { name, email, token, money, status }
   };
 }
 
