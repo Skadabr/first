@@ -1,17 +1,15 @@
 import puppeteer from "puppeteer";
 import axios from "axios";
 import { expect } from "chai";
-import { becomeUser, goToPage, clearState } from "./helpers";
+import { initGamers, becomeUser, goToPage, clearState } from "./helpers";
 
 const { ORIGIN, JWT_SECRET } = process.env;
 const msg = "hello man";
 
 describe("chatting", function() {
   before(async function() {
-    this.page = await goToPage(this.browser, ORIGIN);
-    this.other.page = await goToPage(this.other.browser, ORIGIN);
-    await becomeUser(this.page, "John", "john@mail.com", "deadbeef");
-    await becomeUser(this.other.page, "Other", "other@mail.com", "deadbeef");
+    await initGamers(this, this.other);
+    await this.page.screenshot({ path: "/data/image.png" });
     await this.page.click("#user_status_badge");
     await this.page.waitFor(100); // make sure user is challenger (become ready first)
     await this.other.page.click("#user_status_badge");

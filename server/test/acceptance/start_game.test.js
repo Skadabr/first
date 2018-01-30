@@ -29,8 +29,9 @@ describe("start game", function() {
 
   context("when click on state badge", function() {
     before(async function() {
-      await this.page.click("#user_status_badge");
-      await this.page.waitFor(300); // wait for ws response
+      await this.page.click("#user_status_badge.badge-success");
+      await this.page.screenshot({ path: "/data/image.png" });
+      await this.page.waitForSelector("#user_status_badge.badge-warning"); // wait for ws response
     });
 
     it("badge become yellow", async function() {

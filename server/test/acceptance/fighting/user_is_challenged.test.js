@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { clearState, becomeUser, goToPage, authUser } from "../helpers";
 import {
+  USER_HEALTH,
   challenge,
   clickOnPawn,
   clickOnOfficer,
@@ -25,14 +26,14 @@ describe("fighting: when user was challenged", function() {
     expect(len).to.be.equal(0);
   });
 
-  it("both gamers have 30 points of health", async function() {
+  it(`both gamers have ${USER_HEALTH} points of health`, async function() {
     const [my, his] = await this.page.evaluate(() => {
       const my = document.querySelector("#opponent_game_stats").dataset.health;
       const his = document.querySelector("#my_game_stats").dataset.health;
       return [my, his];
     });
-    expect(my).to.equal("30");
-    expect(his).to.equal("30");
+    expect(my).to.equal(USER_HEALTH);
+    expect(his).to.equal(USER_HEALTH);
   });
 
   describe("picking a warrior", function() {
@@ -56,7 +57,7 @@ describe("fighting: when user was challenged", function() {
 
       it("replace currently picked warrior on another", async function() {
         const text = await this.page.$eval(
-          "#my_warriors_positions > div:nth-child(5)",
+          "#my_warriors_positions > div:nth-child(7)",
           el => el.textContent
         );
         expect(text).to.match(/officer/);
@@ -74,7 +75,7 @@ describe("fighting: when user was challenged", function() {
           "#opponent_game_stats",
           el => el.dataset.health
         );
-        expect(health).to.be.equal("28");
+        expect(health).to.be.equal("8");
       });
 
       it("opponent see that he receive damage", async function() {
@@ -82,7 +83,7 @@ describe("fighting: when user was challenged", function() {
           "#my_game_stats",
           el => el.dataset.health
         );
-        expect(health).to.be.equal("28");
+        expect(health).to.be.equal("8");
       });
 
       it("user can't pick new warrior until next turn", async function() {

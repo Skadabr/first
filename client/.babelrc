@@ -13,6 +13,7 @@
   "plugins": [
     "transform-react-jsx",
     "transform-object-rest-spread",
-    "transform-class-properties"
+    "transform-class-properties",
+    "transform-decorators"
   ]
 }

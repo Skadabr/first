@@ -10,7 +10,7 @@ import { challenge, clickOnPawn, clickOnOfficer, turn } from "./helpers";
 
 const { ORIGIN } = process.env;
 
-describe("fighting: kill warrior", function() {
+describe("fighting: hit opponent if it not protected by his warriors", function() {
   before(async function() {
     await initGamers(this, this.other);
   });

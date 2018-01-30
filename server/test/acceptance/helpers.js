@@ -10,14 +10,12 @@ export function createUser(name, email, password) {
 export function loginUser(email, password) {
   return axios
     .post(ORIGIN + "/api/auth/local", { email, password })
-    .then(r => r.data.data.token);
+    .then(r => r.data.data);
 }
 
 export async function authUser(name, email, password) {
   await axios.post(ORIGIN + "/api/users", { email, name, password });
-  return axios
-    .post(ORIGIN + "/api/auth/local", { email, password })
-    .then(r => r.data.data.token);
+  return loginUser(email, password);
 }
 
 export function launch() {
@@ -40,16 +38,16 @@ export async function becomeUser(page, name, email, password) {
   await page.reload();
 }
 
-export async function clearState(page) {
-  await page.evaluate(() => localStorage.clear());
-  await page.close();
-}
-
 export async function initGamers(ctx, otherCtx) {
   ctx.page = await goToPage(ctx.browser, ORIGIN);
   otherCtx.page = await goToPage(otherCtx.browser, ORIGIN);
   await becomeUser(ctx.page, "John", "john@mail.com", "deadbeef");
   await becomeUser(otherCtx.page, "Other", "other@mail.com", "deadbeef");
+}
+
+export async function clearState(page) {
+  await page.evaluate(() => localStorage.clear());
+  await page.close();
 }
 
 async function setToken(page, token) {

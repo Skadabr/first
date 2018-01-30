@@ -26,11 +26,9 @@ export default function(ws, { models, logger }) {
     logger.debug("disconnect of ", ws.id);
 
     if (ws.opponent_id) {
-      console.log(ws.orig_opponent_money);
-      console.log(ws.orig_user_money);
       const opponent = await User.findOneAndUpdate(
         { socket_id: ws.opponent_id },
-        { status: PEACE, money: ws.orig_opponent_money }
+        { status: PEACE }
       );
       const user = await User.findOneAndUpdate(
         { socket_id: ws.id },
@@ -40,6 +38,7 @@ export default function(ws, { models, logger }) {
         status: "break",
         money: ws.orig_opponent_money
       });
+      ws.nsp.connected[ws.opponent_id].opponent_id = undefined;
 
       return;
     }

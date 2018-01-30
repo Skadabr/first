@@ -39,23 +39,19 @@ describe("Authentication", function() {
 
       it("receive successfull responce", async function() {
         const body = await this.resp.json();
-        expect(() => jwt.verify(body.data.token, JWT_SECRET)).does.not.throw();
+        expect(() => jwt.verify(body.data, JWT_SECRET)).does.not.throw();
         expect(this.resp.status()).to.be.equal(200);
       });
 
       it("show user info", async function() {
-        const userName = await this.page.$("#user_name");
-        const name = await this.page.evaluate(
-          userName => userName.textContent,
-          userName
-        );
+        const userName = await this.page.$();
+        const name = await this.page.$eval("#user_name", el => el.textContent);
         expect(name).to.be.equal("John");
       });
 
       context("click on logout button", function() {
         before(async function() {
-          const logout = await this.page.$("#logout");
-          await logout.click();
+          await this.page.$eval("#logout", el => el.click());
         });
 
         it("user is logged out", async function() {

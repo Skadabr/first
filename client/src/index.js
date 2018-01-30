@@ -22,23 +22,27 @@ const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 const token = localStorage.user_jwt;
 Socket(token, store);
+
 if (token) {
   setAuthHeader(token);
-  userApi
-    .user()
-    .then(({ name, email, status, money }) =>
-      store.dispatch(createLogin({ name, email, status, money, token }))
-    );
+  userApi.user().then(({ name, email, status, money }) => {
+    store.dispatch(createLogin({ name, email, status, money, token }));
+    renderApp();
+  });
 }
 
-const app = (
-  <Provider store={store}>
-    <Router>
-      <App />
-    </Router>
-  </Provider>
-);
+renderApp();
 
-ReactDOM.render(app, document.getElementById("root"));
+function renderApp() {
+  const app = (
+    <Provider store={store}>
+      <Router>
+        <App />
+      </Router>
+    </Provider>
+  );
 
-registerServiceWorker();
+  ReactDOM.render(app, document.getElementById("root"));
+
+  registerServiceWorker();
+}

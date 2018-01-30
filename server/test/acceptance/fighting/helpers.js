@@ -2,6 +2,8 @@ import { goToPage, initGamers } from "../helpers";
 
 const { ORIGIN } = process.env;
 
+export const USER_HEALTH = "10";
+
 export function clickOnPawn(page) {
   return page.click("#warriors_list > div:nth-child(1)");
 }
@@ -24,8 +26,7 @@ export async function startAFightAsChallanged() {
 
 export async function turn(page, otherPage) {
   await page.click("button#turn");
-  await otherPage.waitForSelector("button#turn:not([disabled])");
-  //await otherPage.waitForSelector("button#turn:not([disabled])", {
-  //  timeout: 2000
-  //});
+  await otherPage.waitForSelector("button#turn:not([disabled])", {
+    timeout: 2000
+  });
 }

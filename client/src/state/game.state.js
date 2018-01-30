@@ -13,6 +13,10 @@ export const ACQUIRE_TURN = "ACQUIRE_TURN";
 export const EMPTY = {};
 export const ME = "ME";
 export const OPPONENT = "OPPONENT";
+export const POSITIONS = 13;
+
+const MIDDLE_POSITION = 6;
+const SHIFT_CONSTANT = 7;
 
 //
 // ============ Reducer ============
@@ -30,7 +34,7 @@ export default function GameReducer(state = EMPTY, { type, payload }) {
     }
 
     case TURN: {
-      const me = gamerReducer(state[ME], createGamerUpdate(payload.me));
+      const me = gamerReducer( state[ME], createGamerUpdate(payload.me));
       return { ...state, [ME]: me, [OPPONENT]: payload.opponent, turn: false };
     }
 
@@ -75,7 +79,7 @@ export function addWarrior(me, warrior) {
     //throw Error("too much warriors on the battle field");
 
     if (warriors.length === 0) {
-      warrior.position = 4;
+      warrior.position = MIDDLE_POSITION;
       return dispatch({
         type: GAMER_UPDATE,
         payload: {
@@ -158,7 +162,7 @@ export function acquireTurn(me, opponent) {
 
 export function endOfFight(payload) {
   return dispatch => {
-    dispatch({ type: END_OF_FIGHT, payload });
+    dispatch({ type: END_OF_FIGHT, payload});
   };
 }
 
@@ -168,7 +172,7 @@ export function endOfFight(payload) {
 
 function adjustPositions(warriors) {
   warriors = warriors.filter(op => op.health > 0);
-  let shift = 5 - warriors.length;
+  let shift = SHIFT_CONSTANT - warriors.length;
   for (const w of warriors) {
     w.position = shift;
     shift += 2;

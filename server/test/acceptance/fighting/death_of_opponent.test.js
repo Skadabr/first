@@ -10,9 +10,11 @@ import { challenge, clickOnPawn, clickOnOfficer, turn } from "./helpers";
 
 const { ORIGIN } = process.env;
 
-describe("fighting: kill opponent", function() {
+describe("fighting: death of opponent", function() {
   before(async function() {
     await initGamers(this, this.other);
+
+    await this.page.screenshot({ path: "/data/image.png" });
   });
 
   context("when hit opponent enough times to kill him", function() {
@@ -34,8 +36,6 @@ describe("fighting: kill opponent", function() {
 
       // me
       await this.page.click("button#turn");
-
-      await this.page.screenshot({ path: "/data/image.png" });
     });
   });
 

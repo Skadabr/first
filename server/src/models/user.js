@@ -54,11 +54,11 @@ export default function() {
       enum: [PEACE, READY, FIGHT],
       default: PEACE
     },
-    money: {
+    rate: {
       type: Number,
-      default: 50,
+      default: 10,
       required: true,
-      min: [0, "You can't have money amount less than 0"]
+      min: [0, "Your rate can't be less than 0"]
     }
     //game: {
     //  opponent_id: {

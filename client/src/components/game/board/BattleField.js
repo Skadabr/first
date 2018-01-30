@@ -2,8 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { ME, OPPONENT } from "../../../state/game.state";
+import { ME, OPPONENT, POSITIONS } from "../../../state/game.state";
 import { GamerType } from "../types";
+
+import Position from "./Position";
 
 export default class BattleField extends React.Component {
   static propTypes = {
@@ -48,23 +50,10 @@ export default class BattleField extends React.Component {
 }
 
 function* getWarriorLogos(warriors) {
-  for (let i = 0; i < 9; i++) {
+  const width = 100 / POSITIONS;
+
+  for (let i = 0; i < POSITIONS; i++) {
     const w = warriors.find(w => w.position === i);
-    if (w) {
-      yield (
-        <div
-          id="warrior_on_field"
-          key={i}
-          style={{ maxWidth: "10%", minWidth: "10%" }}
-        >
-          <strong className="primary-font">{w.type}</strong>
-          <small className="float-right text-muted">
-            {w.health} / {w.damage}
-          </small>
-        </div>
-      );
-    } else {
-      yield <div key={i} style={{ maxWidth: "10%", minWidth: "10%" }} />;
-    }
+    yield <Position key={i} width={width} warrior={w} />;
   }
 }
