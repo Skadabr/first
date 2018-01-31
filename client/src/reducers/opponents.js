@@ -29,33 +29,6 @@ export default function(state = [], { type, payload }) {
       return state;
   }
 }
-
-//
-// ============ Actions ============
-//
-
-export function opponentUpsert(user) {
-  return dispatch => {
-    dispatch(createOpponentUpsert(user));
-  };
-}
-
-export function opponentGoes(user) {
-  return dispatch => {
-    dispatch(createOpponentGoes(user));
-  };
-}
-
-export function loadOpponents(val) {
-  return dispatch => {
-    if (val.error) {
-      console.error(val.error.message);
-    } else {
-      dispatch(createLoadOpponents(val.data));
-    }
-  };
-}
-
 //
 // ============ Action creators ============
 //

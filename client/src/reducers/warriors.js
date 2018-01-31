@@ -2,7 +2,6 @@ export const PAWN = "PAWN";
 export const OFFICER = "OFFICER";
 
 export const POSITIONS = 13;
-
 const MIDDLE_POSITION = 6;
 
 let id = 0;
@@ -15,7 +14,7 @@ export default function warriorsReducer(state = {}, { type, payload }) {
     case WARRIORS_ADD: {
       const { type, position } = payload;
 
-      const warrior = createWarrior(type, owner_name);
+      const warrior = createWarrior(type);
 
       if (warriors.find(w => w.position === warrior.position)) {
         return state;
@@ -74,14 +73,14 @@ export default function warriorsReducer(state = {}, { type, payload }) {
   }
 }
 
-export function warriorsAdd(type, owner_name, position) {
+export function warriorsAdd(owner_name, type, position) {
   return {
     type: WARRIORS_ADD,
     payload: { owner_name: owner_name, type, position }
   };
 }
 
-export function warriorKicked(name, id, damage) {
+export function warriorKicked(owner_name, id, damage) {
   return {
     type: WARRIOR_KICKED,
     payload: { owner_name, id, damage }
@@ -99,7 +98,7 @@ export function warriorsRelease(owner_name) {
 // ============ helpers ============
 //
 
-function createWarrior(type, owner_name) {
+function createWarrior(type) {
   switch (type) {
     case PAWN:
       return {
@@ -109,7 +108,6 @@ function createWarrior(type, owner_name) {
           health: 6,
           damage: 1,
           id: id++,
-          owner_name
         }
       };
     case OFFICER:
@@ -120,7 +118,6 @@ function createWarrior(type, owner_name) {
           health: 4,
           damage: 2,
           id: id++,
-          owner_name
         }
       };
   }
