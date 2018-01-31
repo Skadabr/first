@@ -4,10 +4,6 @@ import { authApi, userApi } from "../api";
 
 import { START_FIGHT, END_OF_FIGHT } from "./game.state";
 
-export const USER_LOGIN = "USER_LOGIN";
-export const USER_LOGOUT = "USER_LOGOUT";
-export const USER_UPDATE = "USER_UPDATE";
-export const USER_READY = "USER_READY";
 
 export const PEACE = "PEACE";
 export const READY = "READY";
