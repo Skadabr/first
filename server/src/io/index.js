@@ -1,6 +1,7 @@
 import sio from "socket.io";
 
-import auth from "./auth";
+import auth from "./middlewares/auth";
+import notify from "./middlewares/notify";
 import handleGame from "./game";
 
 export default function(server, opts) {
@@ -16,6 +17,7 @@ export default function(server, opts) {
 function handle(nsp, handler, opts) {
   const { logger, models } = opts;
   nsp.use(auth(opts));
+  nsp.use(notify(opts));
 
   nsp.on("connection", ws => {
     logger.debug(`new ws connection: ${nsp.name}`);

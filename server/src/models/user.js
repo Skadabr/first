@@ -102,12 +102,7 @@ export default function() {
 
     updateStatus(status) {
       this.status = status;
-      return this.update({ status: READY }).then(() => this);
-    },
-
-    readyToFight() {
-      this.status = FIGHT;
-      return this.update({ status: FIGHT }).then(() => this);
+      return this.update({ status }).then(() => this);
     }
 
     //async startGame(opponent) {
