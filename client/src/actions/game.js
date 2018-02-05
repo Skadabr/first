@@ -1,3 +1,5 @@
+import { CLEAN_STATE} from "../constants";
+
 const GAME_UPDATE = "GAME_UPDATE";
 
 const EMPTY = {
@@ -9,9 +11,18 @@ export default function gameReducer(state = EMPTY, { type, payload }) {
     case GAME_UPDATE: {
       return { ...state, ...payload };
     }
+    case CLEAN_STATE:
+      return EMPTY;
     default:
       return state;
   }
+}
+
+export function gameInit(my_name, opponent_name, turn) {
+  return {
+    type: GAME_UPDATE,
+    payload: { my_name, opponent_name, turn, active: true }
+  };
 }
 
 export function gameTurnOn() {

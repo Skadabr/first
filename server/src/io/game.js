@@ -7,7 +7,7 @@ const OPPONENT_GOES = "OPPONENT_GOES";
 const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const USER_READY = "USER_READY";
-const USER_UPDATE = "USER_UPDATE";
+const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 const START_FIGHT = "START_FIGHT";
 const END_OF_FIGHT = "END_OF_FIGHT";
 const SEND_MESSAGE = "SEND_MESSAGE";
@@ -16,10 +16,8 @@ const FINISH_FIGHT = "FINISH_FIGHT";
 const TURN = "TURN";
 const ACQUIRE_TURN = "ACQUIRE_TURN";
 
-const ME = "ME";
-const OPPONENT = "OPPONENT";
-
-export default function(ws, { models, logger }) {
+export default function(ws, opts) {
+  const { models, logger } = opts;
   const User = models.model("User");
 
   ws.on("disconnect", async () => {
@@ -73,17 +71,12 @@ export default function(ws, { models, logger }) {
       const { name, status } = await ws.user.updateStatus(READY);
       logger.debug(`user "${name}" ready to fight`);
       ws.broadcast.emit(OPPONENT_UPSERT, { name, status });
-      ws.emit(USER_UPDATE, { status });
+      ws.emit(USER_UPDATE_STATUS, status);
       return;
     }
 
     ws.opponent_id = opponent.socket_id;
     ws.nsp.connected[opponent.socket_id].opponent_id = ws.id;
-
-    ws.orig_user_money = ws.user.money;
-    ws.orig_opponent_money = opponent.money;
-    ws.nsp.connected[opponent.socket_id].orig_user_money = opponent.money;
-    ws.nsp.connected[opponent.socket_id].orig_opponent_money = ws.user.money;
 
     await ws.user.updateStatus(FIGHT);
 
@@ -97,21 +90,20 @@ export default function(ws, { models, logger }) {
       })`
     );
 
-    //await ws.user.startGame(opponent);
-
     ws.emit(START_FIGHT, {
       turn: true,
-      [ME]: only(ws.user, "name money"),
-      [OPPONENT]: only(opponent, "name")
+      me: only(ws.user, "name"),
+      opponent: only(opponent, "name")
     });
     ws.to(opponent.socket_id).emit(START_FIGHT, {
       turn: false,
-      [ME]: only(opponent, "name money"),
-      [OPPONENT]: only(ws.user, "name")
+      me: only(opponent, "name"),
+      opponent: only(ws.user, "name")
     });
   });
 
   ws.on(SEND_MESSAGE, data => {
+    console.log(ws.opponent_id);
     if (!ws.opponent_id) return;
     ws.to(ws.opponent_id).emit(ADD_MESSAGE, data);
   });
@@ -119,9 +111,7 @@ export default function(ws, { models, logger }) {
   ws.on(TURN, async data => {
     const { me, opponent } = data;
     await ws.user.update({ money: me.money });
-    ws
-      .to(ws.opponent_id)
-      .emit(ACQUIRE_TURN, { [ME]: opponent, [OPPONENT]: me });
+    ws.to(ws.opponent_id).emit(ACQUIRE_TURN, { me: opponent, opponent: me });
   });
 
   ws.on(FINISH_FIGHT, async () => {

@@ -4,11 +4,14 @@ import { connect } from "react-redux";
 
 import OpponentsHeader from "./OpponentsHeader";
 import OpponentsList from "./OpponentsList";
+import UserInfo from "./UserInfo";
 
-import { readyToFight } from "../../../state/user.state";
-import { PEACE, READY, FIGHT } from "../../../state/user.state";
+import { readyToFight } from "../../actions/dashboard";
+import { opponentsSelector } from "../../selectors/opponents";
+import { userInfoSelector } from "../../selectors/user";
+import { PEACE, READY, FIGHT } from "../../constants";
 
-export class Opponents extends React.Component {
+export class Dashboard extends React.Component {
   toggle = ev => {
     const { readyToFight, user } = this.props;
 
@@ -23,12 +26,11 @@ export class Opponents extends React.Component {
 
     return (
       <div className="card">
-        <div id="user_name" className="card-header">{user.name}</div>
-        <div id="user_email" className="card-body">
-          <div className="card-block">Email: {user.email}</div>
+        <div id="user_name" className="card-header">
+          {user.name}
         </div>
-        <div id="user_money" className="card-body">
-          <div className="card-block">Money: {user.money}</div>
+        <div id="user_email" className="card-body">
+          <UserInfo {...user} />
         </div>
         <div className="card-header">
           <OpponentsHeader toggle={this.toggle} user_status={user.status} />
@@ -41,11 +43,12 @@ export class Opponents extends React.Component {
   }
 }
 
-Opponents.propTypes = {
+Dashboard.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
+    rate: PropTypes.number.isRequired
   }).isRequired,
   opponents: PropTypes.arrayOf(PropTypes.object),
   readyToFight: PropTypes.func
@@ -53,11 +56,11 @@ Opponents.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    user: state.user,
-    opponents: state.opponents.filter(op => op.name !== state.user.name)
-  };
+    user: userInfoSelector(state),
+    opponents: opponentsSelector(state),
+  }
 }
 
 export default connect(mapStateToProps, {
   readyToFight
-})(Opponents);
+})(Dashboard);

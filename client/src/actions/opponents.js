@@ -1,14 +1,15 @@
-import { USER_LOGOUT } from "./user.state";
+import { CLEAN_STATE} from "../constants";
 
-export const OPPONENT_UPSERT = "OPPONENT_UPSERT";
-export const OPPONENT_GOES = "OPPONENT_GOES";
-export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
+const OPPONENT_UPSERT = "OPPONENT_UPSERT";
+const OPPONENT_GOES = "OPPONENT_GOES";
+const OPPONENTS_LOAD = "OPPONENTS_LOAD";
+const OPPONENTS_RELEASE = "OPPONENTS_RELEASE";
 
 //
 // ============ Reducer ============
 //
 
-export default function(state = [], { type, payload }) {
+export default function opponentsReducer(state = [], { type, payload }) {
   switch (type) {
     case OPPONENTS_LOAD:
       return payload;
@@ -23,33 +24,31 @@ export default function(state = [], { type, payload }) {
       }
     case OPPONENT_GOES:
       return state.filter(user => user.name !== payload);
-    case OPPONENTS_RELEASE:
-      return [];
+
+    case CLEAN_STATE:
+      return {};
     default:
       return state;
   }
 }
-//
-// ============ Action creators ============
-//
 
-function createOpponentUpsert(user) {
+export function opponentsUpsert(user) {
   return {
     type: OPPONENT_UPSERT,
     payload: user
   };
 }
 
-function createLoadOpponents(users) {
+export function opponentsLoad(users) {
   return {
     type: OPPONENTS_LOAD,
     payload: users
   };
 }
 
-function createOpponentGoes(user) {
+export function opponentGoes(user_name) {
   return {
     type: OPPONENT_GOES,
-    payload: user
+    payload: user_name
   };
 }

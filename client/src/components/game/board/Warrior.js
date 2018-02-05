@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
-import { WarriorType } from "../types";
-
-export default function Warrior({ type, damage, health }) {
+export default function Warrior({ type, health, damage }) {
   return (
     <div id="warrior_on_field">
       <strong className="primary-font">{type}</strong>
@@ -13,7 +10,3 @@ export default function Warrior({ type, damage, health }) {
     </div>
   );
 }
-
-Warrior.propTypes = {
-  ...WarriorType
-};

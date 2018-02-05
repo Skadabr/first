@@ -23,6 +23,7 @@ export default function authIO({ logger, models }) {
       );
       ws.user = user;
       ws.use(async ([event_name], next) => {
+        logger.debug("------ws auth------");
         if (ESCAPE_AUTH.includes(event_name)) return next();
         try {
           ws.user = await User.findOne({ name, socket_id: id });
@@ -34,7 +35,7 @@ export default function authIO({ logger, models }) {
       });
       next();
     } catch (err) {
-      logger.error(`fail to authenticate new ws connection: ${err.message}`);
+      logger.error(`fail to authenticate new ws connection: ${err.stack}`);
       next(err);
     }
   };

@@ -3,7 +3,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { logout } from "../state/user.state";
+import { logout } from "../actions/auth";
+import { isAuthenticatedSelector, userInfoSelector } from "../selectors/user";
 
 export class Header extends React.Component {
   exit = e => {
@@ -42,8 +43,8 @@ Header.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: !!state.user.token,
-    name: state.user.name
+    isAuthenticated: isAuthenticatedSelector(state),
+    name: userInfoSelector(state).name
   };
 }
 

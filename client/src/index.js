@@ -10,39 +10,39 @@ import decode from "jwt-decode";
 
 import "./index.css";
 
-import reducer from "./state/reducer";
 import registerServiceWorker from "./registerServiceWorker";
 import setAuthHeader from "./utils/auth-header";
-import { userApi } from "./api";
-import { createLogin } from "./state/user.state";
+import * as api from "./api";
 import Socket from "./socket";
+import reducer from "./reducer";
+import { userAdd } from "./actions/user";
 import App from "./App";
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
+//const store = createStore(reducer, applyMiddleware(thunk));
 
 const token = localStorage.user_jwt;
 Socket(token, store);
 
 if (token) {
   setAuthHeader(token);
-  userApi.user().then(({ name, email, status, money }) => {
-    store.dispatch(createLogin({ name, email, status, money, token }));
+  api.user.user().then(({ name, email, status, rate }) => {
+    store.dispatch(userAdd(name, email, token, rate, status));
     renderApp();
   });
+} else {
+  renderApp();
 }
 
-renderApp();
-
 function renderApp() {
-  const app = (
+  ReactDOM.render(
     <Provider store={store}>
       <Router>
         <App />
       </Router>
-    </Provider>
+    </Provider>,
+    document.getElementById("root")
   );
-
-  ReactDOM.render(app, document.getElementById("root"));
 
   registerServiceWorker();
 }

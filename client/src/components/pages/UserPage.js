@@ -1,34 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Route } from "react-router-dom";
 
+import {fightIsStartedSelector} from "../../selectors/game";
 
-import Opponents from "../game/opponents/Opponents";
-import GameBoard from '../game/board/GameBoard';
-import Chat from '../game/chat/Chat';
+import Dashboard from "../dashboard/Dashboard";
+import Game from "../game/Game";
 
 class UserPage extends React.Component {
   render() {
-    const { name, email } = this.props;
-
     return (
-      <div className="row">
-        <div className="col-12 col-sm-12 col-md-2">
-          <Opponents />
-        </div>
-        <div className="col-12 col-sm-12 col-md-7">
-          <GameBoard />
-        </div>
-        <div className="col-12 col-sm-12 col-md-3">
-          <Chat />
-        </div>
-      </div>
+      this.props.fight ? <Game /> : <Dashboard />
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { name, email } = state.user;
-  return { name, email };
+  return {
+    fight: fightIsStartedSelector(state)
+  };
 }
 
 export default connect(mapStateToProps)(UserPage);

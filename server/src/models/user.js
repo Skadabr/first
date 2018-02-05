@@ -82,8 +82,8 @@ export default function() {
 
   Object.assign(schema.methods, {
     toJSON() {
-      const { name, email, status, socket_id, money } = this;
-      return { name, email, status, socket_id, money };
+      const { name, email, status, socket_id, rate } = this;
+      return { name, email, status, socket_id, rate };
     },
 
     async setPassword(password) {

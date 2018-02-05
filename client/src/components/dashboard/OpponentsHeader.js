@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { PEACE, READY, FIGHT } from "../../../state/user.state";
+
+import { PEACE, READY, FIGHT } from "../../constants";
 
 const colors = {
   [PEACE]: "badge badge-success",

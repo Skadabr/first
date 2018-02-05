@@ -1,9 +1,13 @@
-export const USER_LOGIN = "USER_LOGIN";
-export const USER_LOGOUT = "USER_LOGOUT";
-export const MESSAGE_NEW = "MESSAGE_NEW";
-export const MESSAGE_LOAD = "MESSAGE_LOAD";
-export const MESSAGE_SEND = "MESSAGE_SEND";
-export const CHAT_USER_ONLINE = "CHAT_USER_ONLINE";
-export const CHAT_NEW_USER_ONLINE = "CHAT_NEW_USER_ONLINE";
-export const CHAT_USERS = "CHAT_USERS";
-export const CHAT_USER_OFFLINE = "CHAT_USER_OFFLINE";
+export const PEACE = "PEACE";
+export const READY = "READY";
+export const FIGHT = "FIGHT";
+
+export const PAWN = "PAWN";
+export const OFFICER = "OFFICER";
+export const POSITIONS = 13;
+
+export const CLEAN_STATE = "CLEAN_STATE";
+
+export const DragTypes = {
+  WARRIOR: "WARRIOR"
+};

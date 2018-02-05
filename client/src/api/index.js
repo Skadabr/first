@@ -1,2 +1,4 @@
-export { authApi } from "./auth";
-export { userApi } from "./user";
+import * as auth from "./auth";
+import * as user from "./user";
+
+export { auth, user };

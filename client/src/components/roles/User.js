@@ -2,6 +2,8 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
+import { isAuthenticatedSelector } from "../../selectors/user";
+
 function User({ isAuthenticated, component: Component, ...rest }) {
   return (
     <Route
@@ -15,8 +17,10 @@ function User({ isAuthenticated, component: Component, ...rest }) {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: !!state.user.token,
-  }
+    isAuthenticated: isAuthenticatedSelector(state)
+  };
 }
 
-export default connect(mapStateToProps, undefined, undefined, { pure: false })(User);
+export default connect(mapStateToProps, undefined, undefined, { pure: false })(
+  User
+);

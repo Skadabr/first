@@ -23,7 +23,7 @@ function Socket() {
   );
 
   function close() {
-    Object.values(close).forEach(sock => sock.ws.close());
+    Object.values(close).forEach(sock => { sock.ws.close() });
     token = null;
     socket = null;
   }

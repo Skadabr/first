@@ -12,7 +12,7 @@ class App extends Component {
       <div className="App container-fluid">
         <Header />
         <Guest path="/" exact component={RootPage} />
-        <User path="/user" exact component={UserPage} />
+        <User path="/user" component={UserPage} />
       </div>
     );
   }

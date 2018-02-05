@@ -1,16 +1,25 @@
-export const PAWN = "PAWN";
-export const OFFICER = "OFFICER";
+import { CLEAN_STATE, PAWN, OFFICER, POSITIONS } from "../constants";
 
-export const POSITIONS = 13;
-const MIDDLE_POSITION = 6;
+const MIDDLE_POSITION = (POSITIONS / 2) | 0;
+const EMPTY = {};
+
+const WARRIORS_INIT = "WARRIORS_INIT";
+const WARRIORS_ADD = "WARRIORS_ADD";
+const WARRIORS_RELEASE = "WARRIORS_RELEASE";
+const WARRIOR_KICKED = "WARRIOR_KICKED";
 
 let id = 0;
 
-export default function warriorsReducer(state = {}, { type, payload }) {
-  const { owner_name } = payload;
+export default function warriorsReducer(state = EMPTY, { type, payload }) {
+  const owner_name = payload && payload.owner_name;
   const warriors = state[owner_name];
 
   switch (type) {
+    case WARRIORS_INIT:
+      state = { ...state };
+      payload.forEach(name => (state[name] = []));
+      return state;
+
     case WARRIORS_ADD: {
       const { type, position } = payload;
 
@@ -68,9 +77,19 @@ export default function warriorsReducer(state = {}, { type, payload }) {
         .map(w => separateMyWarriors(w, warrior.position));
     }
 
+    case CLEAN_STATE:
+      return EMPTY;
+
     default:
       return state;
   }
+}
+
+export function warriorsInit(names) {
+  return {
+    type: WARRIORS_INIT,
+    payload: names
+  };
 }
 
 export function warriorsAdd(owner_name, type, position) {
@@ -107,7 +126,7 @@ function createWarrior(type) {
           type: PAWN,
           health: 6,
           damage: 1,
-          id: id++,
+          id: id++
         }
       };
     case OFFICER:
@@ -117,7 +136,7 @@ function createWarrior(type) {
           type: OFFICER,
           health: 4,
           damage: 2,
-          id: id++,
+          id: id++
         }
       };
   }

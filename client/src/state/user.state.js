@@ -68,12 +68,6 @@ export function update(data) {
   };
 }
 
-export function readyToFight() {
-  return dispatch => {
-    IO().gameIO.readyToFight();
-  };
-}
-
 export function eliminateStatus() {
   return dispatch => {
     dispatch({ type: USER_UPDATE, payload: {last_fight_status: undefined} });

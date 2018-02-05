@@ -8,29 +8,35 @@ import decode from "jwt-decode";
 
 import "./index.css";
 
-import reducer from "./state/reducer";
+import reducer from "./reducer";
 import setAuthHeader from "./utils/auth-header";
-import { createLogin } from "./state/user.state";
+import * as api from "./api";
 import Socket from "./socket";
+import { userAdd } from "./actions/user";
 import App from "./App";
 
 export default function SSR(url, token) {
   const store = createStore(reducer, applyMiddleware(thunk));
 
   Socket(token, store);
+
   if (token) {
-    const { email, name } = decode(token);
     setAuthHeader(token);
-    store.dispatch(createLogin(name, email, token));
+    return api.user.user().then(({ name, email, status, rate }) => {
+      userAdd(name, email, status, rate)(store.dispatch);
+      renderApp();
+    });
   }
 
-  const app = (
-    <Provider store={store}>
-      <Router location={url} context={{}}>
-        <App />
-      </Router>
-    </Provider>
-  );
+  renderApp();
 
-  return renderToString(app);
-};
+  function renderApp() {
+    return renderToString(
+      <Provider store={store}>
+        <Router location={url} context={{}}>
+          <App />
+        </Router>
+      </Provider>
+    );
+  }
+}

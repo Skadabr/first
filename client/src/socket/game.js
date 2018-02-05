@@ -1,18 +1,25 @@
+//import {
+//  loadOpponents
+//} from "../state/opponents.state";
+//import { update } from "../state/user.state";
+//import { startFight, endOfFight, acquireTurn } from "../state/game.state";
+//import { addMessage } from "../state/game_chat.state";
+
+import { userUpdateStatus } from "../actions/user";
+import { gameChatAddMessage } from "../actions/game_chat";
 import {
-  opponentUpsert,
-  opponentGoes,
-  loadOpponents
-} from "../state/opponents.state";
-import { update } from "../state/user.state";
-import { startFight, endOfFight, acquireTurn } from "../state/game.state";
-import { addMessage } from "../state/game_chat.state";
+  opponentsLoad,
+  opponentsUpsert,
+  opponentGoes
+} from "../actions/opponents";
+import { startFight } from "../actions/battle";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
 const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 const SEND_MESSAGE = "SEND_MESSAGE";
 const USER_READY = "USER_READY";
-const USER_UPDATE = "USER_UPDATE";
+const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 const START_FIGHT = "START_FIGHT";
 const ADD_MESSAGE = "ADD_MESSAGE";
 const END_OF_FIGHT = "END_OF_FIGHT";
@@ -24,25 +31,29 @@ const ME = "ME";
 const OPPONENT = "OPPONENT";
 
 export default function Game(ws, store) {
+  ws.on("error", console.error);
+
   ws.on("connect", () => {
-    ws.emit(OPPONENTS_LOAD, val => loadOpponents(val)(store.dispatch));
+    ws.emit(OPPONENTS_LOAD, val => {
+      store.dispatch(opponentsLoad(val.data));
+    });
   });
 
-  ws.on(OPPONENT_UPSERT, val => opponentUpsert(val)(store.dispatch));
-  ws.on(OPPONENT_GOES, val => opponentGoes(val)(store.dispatch));
+  ws.on(OPPONENT_UPSERT, val => store.dispatch(opponentsUpsert(val)));
+  ws.on(OPPONENT_GOES, val => store.dispatch(opponentGoes(val)));
 
-  ws.on(USER_UPDATE, val => update(val)(store.dispatch));
+  ws.on(USER_UPDATE_STATUS, val => store.dispatch(userUpdateStatus(val)));
 
-  ws.on(START_FIGHT, val => startFight(val)(store.dispatch));
-  ws.on(END_OF_FIGHT, val => endOfFight(val)(store.dispatch));
-  ws.on(ACQUIRE_TURN, val => {
-    const me = val[ME];
-    const opponent = val[OPPONENT];
-    acquireTurn(me, opponent)(store.dispatch);
-  });
-  ws.on(ADD_MESSAGE, val => {
-    val.date = new Date(parseInt(val.date));
-    addMessage(val)(store.dispatch);
+  ws.on(START_FIGHT, val => { startFight(val)(store.dispatch) });
+  //ws.on(END_OF_FIGHT, val => endOfFight(val)(store.dispatch));
+  //ws.on(ACQUIRE_TURN, val => {
+  //  const me = val[ME];
+  //  const opponent = val[OPPONENT];
+  //  acquireTurn(me, opponent)(store.dispatch);
+  //});
+  ws.on(ADD_MESSAGE, ({msg, name, date}) => {
+    date = new Date(parseInt(date));
+    store.dispatch(gameChatAddMessage(msg, name, date));
   });
 
   return {

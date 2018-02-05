@@ -5,7 +5,11 @@ import { connect } from "react-redux";
 import MessageBoard from "./MessageBoard";
 import MessageInput from "./MessageInput";
 import ChatHeader from "./ChatHeader";
-import { sendMessage } from "../../../state/game_chat.state";
+import { sendMessage } from "../../../actions/battle";
+
+import { chatMessagesSelector} from "../../../selectors/game_chat"
+import { userInfoSelector} from "../../../selectors/user"
+
 
 class Chat extends React.Component {
   onMessage = msg => {
@@ -14,9 +18,7 @@ class Chat extends React.Component {
   };
 
   render() {
-    const { messages, show_chat } = this.props;
-
-    if (!show_chat) return null;
+    const { messages } = this.props;
 
     return (
       <div className="card">
@@ -36,9 +38,8 @@ class Chat extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    messages: state.game_chat,
-    show_chat: state.game.show_chat,
-    name: state.user.name
+    messages: chatMessagesSelector(state),
+    name: userInfoSelector(state).name
   };
 }
 

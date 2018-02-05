@@ -1,87 +1,57 @@
-import setAuthHeader from "../utils/auth-header";
-import IO from "../socket";
-import { authApi, userApi } from "../api";
+import { CLEAN_STATE} from "../constants";
 
-import { START_FIGHT, END_OF_FIGHT } from "./game.state";
+const USER_ADD = "USER_ADD";
+const USER_REMOVE = "USER_REMOVE";
+const USER_UPDATE = "USER_UPDATE";
+const USER_INCREASE_RATE = "USER_INCREASE_RATE";
+const USER_DECREASE_RATE = "USER_DECREASE_RATE";
 
+const EMPTY = {};
 
-export const PEACE = "PEACE";
-export const READY = "READY";
-export const FIGHT = "FIGHT";
+export default function userReducer(state = EMPTY, { payload, type }) {
+  switch (type) {
+    case USER_ADD:
+      return payload;
 
+    case USER_UPDATE:
+      return { ...state, ...payload };
 
-//
-// ============ Actions ============
-//
+    case USER_INCREASE_RATE:
+      return { ...state, rate: state.rate + 1 };
 
-export function signup(data) {
-  return () => {
-    return userApi.signup(data);
-  };
+    case USER_DECREASE_RATE:
+      return { ...state, rate: state.rate - 1 };
+
+    case CLEAN_STATE:
+      return EMPTY;
+
+    default:
+      return state;
+  }
 }
 
-export function login(data) {
-  return async dispatch => {
-    const token = await authApi.login(data);
-    setAuthHeader(token);
-    localStorage.user_jwt = token;
-    const { name, email, status, money } = await userApi.user();
-    IO(token);
-    dispatch(createLogin({ name, email, token, money, status }));
-  };
-}
-
-export function logout(name) {
-  return dispatch => {
-    IO()();
-    setAuthHeader();
-    localStorage.removeItem("user_jwt");
-    dispatch({ type: USER_LOGOUT });
-  };
-}
-
-export function update(data) {
-  return dispatch => {
-    dispatch({ type: USER_UPDATE, payload: data });
-  };
-}
-
-export function readyToFight() {
-  return dispatch => {
-    IO().gameIO.readyToFight();
-  };
-}
-
-export function eliminateStatus() {
-  return dispatch => {
-    dispatch({ type: USER_UPDATE, payload: {last_fight_status: undefined} });
-  };
-}
-
-//({ status, opponent_socket_id }) => {
-//      if (status === READY) {
-//        dispatch({ type: USER_STATUS, payload: READY });
-//      } else {
-//        dispatch(createStartFight(opponent_socket_id));
-//      }
-//    }
-
-//
-// ============ Action creators ============
-//
-
-export function createLogin({ name, email, token, money, status = PEACE }) {
+export function userAdd(name, email, token, rate, status = "PEACE") {
   return {
-    type: USER_LOGIN,
-    payload: { name, email, token, money, status }
+    type: USER_ADD,
+    payload: { name, email, token, rate, status }
   };
 }
 
-function createStartFight(opponent_socket_id) {
+export function userDecreaseRate() {
   return {
-    type: START_FIGHT,
-    payload: {
-      opponent_socket_id
-    }
+    type: USER_DECREASE_RATE
+  };
+}
+
+export function userIncreaseRate() {
+  return {
+    type: USER_INCREASE_RATE
+  };
+}
+
+export function userUpdateStatus(status) {
+  return {
+    type: USER_UPDATE,
+    payload: { status }
   };
 }

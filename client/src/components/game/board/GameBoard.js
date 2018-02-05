@@ -1,114 +1,137 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { DragDropContextProvider } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
-import {
-  EMPTY,
-  ME,
-  OPPONENT,
-  addWarrior,
-  toTurn
-} from "../../../state/game.state";
-import { eliminateStatus } from "../../../state/user.state";
-import { GameType } from "../types";
+//import { GameType } from "../types";
 
 import BattleField from "./BattleField";
 import WarriorList from "./WarriorList";
-import Turn from "./Turn";
+//import Turn from "./Turn";
+
+import { myTurnSelector } from "../../../selectors/game";
+import {
+  myGamerSelector,
+  opponentGamerSelector
+} from "../../../selectors/gamers";
+import {
+  myWarriorsSelector,
+  opponentWarriorsSelector
+} from "../../../selectors/warriors";
 
 const EMPTY_STATE = {
   error: ""
 };
 
 export class GameBoard extends React.Component {
-  static propTypes = GameType;
+  //static propTypes = GameType;
 
   state = EMPTY_STATE;
 
-  addWarrior = data => {
-    const { turn, me, addWarrior } = this.props;
-    let { type, health, damage, price } = data;
-    health = health | 0;
-    damage = damage | 0;
-    price = price | 0;
+  //addWarrior = data => {
+  //  const { turn, me, addWarrior } = this.props;
+  //  let { type, health, damage, price } = data;
+  //  health = health | 0;
+  //  damage = damage | 0;
+  //  price = price | 0;
 
-    if (!turn) return;
-    if (me.money < price) {
-      return this.setState({
-        error: "You have no enough money to apply this warrior"
-      });
-    }
+  //  if (!turn) return;
+  //  if (me.money < price) {
+  //    return this.setState({
+  //      error: "You have no enough money to apply this warrior"
+  //    });
+  //  }
 
-    this.props.addWarrior(me, { type, health, damage, price });
-  };
+  //  this.props.addWarrior(me, { type, health, damage, price });
+  //};
 
-  onTurn = () => {
-    const { turn, toTurn, me, opponent } = this.props;
-    if (!turn) return;
+  //onTurn = () => {
+  //  const { turn, toTurn, me, opponent } = this.props;
+  //  if (!turn) return;
 
-    toTurn(me, opponent);
-  };
+  //  toTurn(me, opponent);
+  //};
 
-  eliminateStatus = () => {
-    this.props.eliminateStatus();
-  }
+  //eliminateStatus = () => {
+  //  this.props.eliminateStatus();
+  //}
 
   render() {
-    const { fight, turn, me, opponent, status } = this.props;
+    const {
+      turn,
+      my_gamer,
+      opponent_gamer,
+      my_warriors,
+      opponent_warriors,
+      status
+    } = this.props;
     const { error } = this.state;
 
-    if (!fight) {
-      if (status === "win") {
-        return (
-          <div className="alert alert-danger">
-            You are a winner <button onClick={this.eliminateStatus} className="close">&times;</button>
-          </div>
-        );
-      }
-      if (status === "lose") {
-        return (
-          <div className="alert alert-danger">
-            You are a loser <button onClick={this.eliminateStatus} className="close">&times;</button>
-          </div>
-        );
-      }
-      if (status === "break") {
-        return (
-          <div className="alert alert-danger">
-            Game process was broken <button onClick={this.eliminateStatus} className="close">&times;</button>
-          </div>
-        );
-      }
-      return null;
-    }
+    //  if (!fight) {
+    //    if (status === "win") {
+    //      return (
+    //        <div className="alert alert-danger">
+    //          You are a winner <button onClick={this.eliminateStatus} className="close">&times;</button>
+    //        </div>
+    //      );
+    //    }
+    //    if (status === "lose") {
+    //      return (
+    //        <div className="alert alert-danger">
+    //          You are a loser <button onClick={this.eliminateStatus} className="close">&times;</button>
+    //        </div>
+    //      );
+    //    }
+    //    if (status === "break") {
+    //      return (
+    //        <div className="alert alert-danger">
+    //          Game process was broken <button onClick={this.eliminateStatus} className="close">&times;</button>
+    //        </div>
+    //      );
+    //    }
+    //    return null;
+    //  }
 
     return (
-      <div id="game_board" className="board card-group">
-        <div className="col-9 board">
-          <BattleField me={me} opponent={opponent} />
-        </div>
-        <div className="col-3">
-          <div className="card">
-            <Turn onTurn={this.onTurn} turn={turn} />
-            <WarriorList submit={this.addWarrior} />
-            {error.length > 0 && (
-              <div className="alert alert-danger">{error}</div>
-            )}
+      <DragDropContextProvider backend={HTML5Backend}>
+        <div id="game_board" className="row">
+          <div className="col-9 board">
+            <BattleField
+              my_gamer={my_gamer}
+              opponent_gamer={opponent_gamer}
+              my_warriors={my_warriors}
+              opponent_warriors={opponent_warriors}
+            />
+          </div>
+          <div className="col-3">
+            <div className="card">
+              <WarriorList submit={this.addWarrior} />
+              {error.length > 0 && (
+                <div className="alert alert-danger">{error}</div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </DragDropContextProvider>
     );
+    //<Turn onTurn={this.onTurn} turn={turn} />
+    //return <divclassName="board card-group" />;
   }
 }
 
 function mapStateToProps(state) {
   return {
-    fight: state.game !== EMPTY,
-    turn: state.game.turn,
-    status: state.user.last_fight_status,
-    me: state.game[ME],
-    opponent: state.game[OPPONENT]
+    turn: myTurnSelector(state),
+    my_gamer: myGamerSelector(state),
+    opponent_gamer: opponentGamerSelector(state),
+    my_warriors: myWarriorsSelector(state),
+    opponent_warriors: opponentWarriorsSelector(state)
   };
 }
 
-export default connect(mapStateToProps, { addWarrior, toTurn, eliminateStatus })(GameBoard);
+export default connect(mapStateToProps, {
+  //addWarrior,
+  //toTurn,
+  //eliminateStatus
+})(GameBoard);
