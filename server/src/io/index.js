@@ -21,9 +21,9 @@ function handle(nsp, handler, opts) {
   nsp.use(notify(opts));
 
   nsp.on("connection", ws => {
-    logger.debug(`new ws connection: ${nsp.name}`);
+    logger.debug(`io:ws - new connection: ${nsp.name}`);
     ws.on("disconnect", async () => {
-      logger.debug(`ws connection is closed: ${nsp.name}`);
+      logger.debug(`io:ws - connection is closed: ${nsp.name}`);
     });
     handler(ws, opts);
   });

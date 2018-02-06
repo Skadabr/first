@@ -17,7 +17,7 @@ export default function authIO({ logger, models }) {
         { new: true }
       );
       logger.debug(
-        `authenticate new ws connection(${ws.nsp.name}). User "${
+        `io:auth - authenticate new conn(${ws.nsp.name}). User "${
           user.name
         }"-"${id} aka ${user.socket_id}" is coming`
       );
@@ -27,7 +27,7 @@ export default function authIO({ logger, models }) {
         if (ESCAPE_AUTH.includes(event_name)) return next();
         try {
           ws.user = await User.findOne({ name, socket_id: id });
-          logger.debug(`ws user("${name}") is authenticated`);
+          logger.debug(`io:ws:auth - user("${name}") is authenticated`);
           next();
         } catch (err) {
           next(err);
@@ -35,7 +35,7 @@ export default function authIO({ logger, models }) {
       });
       next();
     } catch (err) {
-      logger.error(`fail to authenticate new ws connection: ${err.stack}`);
+      logger.error(`io:auth fail to authenticate new connection: ${err.stack}`);
       next(err);
     }
   };

@@ -37,22 +37,16 @@ WarriorSample.propTypes = {
 };
 
 const warriorSource = {
-  beginDrag({ type, damage, health, }) {
-    return {
-      type,
-      damage,
-      health,
-    };
+  beginDrag({ type, price }) {
+    return { type, price };
   },
 
   endDrag(props, monitor) {
     const item = monitor.getItem();
     const dropResult = monitor.getDropResult();
 
-    debugger;
-
     if (dropResult) {
-      alert(`You dropped ${item.name} into ${dropResult.name}!`); // eslint-disable-line no-alert
+      alert(`You dropped ${item.type} into ${JSON.stringify(dropResult, undefined, 3)}!`); // eslint-disable-line no-alert
     }
   }
 };

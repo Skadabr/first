@@ -1,4 +1,4 @@
-import { CLEAN_STATE, PAWN, OFFICER, POSITIONS } from "../constants";
+import { CLEAN_STATE, PAWN, OFFICER, POSITIONS, MAX_WARRIORS_ON_FIELD } from "../constants";
 
 const MIDDLE_POSITION = (POSITIONS / 2) | 0;
 const EMPTY = {};
@@ -34,25 +34,14 @@ export default function warriorsReducer(state = EMPTY, { type, payload }) {
         return { ...state, [owner_name]: [warrior] };
       }
 
-      if (position > maxPosition(warriors)) {
-        return adjust(
-          warriors,
-          shiftWarriorsToLeft,
-          wrs => maxPosition(wrs) + 2
-        );
+      if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
+        return state;
       }
-      if (position < minPosition(warriors)) {
-        return adjust(
-          warriors,
-          shiftWarriorsToRight,
-          wrs => minPosition(wrs) - 2
-        );
-      }
-      return adjust(
-        warriors,
-        w => separateMyWarriors(w, position),
-        () => position
-      );
+
+     return {
+        ...state,
+        [owner_name]: adjustWarriors(warriors, warrior, position),
+      };
     }
 
     case WARRIORS_RELEASE:
@@ -92,7 +81,7 @@ export function warriorsInit(names) {
   };
 }
 
-export function warriorsAdd(owner_name, type, position) {
+export function warriorsAdd(owner_name, position, type) {
   return {
     type: WARRIORS_ADD,
     payload: { owner_name: owner_name, type, position }
@@ -121,24 +110,35 @@ function createWarrior(type) {
   switch (type) {
     case PAWN:
       return {
-        type: WARRIOR_CREATE,
-        payload: {
-          type: PAWN,
-          health: 6,
-          damage: 1,
-          id: id++
-        }
+        type: PAWN,
+        health: 6,
+        damage: 1,
+        id: id++
       };
     case OFFICER:
       return {
-        type: WARRIOR_CREATE,
-        payload: {
-          type: OFFICER,
-          health: 4,
-          damage: 2,
-          id: id++
-        }
+        type: OFFICER,
+        health: 4,
+        damage: 2,
+        id: id++
       };
+  }
+}
+
+function adjustWarriors(warriors, warrior, position) {
+  if (position > maxPosition(warriors))
+    return adjust(shiftWarriorsToLeft, wrs => maxPosition(wrs) + 2);
+
+  if (position < minPosition(warriors))
+    return adjust(shiftWarriorsToRight, wrs => minPosition(wrs) - 2);
+
+  return adjust(w => separateMyWarriors(w, position), () => position);
+
+  function adjust(move, calcPos) {
+    warriors = warriors.map(move);
+    warrior.position = calcPos(warriors);
+    warriors.push(warrior);
+    return warriors;
   }
 }
 
@@ -162,11 +162,4 @@ function separateMyWarriors(w, pivot) {
   return w.position < pivot
     ? { ...w, position: w.position - 1 }
     : { ...w, position: w.position + 1 };
-}
-
-function adjust(move, calcPos) {
-  warriors = warriors.map(move);
-  warriors.position = calcPos(warriors);
-  warriors.push(warrior);
-  return { ...state, [owner_name]: warriors };
 }

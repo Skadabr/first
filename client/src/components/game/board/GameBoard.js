@@ -6,11 +6,15 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 //import { GameType } from "../types";
 
-import BattleField from "./BattleField";
 import WarriorList from "./WarriorList";
-//import Turn from "./Turn";
+import GamerStats from "./GamerStats";
+import TurnButton from "./TurnButton";
+import Positions from "./Positions";
+import Position from "./Position";
+import PositionToDrop from "./PositionToDrop";
 
-import { myTurnSelector } from "../../../selectors/game";
+import { warriorsAdd } from "../../../actions/warriors";
+
 import {
   myGamerSelector,
   opponentGamerSelector
@@ -20,38 +24,37 @@ import {
   opponentWarriorsSelector
 } from "../../../selectors/warriors";
 
-const EMPTY_STATE = {
-  error: ""
-};
+import { myTurnSelector } from "../../../selectors/game";
 
 export class GameBoard extends React.Component {
   //static propTypes = GameType;
 
-  state = EMPTY_STATE;
+  state = {
+    money: 1,
+    error: ""
+  };
 
-  //addWarrior = data => {
-  //  const { turn, me, addWarrior } = this.props;
-  //  let { type, health, damage, price } = data;
-  //  health = health | 0;
-  //  damage = damage | 0;
-  //  price = price | 0;
+  addWarrior = ({ owner_name, position, warrior }) => {
+    const { type, price } = warrior;
+    const { money } = this.state;
 
-  //  if (!turn) return;
-  //  if (me.money < price) {
-  //    return this.setState({
-  //      error: "You have no enough money to apply this warrior"
-  //    });
-  //  }
+    if (price > money) {
+      alert("You don't have enough money");
+      return;
+    }
 
-  //  this.props.addWarrior(me, { type, health, damage, price });
-  //};
+    this.setState(prev => ({ ...prev, money: prev.money - price }));
+    this.props.warriorsAdd(owner_name, position, type);
+  };
 
-  //onTurn = () => {
-  //  const { turn, toTurn, me, opponent } = this.props;
-  //  if (!turn) return;
+  onTurn = () => {
+    const { turn } = this.props;
+    if (!turn) return;
 
-  //  toTurn(me, opponent);
-  //};
+    console.log("TURN");
+
+    //toTurn(me, opponent);
+  };
 
   //eliminateStatus = () => {
   //  this.props.eliminateStatus();
@@ -66,7 +69,7 @@ export class GameBoard extends React.Component {
       opponent_warriors,
       status
     } = this.props;
-    const { error } = this.state;
+    const { error, energy } = this.state;
 
     //  if (!fight) {
     //    if (status === "win") {
@@ -96,17 +99,35 @@ export class GameBoard extends React.Component {
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div id="game_board" className="row">
-          <div className="col-9 board">
-            <BattleField
-              my_gamer={my_gamer}
-              opponent_gamer={opponent_gamer}
-              my_warriors={my_warriors}
-              opponent_warriors={opponent_warriors}
+          <div className="col-9 Board">
+            <GamerStats {...opponent_gamer} />
+            <Positions
+              owner_name={opponent_gamer.name}
+              warriors={opponent_warriors}
+              submit={this.addWarrior}
+              box={Position}
             />
+            <Positions
+              owner_name={my_gamer.name}
+              warriors={my_warriors}
+              submit={this.addWarrior}
+              box={PositionToDrop}
+            />
+            <GamerStats {...my_gamer} />
           </div>
-          <div className="col-3">
+
+          <div
+            className="col-3"
+            onDragStart={ev => {
+              if (!turn) ev.stopPropagation();
+            }}
+            onClick={ev => {
+              if (!turn) ev.stopPropagation();
+            }}
+          >
             <div className="card">
-              <WarriorList submit={this.addWarrior} />
+              <TurnButton turn={turn} onTurn={this.onTurn} />
+              <WarriorList />
               {error.length > 0 && (
                 <div className="alert alert-danger">{error}</div>
               )}
@@ -122,16 +143,12 @@ export class GameBoard extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    turn: myTurnSelector(state),
     my_gamer: myGamerSelector(state),
     opponent_gamer: opponentGamerSelector(state),
     my_warriors: myWarriorsSelector(state),
-    opponent_warriors: opponentWarriorsSelector(state)
+    opponent_warriors: opponentWarriorsSelector(state),
+    turn: myTurnSelector(state)
   };
 }
 
-export default connect(mapStateToProps, {
-  //addWarrior,
-  //toTurn,
-  //eliminateStatus
-})(GameBoard);
+export default connect(mapStateToProps, { warriorsAdd })(GameBoard);

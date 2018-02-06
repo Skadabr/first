@@ -1,14 +1,16 @@
+import { PAWN, OFFICER } from "../constants";
+
 module.exports = [
   {
-    type: "pawn",
+    type: PAWN,
     health: 6,
     damage: 1,
     price: 1
   },
   {
-    type: "officer",
+    type: OFFICER,
     health: 4,
     damage: 2,
     price: 2
-  },
+  }
 ];
