@@ -110,8 +110,10 @@ export default function(ws, opts) {
 
   ws.on(TURN, async data => {
     const { me, opponent } = data;
-    await ws.user.update({ money: me.money });
     ws.to(ws.opponent_id).emit(ACQUIRE_TURN, { me: opponent, opponent: me });
+    logger.debug(
+      `io:gamer - pass the turn from ${me.name} to ${opponent.name}`
+    );
   });
 
   ws.on(FINISH_FIGHT, async () => {

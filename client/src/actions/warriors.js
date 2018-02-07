@@ -1,12 +1,20 @@
-import { CLEAN_STATE, PAWN, OFFICER, POSITIONS, MAX_WARRIORS_ON_FIELD } from "../constants";
+import {
+  CLEAN_STATE,
+  PAWN,
+  OFFICER,
+  POSITIONS,
+  MAX_WARRIORS_ON_FIELD
+} from "../constants";
 
 const MIDDLE_POSITION = (POSITIONS / 2) | 0;
 const EMPTY = {};
+const EMPTY_LIST = [];
 
 const WARRIORS_INIT = "WARRIORS_INIT";
 const WARRIORS_ADD = "WARRIORS_ADD";
 const WARRIORS_RELEASE = "WARRIORS_RELEASE";
 const WARRIOR_KICKED = "WARRIOR_KICKED";
+const WARRIORS_SET = "WARRIORS_SET";
 
 let id = 0;
 
@@ -38,36 +46,42 @@ export default function warriorsReducer(state = EMPTY, { type, payload }) {
         return state;
       }
 
-     return {
+      return {
         ...state,
-        [owner_name]: adjustWarriors(warriors, warrior, position),
+        [owner_name]: adjustWarriors(warriors, warrior, position)
       };
     }
 
+    case WARRIORS_SET: {
+      return { ...state, [owner_name]: payload.warriors };
+    }
+
     case WARRIORS_RELEASE:
-      return [];
+      return { ...state, [owner_name]: EMPTY_LIST };
 
     case WARRIOR_KICKED: {
       const { id, damage } = payload;
-      let warrior = warriors.find(w => warrior.id === id);
+      let warrior = warriors.find(w => w.id === id);
 
       const health = warrior.health - damage;
 
       // just update warrior
       if (health > 0) {
         warrior = { ...warrior, health };
-        warriors = warriors.map(w => (w.id === id ? warrior : w));
-        return { ...state, [owner_name]: warriors };
+        return {
+          ...state,
+          [owner_name]: warriors.map(w => (w.id === id ? warrior : w))
+        };
       }
 
       // eliminate dead hero :( and readjust other positions
-      return warriors
-        .filter(w => w.id !== id)
-        .map(w => separateMyWarriors(w, warrior.position));
+      return {
+        ...state,
+        [owner_name]: warriors
+          .filter(w => w.id !== id)
+          .map(w => separateMyWarriors(w, warrior.position))
+      };
     }
-
-    case CLEAN_STATE:
-      return EMPTY;
 
     default:
       return state;
@@ -99,6 +113,13 @@ export function warriorsRelease(owner_name) {
   return {
     type: WARRIORS_RELEASE,
     payload: owner_name
+  };
+}
+
+export function warriorsSet(owner_name, warriors) {
+  return {
+    type: WARRIORS_SET,
+    payload: { owner_name, warriors }
   };
 }
 

@@ -1,8 +1,8 @@
 import IO from "../socket";
-import { gamerKicked, gamerRelease, gamerAdd } from "./gamers";
+import { gamerKicked, gamerRelease, gamerAdd, gamerSetHealth } from "./gamers";
 import { warriorKicked, warriorsRelease } from "./warriors";
-import { gameTurnOff, gameInit } from "./game";
-import { warriorsInit } from "./warriors";
+import { gameTurnOn, gameTurnOff, gameInit } from "./game";
+import { warriorsInit, warriorsSet } from "./warriors";
 import { gameChatAddMessage } from "./game_chat";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
 import { FIGHT } from "../constants";
@@ -25,59 +25,84 @@ export function sendMessage(msg, name) {
   };
 }
 
-export function kick(warrior, opponent) {
+export function oneSideKickOtherSide(warriors, opponent, opponent_warriors) {
   return dispatch => {
-    if (opponent.warriors.length === 0) {
+    warriors.forEach(warrior => {
+      kickOpponents(warrior, opponent, opponent_warriors)(dispatch);
+    });
+  };
+}
+
+export function kickOpponents(warrior, opponent, opponent_warriors) {
+  return dispatch => {
+    console.debug("kickOpponents", warrior, opponent, opponent_warriors);
+    if (opponent_warriors.length === 0) {
       return dispatch(gamerKicked(opponent.name, warrior.damage));
     }
 
     const { position, damage } = warrior;
-    const op = opponent.warriors.find(op => op.position === position);
+    const w = opponent_warriors.find(w => w.position === position);
 
-    if (op) return dispatch(warriorKicked(opponent.name, op.id, damage));
+    if (w) return dispatch(warriorKicked(opponent.name, w.id, damage));
 
-    const ops = opponent.warriors.filter(
-      op => op.position === position - 1 || op.position === position + 1
+    const ws = opponent_warriors.filter(
+      w => w.position === position - 1 || w.position === position + 1
     );
 
-    if (ops.length === 0) dispatch(gamerKicked(opponent.name, warrior.damage));
+    if (ws.length === 0) dispatch(gamerKicked(opponent.name, warrior.damage));
     else
-      for (const op of ops)
-        dispatch(warriorKicked(opponent.name, op.id, damage));
+      for (const w of ws) dispatch(warriorKicked(opponent.name, w.id, damage));
   };
 }
 
-export function passTheTurn(myName, opponent) {
+export function passTheTurn(me, opponent) {
   return dispatch => {
     const io = IO().gameIO;
 
     if (opponent.health < 1) {
       io.winFight();
-      dispatch(gamerRelease(myName));
-      dispatch(gamerRelease(opponent.name));
-      dispatch(warriorsRelease(myName));
-      dispatch(warriorsRelease(opponent.name));
-      dispatch(gameInActive());
+      cleanGameState(me.name, opponent.name)(dispatch);
       dispatch(userIncreaseRate());
       return;
     }
 
     io.passTheTurn({
-      health: opponent.health,
-      warriors: opponent.warriors,
-      name: opponent.name
+      opponent: {
+        health: opponent.health,
+        warriors: opponent.warriors,
+        name: opponent.name
+      },
+      me: {
+        warriors: me.warriors,
+        name: me.name
+      }
     });
     dispatch(gameTurnOff());
   };
 }
 
-export function looseTheGame() {
+export function acquireTurn({ me, opponent }) {
+  return dispatch => {
+    dispatch(warriorsSet(me.name, me.warriors));
+    dispatch(warriorsSet(opponent.name, opponent.warriors));
+    dispatch(gamerSetHealth(me.name, me.health));
+    dispatch(gameTurnOn())
+  };
+}
+
+export function looseTheGame(myName, opponentName) {
+  return dispatch => {
+    cleanGameState(myName, opponentName)(dispatch);
+    dispatch(userDecreaseRate());
+  };
+}
+
+function cleanGameState() {
   return dispatch => {
     dispatch(gamerRelease(myName));
-    dispatch(gamerRelease(opponent.name));
+    dispatch(gamerRelease(opponentName));
     dispatch(warriorsRelease(myName));
-    dispatch(warriorsRelease(opponent.name));
+    dispatch(warriorsRelease(opponentName));
     dispatch(gameInActive());
-    dispatch(userDecreaseRate());
   };
 }

@@ -14,6 +14,9 @@ import Position from "./Position";
 import PositionToDrop from "./PositionToDrop";
 
 import { warriorsAdd } from "../../../actions/warriors";
+import { gameTurnOff } from "../../../actions/game";
+import { gamerIncreaseMoney } from "../../../actions/gamers";
+import { oneSideKickOtherSide, passTheTurn } from "../../../actions/battle";
 
 import {
   myGamerSelector,
@@ -27,12 +30,14 @@ import {
 import { myTurnSelector } from "../../../selectors/game";
 
 export class GameBoard extends React.Component {
-  //static propTypes = GameType;
+  constructor(props) {
+    super(props);
 
-  state = {
-    money: 1,
-    error: ""
-  };
+    this.state = {
+      money: props.my_gamer.money,
+      error: ""
+    };
+  }
 
   addWarrior = ({ owner_name, position, warrior }) => {
     const { type, price } = warrior;
@@ -48,13 +53,39 @@ export class GameBoard extends React.Component {
   };
 
   onTurn = () => {
-    const { turn } = this.props;
+    const {
+      turn,
+      my_gamer,
+      opponent_gamer,
+      my_warriors,
+      opponent_warriors
+    } = this.props;
+    const { oneSideKickOtherSide, gameTurnOff, gamerIncreaseMoney } = this.props;
+
     if (!turn) return;
 
-    console.log("TURN");
-
-    //toTurn(me, opponent);
+    oneSideKickOtherSide(my_warriors, opponent_gamer, opponent_warriors);
+    gameTurnOff();
+    this.setState(prev => ({ ...prev, money: my_gamer.money + 1 }));
+    gamerIncreaseMoney(my_gamer.name);
+    this.setState({});
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (/* turn off */ this.props.turn && !nextProps.turn) {
+      const {
+        my_gamer,
+        opponent_gamer,
+        my_warriors,
+        opponent_warriors,
+        passTheTurn
+      } = nextProps;
+      passTheTurn(
+        { ...my_gamer, warriors: my_warriors },
+        { ...opponent_gamer, warriors: opponent_warriors }
+      );
+    }
+  }
 
   //eliminateStatus = () => {
   //  this.props.eliminateStatus();
@@ -136,8 +167,6 @@ export class GameBoard extends React.Component {
         </div>
       </DragDropContextProvider>
     );
-    //<Turn onTurn={this.onTurn} turn={turn} />
-    //return <divclassName="board card-group" />;
   }
 }
 
@@ -151,4 +180,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { warriorsAdd })(GameBoard);
+export default connect(mapStateToProps, {
+  warriorsAdd,
+  oneSideKickOtherSide,
+  passTheTurn,
+  gameTurnOff,
+  gamerIncreaseMoney
+})(GameBoard);

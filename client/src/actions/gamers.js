@@ -1,10 +1,13 @@
-import { CLEAN_STATE} from "../constants";
+import { CLEAN_STATE } from "../constants";
 
 const GAMER_ADD = "GAMER_ADD";
 const GAMER_RELEASE = "GAMER_RELEASE";
 const GAMER_KICKED = "GAMER_KICKED";
+const GAMER_SET_HEALTH = "GAMER_SET_HEALTH";
+const GAMER_INCREASE_MONEY = "GAMER_INCREASE_MONEY";
 
 const HEALTH = 10;
+const MONEY = 1;
 const EMPTY = {};
 
 export default function gamersReducer(state = {}, { type, payload }) {
@@ -13,7 +16,7 @@ export default function gamersReducer(state = {}, { type, payload }) {
 
   switch (type) {
     case GAMER_ADD: {
-      return { ...state, [name]: { name, health: HEALTH } };
+      return { ...state, [name]: { name, health: HEALTH, money: MONEY } };
     }
 
     case GAMER_RELEASE: {
@@ -21,8 +24,17 @@ export default function gamersReducer(state = {}, { type, payload }) {
     }
 
     case GAMER_KICKED: {
-      return { ...state, [name]: { health: state.health - payload.damage } };
+      return {
+        ...state,
+        [name]: { ...gamer, health: gamer.health - payload.damage }
+      };
     }
+
+    case GAMER_SET_HEALTH:
+      return { ...state, [name]: { ...gamer, health: payload.health } };
+
+    case GAMER_INCREASE_MONEY:
+      return { ...state, [name]: { ...gamer, money: gamer.money + 1 } };
 
     case CLEAN_STATE:
       return {};
@@ -49,6 +61,20 @@ export function gamerKicked(name, damage) {
 export function gamerRelease(name) {
   return {
     type: GAMER_RELEASE,
+    payload: { name }
+  };
+}
+
+export function gamerSetHealth(name, health) {
+  return {
+    type: GAMER_SET_HEALTH,
+    payload: { name, health }
+  };
+}
+
+export function gamerIncreaseMoney(name) {
+  return {
+    type: GAMER_INCREASE_MONEY,
     payload: { name }
   };
 }

@@ -45,9 +45,9 @@ const warriorSource = {
     const item = monitor.getItem();
     const dropResult = monitor.getDropResult();
 
-    if (dropResult) {
-      alert(`You dropped ${item.type} into ${JSON.stringify(dropResult, undefined, 3)}!`); // eslint-disable-line no-alert
-    }
+  //if (dropResult) {
+  //  alert(`You dropped ${item.type} into ${JSON.stringify(dropResult, undefined, 3)}!`); // eslint-disable-line no-alert
+  //}
   }
 };
 
