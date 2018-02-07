@@ -1,15 +1,26 @@
-import { CLEAN_STATE } from "../constants";
+import { CLEAN_STATE, StateKinds } from "../constants";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
 const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 const OPPONENTS_RELEASE = "OPPONENTS_RELEASE";
 
+const EMPTY = [];
+
 //
 // ============ Reducer ============
 //
 
-export default function opponentsReducer(state = [], { type, payload }) {
+interface Opponent {
+  name: string;
+  status: StateKinds;
+}
+export type OpponentsState = Opponent[];
+
+export default function opponentsReducer(
+  state: OpponentsState = EMPTY,
+  { type, payload }
+) {
   switch (type) {
     case OPPONENTS_LOAD:
       return payload;
@@ -32,23 +43,27 @@ export default function opponentsReducer(state = [], { type, payload }) {
   }
 }
 
-export function opponentsUpsert(user) {
+//
+// ============ Actions ============
+//
+
+export function opponentsUpsert(opponent: Opponent) {
   return {
     type: OPPONENT_UPSERT,
-    payload: user
+    payload: opponent
   };
 }
 
-export function opponentsLoad(users) {
+export function opponentsLoad(opponents: OpponentsState) {
   return {
     type: OPPONENTS_LOAD,
-    payload: users
+    payload: opponents
   };
 }
 
-export function opponentGoes(user_name) {
+export function opponentGoes(opponent_name: string) {
   return {
     type: OPPONENT_GOES,
-    payload: user_name
+    payload: opponent_name
   };
 }

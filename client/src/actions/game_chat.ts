@@ -10,7 +10,18 @@ const EMPTY = [];
 // ============ Reducer ============
 //
 
-export default function gameChat(state = EMPTY, { type, payload }) {
+interface Message {
+  date: Date;
+  msg: string;
+  name: string;
+}
+
+export type GameChatState = Message[];
+
+export default function gameChat(
+  state: GameChatState = EMPTY,
+  { type, payload }
+) {
   switch (type) {
     case CHAT_ADD_MESSAGE:
       return [...state, payload];
@@ -25,7 +36,7 @@ export default function gameChat(state = EMPTY, { type, payload }) {
 // ============ Actions ============
 //
 
-export function gameChatAddMessage(msg, name, date) {
+export function gameChatAddMessage(msg: string, name: string, date: Date) {
   return {
     type: CHAT_ADD_MESSAGE,
     payload: { msg, name, date }

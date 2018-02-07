@@ -1,4 +1,4 @@
-import * as sio from "socket.io-client";
+import io from "socket.io-client";
 
 import handleGame from "./game";
 
@@ -16,7 +16,7 @@ export default function IO(_token?: string, _store?) {
 }
 
 function Socket() {
-  const gameIO = handleGame(sio("/game", { query: { token } }), store);
+  const gameIO = handleGame(io("/game", { query: { token } }), store);
 
   function close() {
     Object.keys(close).forEach(key => {

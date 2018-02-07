@@ -1,7 +1,6 @@
 import {
   CLEAN_STATE,
-  PAWN,
-  OFFICER,
+  WarriorKinds,
   POSITIONS,
   MAX_WARRIORS_ON_FIELD
 } from "../constants";
@@ -16,17 +15,21 @@ const WARRIORS_RELEASE = "WARRIORS_RELEASE";
 const WARRIOR_KICKED = "WARRIOR_KICKED";
 const WARRIORS_SET = "WARRIORS_SET";
 
-interface Warrior {
+let id = 0;
+
+interface WarriorState {
   id: number;
   health: number;
   damage: number;
-  type: string;
+  type: WarriorKinds;
   position?: number;
 }
 
-let id = 0;
+export interface WarriorsState {
+  [s: string]: Warrior[];
+}
 
-export default function warriorsReducer(state = EMPTY, { type, payload }) {
+export default function warriorsReducer(state: WarriorsState = EMPTY, { type, payload }) {
   const owner_name = payload && payload.owner_name;
   const warriors = state[owner_name];
 
@@ -135,18 +138,18 @@ export function warriorsSet(owner_name, warriors) {
 // ============ helpers ============
 //
 
-function createWarrior(type): Warrior {
+function createWarrior(type: WarriorKinds): Warrior {
   switch (type) {
-    case PAWN:
+    case WarriorKinds.PAWN:
       return {
-        type: PAWN,
+        type: WarriorKinds.PAWN,
         health: 6,
         damage: 1,
         id: id++
       };
-    case OFFICER:
+    case WarriorKinds.OFFICER:
       return {
-        type: OFFICER,
+        type: WarriorKinds.OFFICER,
         health: 4,
         damage: 2,
         id: id++

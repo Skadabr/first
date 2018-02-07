@@ -1,14 +1,14 @@
-import { PAWN, OFFICER } from "../constants";
+import { WarriorKinds } from "../constants";
 
-module.exports = [
+export default [
   {
-    type: PAWN,
+    type: WarriorKinds.PAWN,
     health: 6,
     damage: 1,
     price: 1
   },
   {
-    type: OFFICER,
+    type: WarriorKinds.OFFICER,
     health: 4,
     damage: 2,
     price: 2

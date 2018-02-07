@@ -1,9 +1,14 @@
-export const PEACE = "PEACE";
-export const READY = "READY";
-export const FIGHT = "FIGHT";
+export enum StateKinds {
+  PEACE,
+  READY,
+  FIGHT
+}
 
-export const PAWN = "PAWN";
-export const OFFICER = "OFFICER";
+export enum WarriorKinds {
+  PAWN,
+  OFFICER
+}
+
 export const POSITIONS = 13;
 export const MAX_WARRIORS_ON_FIELD = 7;
 

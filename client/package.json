@@ -5,16 +5,7 @@
   "scripts": {
     "test:dev": "mocha --require babel-register -b ./test/init.test.js",
     "test": "mocha --require babel-register -b -R min",
-    "build": "webpack --config webpack.config.ts.js --display-modules"
-  },
-  "proxy": {
-    "/api": {
-      "target": "http://localhost:3030"
-    },
-    "/socket.io": {
-      "target": "ws://localhost:3030",
-      "ws": true
-    }
+    "build": "webpack --display-modules"
   },
   "dependencies": {
     "axios": "^0.17.1",
@@ -34,13 +25,11 @@
   },
   "devDependencies": {
     "@types/jwt-decode": "^2.2.1",
-    "@types/moment": "^2.13.0",
     "@types/react": "^16.0.36",
     "@types/react-dnd": "^2.0.34",
     "@types/react-dnd-html5-backend": "^2.1.8",
     "@types/react-dom": "^16.0.3",
     "@types/react-redux": "^5.0.14",
-    "@types/redux": "^3.6.0",
     "@types/reselect": "^2.2.0",
     "@types/socket.io-client": "^1.4.32",
     "awesome-typescript-loader": "^3.4.1",
@@ -61,12 +50,11 @@
     "redux-devtools-extension": "^2.13.2",
     "sinon": "^4.2.0",
     "source-map-loader": "^0.2.3",
-    "style-loader": "^0.19.1",
+    "style-loader": "^0.20.1",
     "ts-loader": "^3.4.0",
-    "typescript": "^2.8.0-dev.20180206",
+    "typescript": "^2.7.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1",
-    "webpack-jarvis": "^0.2.2",
     "webpack-node-externals": "^1.6.0"
   }
 }

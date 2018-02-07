@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     command: ["yarn", "start"]
-    restart: on-failure
     env_file: ./server/env
+    restart: on-failure
     ports:
       - "3030:3000"
     links:

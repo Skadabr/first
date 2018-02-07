@@ -2,16 +2,27 @@ version: "3"
 
 services:
   server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     command: ["yarn", "start:dev"]
     volumes:
       - "./server/src:/app/server/src"
       - "./client/build:/app/server/public"
     env_file: ./server/env
+    restart: on-failure
+    ports:
+      - "3030:3000"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
 
   testing:
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: Dockerfile.test.dev
     command: ["yarn", "start:dev"]
     volumes:
       - "./test-data:/data"

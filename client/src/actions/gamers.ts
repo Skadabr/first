@@ -10,7 +10,22 @@ const HEALTH = 10;
 const MONEY = 1;
 const EMPTY = {};
 
-export default function gamersReducer(state = {}, { type, payload }) {
+//
+// ============ Reducer ============
+//
+
+export interface GamersState {
+  [s: string]: {
+    name: string;
+    health: number;
+    money: number;
+  };
+}
+
+export default function gamersReducer(
+  state: GamersState = EMPTY,
+  { type, payload }
+) {
   const name = payload && payload.name;
   const gamer = state[name];
 
@@ -37,12 +52,16 @@ export default function gamersReducer(state = {}, { type, payload }) {
       return { ...state, [name]: { ...gamer, money: gamer.money + 1 } };
 
     case CLEAN_STATE:
-      return {};
+      return EMPTY;
 
     default:
       return state;
   }
 }
+
+//
+// ============ Actions ============
+//
 
 export function gamerAdd(name) {
   return {

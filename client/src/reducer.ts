@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
 
-import user from "./actions/user";
-import opponents from "./actions/opponents";
-import game from "./actions/game";
-import gamers from "./actions/gamers";
-import game_chat from "./actions/game_chat";
-import warriors from "./actions/warriors";
+import user, { UserState } from "./actions/user";
+import opponents, { OpponentsState } from "./actions/opponents";
+import game, { GameState } from "./actions/game";
+import gamers, { GamersState } from "./actions/gamers";
+import game_chat, { GameChatState } from "./actions/game_chat";
+import warriors, { WarriorsState } from "./actions/warriors";
 
 export default combineReducers({
   user,
@@ -15,3 +15,12 @@ export default combineReducers({
   gamers,
   warriors
 });
+
+interface State {
+  user: UserState;
+  opponents: OpponentsState;
+  game_chat: GameChatState;
+  game: GameState;
+  gamers: GamersState;
+  warriors: WarriorsState;
+}

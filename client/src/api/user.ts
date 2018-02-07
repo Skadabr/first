@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from "axios";
+import axios from "axios";
 import toErrorMessage from "../utils/to-error-message";
 
 export function user() {

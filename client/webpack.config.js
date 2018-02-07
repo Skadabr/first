@@ -1,8 +1,6 @@
-const Jarvis = require("webpack-jarvis");
-
 module.exports = {
   name: "client",
-  entry: __dirname + "/src/index.js",
+  entry: __dirname + "/src/index.tsx",
   output: {
     path: __dirname + "/build",
     filename: "[name].js"
@@ -11,8 +9,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: "babel-loader"
+        test: /\.tsx?$/,
+        use: "ts-loader"
       },
       {
         test: /\.css$/,
@@ -20,7 +18,7 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new Jarvis({port: 1337})
-  ]
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"]
+  }
 };

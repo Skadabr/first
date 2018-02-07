@@ -6,7 +6,21 @@ const EMPTY = {
   active: false
 };
 
-export default function gameReducer(state = EMPTY, { type, payload }) {
+//
+// ============ Reducer ============
+//
+
+export interface GameState {
+  active: boolean;
+  turn?: boolean;
+  my_name?: string;
+  opponent_name?: string;
+}
+
+export default function gameReducer(
+  state: GameState = EMPTY,
+  { type, payload }
+) {
   switch (type) {
     case GAME_UPDATE: {
       return { ...state, ...payload };
@@ -18,7 +32,15 @@ export default function gameReducer(state = EMPTY, { type, payload }) {
   }
 }
 
-export function gameInit(my_name, opponent_name, turn) {
+//
+// ============ Actions ============
+//
+
+export function gameInit(
+  my_name: string,
+  opponent_name: string,
+  turn: boolean
+) {
   return {
     type: GAME_UPDATE,
     payload: { my_name, opponent_name, turn, active: true }
