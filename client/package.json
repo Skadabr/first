@@ -50,6 +50,8 @@
     "redux-devtools-extension": "^2.13.2",
     "sinon": "^4.2.0",
     "style-loader": "^0.19.1",
+    "ts-loader": "^3.4.0",
+    "typescript": "^2.7.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1",
     "webpack-jarvis": "^0.2.2",
