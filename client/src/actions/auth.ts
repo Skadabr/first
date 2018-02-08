@@ -21,7 +21,7 @@ export function login(data) {
   };
 }
 
-export function logout(name) {
+export function logout() {
   return dispatch => {
     IO()();
     setAuthHeader();

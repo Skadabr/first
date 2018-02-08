@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { DragDropContextProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
+import { WarriorKinds } from "../../../constants";
+
 import WarriorList from "./WarriorList";
 import GamerStats from "./GamerStats";
 import TurnButton from "./TurnButton";
@@ -12,8 +14,11 @@ import PositionToDrop from "./PositionToDrop";
 
 import { warriorsAdd } from "../../../actions/warriors";
 import { gameTurnOff } from "../../../actions/game";
-import { gamerIncreaseMoney } from "../../../actions/gamers";
-import { oneSideKickOtherSide, passTheTurn } from "../../../actions/battle";
+import {
+  oneSideKickOtherSide,
+  passTheTurn,
+  addWarrior
+} from "../../../actions/battle";
 
 import {
   myGamerSelector,
@@ -23,7 +28,6 @@ import {
   myWarriorsSelector,
   opponentWarriorsSelector
 } from "../../../selectors/warriors";
-
 import { myTurnSelector } from "../../../selectors/game";
 
 interface PropTypes {
@@ -37,12 +41,17 @@ interface PropTypes {
   oneSideKickOtherSide: Function;
   passTheTurn: Function;
   gameTurnOff: Function;
-  gamerIncreaseMoney: Function;
 }
 
 interface StateTypes {
   error: string;
   money: number;
+}
+
+interface AddWarriorInput {
+  owner_name: string;
+  position: number;
+  warrior: { kind: WarriorKinds };
 }
 
 export class GameBoard extends React.Component<PropTypes, StateTypes> {
@@ -55,41 +64,43 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
     };
   }
 
-  addWarrior = ({ owner_name, position, warrior }) => {
-    const { type, price } = warrior;
+  addWarrior = (warrior_data: AddWarriorInput) => {
     const { money } = this.state;
+    const { owner_name, position, warrior } = warrior_data;
 
-    if (price > money) {
-      alert("You don't have enough money");
-      return;
-    }
+    //  TODO: it should be calculated on the server
+    //  if (price > money) {
+    //    alert("You don't have enough money");
+    //    return;
+    //  }
 
-    this.setState(prev => ({ ...prev, money: prev.money - price }));
-    this.props.warriorsAdd(owner_name, position, type);
+    this.props.addWarrior(warrior.kind, position);
+    //  this.setState(prev => ({ ...prev, money: prev.money - price }));
+    //  this.props.warriorsAdd(owner_name, position, type);
   };
 
-  onTurn = () => {
-    const {
-      turn,
-      my_gamer,
-      opponent_gamer,
-      my_warriors,
-      opponent_warriors
-    } = this.props;
-    const {
-      oneSideKickOtherSide,
-      gameTurnOff,
-      gamerIncreaseMoney
-    } = this.props;
+//onTurn = () => {
+//  const {
+//    turn,
+//    my_gamer,
+//    opponent_gamer,
+//    my_warriors,
+//    opponent_warriors
+//  } = this.props;
+//  const {
+//    oneSideKickOtherSide,
+//    gameTurnOff,
+//    gamerIncreaseMoney
+//  } = this.props;
 
-    if (!turn) return;
+//  if (!turn) return;
 
-    oneSideKickOtherSide(my_warriors, opponent_gamer, opponent_warriors);
-    gameTurnOff();
-    this.setState(prev => ({ ...prev, money: my_gamer.money + 1 }));
-    gamerIncreaseMoney(my_gamer.name);
-    this.setState({});
-  };
+//  oneSideKickOtherSide(my_warriors, opponent_gamer, opponent_warriors);
+//  gameTurnOff();
+//  this.setState(prev => ({ ...prev, money: my_gamer.money + 1 }));
+//  gamerIncreaseMoney(my_gamer.name);
+//  this.setState({});
+//};
 
   componentWillReceiveProps(nextProps) {
     if (/* turn off */ this.props.turn && !nextProps.turn) {
@@ -145,7 +156,6 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
     //    }
     //    return null;
     //  }
-
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div id="game_board" className="row">
@@ -168,15 +178,10 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
 
           <div
             className="col-3"
-            onDragStart={ev => {
-              if (!turn) ev.stopPropagation();
-            }}
-            onClick={ev => {
-              if (!turn) ev.stopPropagation();
-            }}
+            onDragStart={stopPropagationIfTurnedOff}
+            onClick={stopPropagationIfTurnedOff}
           >
             <div className="card">
-              <TurnButton turn={turn} onTurn={this.onTurn} />
               <WarriorList />
               {error.length > 0 && (
                 <div className="alert alert-danger">{error}</div>
@@ -186,6 +191,10 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
         </div>
       </DragDropContextProvider>
     );
+
+    function stopPropagationIfTurnedOff(ev) {
+      if (!turn) ev.stopPropagation();
+    }
   }
 }
 
@@ -204,5 +213,5 @@ export default connect(mapStateToProps, {
   oneSideKickOtherSide,
   passTheTurn,
   gameTurnOff,
-  gamerIncreaseMoney
+  addWarrior
 })(GameBoard);

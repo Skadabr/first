@@ -1,19 +1,19 @@
 import React from "react";
 
 import WarriorSample from "./WarriorSample";
-import warriors_list from "../../../utils/warriors_list";
+import warrior_samples from "../../../warrior_samples";
 
 
 export default class WarriorList extends React.Component {
   render() {
     return (
-      <div id="warriors_list">
-        {warriors_list.map((w, i) => (
+      <div id="warrior_samples">
+        {Object.keys(warrior_samples).map(kind => (
           <div
-            key={i}
+            key={kind}
             className="card-block"
           >
-            <WarriorSample {...w} />
+            <WarriorSample kind={kind} />
           </div>
         ))}
       </div>

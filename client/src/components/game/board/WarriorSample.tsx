@@ -1,6 +1,7 @@
 import * as React from "react";
 import { DragSource } from "react-dnd";
 import { DragTypes, WarriorKinds } from "../../../constants";
+import warrior_samples from "../../../warrior_samples";
 
 const WarriorTypes = {
   [WarriorKinds.PAWN]: "Pawn",
@@ -8,7 +9,7 @@ const WarriorTypes = {
 };
 
 export interface WarriorSample {
-  type: WarriorKinds;
+  kind: WarriorKinds;
   health: number;
   damage: number;
   price: number;
@@ -23,19 +24,13 @@ type PropTypes = Draggable & WarriorSample;
 
 export class WarriorSample extends React.Component<PropTypes> {
   render() {
-    const {
-      type,
-      damage,
-      health,
-      price,
-      isDragging,
-      connectDragSource
-    } = this.props;
+    const { kind, isDragging, connectDragSource } = this.props;
     const opacity = isDragging ? 0.4 : 1;
+    const { name, health, damage, price } = warrior_samples[kind];
 
     return connectDragSource(
       <div>
-        <strong className="primary-font">{WarriorTypes[type]}</strong>
+        <strong className="primary-font">{name}</strong>
         <small className="float-right text-muted">
           {health} / {damage} - price({price})
         </small>
@@ -44,12 +39,9 @@ export class WarriorSample extends React.Component<PropTypes> {
   }
 }
 
-//WarriorSample.propTypes = {
-//};
-
 const warriorSource = {
-  beginDrag({ type, price }) {
-    return { type, price };
+  beginDrag({ kind }) {
+    return { kind };
   },
 
   endDrag(props, monitor) {

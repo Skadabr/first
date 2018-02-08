@@ -13,6 +13,7 @@ import * as api from "./api";
 import Socket from "./socket";
 import reducer from "./reducer";
 import { userAdd } from "./actions/user";
+import { logout } from "./actions/auth";
 import App from "./App";
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
@@ -23,10 +24,17 @@ Socket(token, store);
 
 if (token) {
   setAuthHeader(token);
-  api.user.user().then(({ name, email, status, rate }) => {
-    store.dispatch(userAdd(name, email, token, rate, status));
-    renderApp();
-  });
+  api.user.user().then(
+    ({ name, email, status, rate }) => {
+      store.dispatch(userAdd(name, email, token, rate, status));
+      renderApp();
+    },
+    err => {
+      console.error(err.message);
+      logout()(store.dispatch);
+      renderApp();
+    }
+  );
 } else {
   renderApp();
 }

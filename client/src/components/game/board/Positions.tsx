@@ -1,43 +1,46 @@
 import React from "react";
-import { POSITIONS } from "../../../constants";
+import { POSITIONS, WarriorKinds } from "../../../constants";
+import warrior_samples, { WarriorSample } from "../../../warrior_samples";
 
 import Warrior from "./Warrior";
 
-interface PropTypes {
+const positions = [...getPositions()];
+
+interface PositionsPropTypes {
   owner_name: string;
   warriors: any[];
   submit: Function;
   box: any;
 }
 
-export default function Positions({
-  owner_name,
-  warriors,
-  submit,
-  box: Position
-}: PropTypes) {
-  const width = 100 / POSITIONS;
-  return (
-    <div
-      className="card-block"
-      style={{ display: "flex", flexDirection: "row" }}
-    >
-      {[...positions()].map(position => {
-        const w = warriors.find(w => w.position === position);
-        return (
-          <Position
-            key={position}
-            width={width}
-            onDrop={warrior => submit({ owner_name, position, warrior })}
-          >
-            {w != null ? <Warrior {...w} /> : null}
-          </Position>
-        );
-      })}
-    </div>
-  );
+export default class Positions extends React.PureComponent<PositionsPropTypes> {
+  render() {
+    const { owner_name, warriors, submit, box: Position } = this.props;
+    const width = 100 / POSITIONS;
+    return (
+      <div
+        className="card-block"
+        style={{ display: "flex", flexDirection: "row" }}
+      >
+        {positions.map(position => {
+          const w = warriors.find(w => w.position === position);
+          return (
+            <Position
+              key={position}
+              width={width}
+              onDrop={({ kind }: { kind: WarriorKinds }) =>
+                submit({ owner_name, position, warrior: {kind} })
+              }
+            >
+              {w != null ? <Warrior {...w} /> : null}
+            </Position>
+          );
+        })}
+      </div>
+    );
+  }
 }
 
-function* positions() {
+function* getPositions() {
   for (let i = 0; i < POSITIONS; i++) yield i;
 }

@@ -19,6 +19,7 @@ const END_OF_FIGHT = "END_OF_FIGHT";
 const TURN = "TURN";
 const ACQUIRE_TURN = "ACQUIRE_TURN";
 const FINISH_FIGHT = "FINISH_FIGHT";
+const ADD_WARRIOR = "ADD_WARRIOR";
 
 const ME = "ME";
 const OPPONENT = "OPPONENT";
@@ -59,6 +60,10 @@ export default function Game(ws, store) {
     sendMessage(msg, name, date) {
       date = date.getTime();
       ws.emit(SEND_MESSAGE, { msg, name, date });
+    },
+
+    addWarrior(kind, position) {
+      ws.emit(ADD_WARRIOR, {kind, position});
     },
 
     passTheTurn(data) {

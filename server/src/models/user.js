@@ -15,7 +15,7 @@ export const OFFICER = 1;
 
 const { JWT_SECRET } = process.env;
 
-export default function() {
+export default function UserModel() {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -59,25 +59,31 @@ export default function() {
       default: 10,
       required: true,
       min: [0, "Your rate can't be less than 0"]
+    },
+    game: {
+      opponent_id: {
+        type: Schema.ObjectId
+      },
+      turn: Boolean,
+      money: {
+        type: Number,
+        default: 1,
+        validate: {
+          validator: h => h > 0,
+          msg: "Health should be bigger than 0"
+        }
+      },
+      cur_money: Number,
+      health: {
+        type: Number,
+        validate: {
+          isAsync: false,
+          validator: h => h > 0,
+          msg: "Health should be bigger than 0"
+        },
+        default: 10
+      }
     }
-    //game: {
-    //  opponent_id: {
-    //    type: Schema.ObjectId,
-    //    ref: "User"
-    //  },
-    //  warriors: {
-    //    type: [
-    //      {
-    //        position: Number,
-    //        health: Number,
-    //        t: {
-    //          type: String,
-    //          enum: [PAWN, OFFICER]
-    //        }
-    //      }
-    //    ]
-    //  }
-    //}
   });
 
   Object.assign(schema.methods, {
@@ -103,31 +109,35 @@ export default function() {
     updateStatus(status) {
       this.status = status;
       return this.update({ status }).then(() => this);
-    }
+    },
 
-    //async startGame(opponent) {
-    //  await this.update({
-    //    game: {
-    //      opponent_id: opponent._id,
-    //      warriors: []
-    //    }
-    //  });
-    //  await opponent.update({
-    //    game: {
-    //      opponent_id: this._id,
-    //      warriors: []
-    //    }
-    //  });
-    //}
+    async initGame(opponent) {
+      await this.update({
+        game: {
+          turn: true,
+          opponent_id: opponent._id
+        }
+      });
+      await opponent.update({
+        game: {
+          turn: false,
+          opponent_id: this._id
+        }
+      });
+    }
   });
 
   Object.assign(schema.statics, {
-    getOpponent(user) {
+    acquireOpponent(user) {
       return this.findOneAndUpdate(
         { status: READY, name: { $ne: user.name } },
         { status: FIGHT },
         { new: true }
       ).exec();
+    },
+
+    opponent(user) {
+      return this.find({ _id: user.game.opponent_id });
     }
   });
 

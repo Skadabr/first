@@ -2,10 +2,10 @@ import IO from "../socket";
 import { gamerKicked, gamerRelease, gamerAdd, gamerSetHealth } from "./gamers";
 import { warriorKicked, warriorsRelease } from "./warriors";
 import { gameTurnOn, gameTurnOff, gameInit, gameInActive } from "./game";
-import { warriorsInit, warriorsSet } from "./warriors";
+import { warriorsInit, warriorsSet, Warrior } from "./warriors";
 import { gameChatAddMessage } from "./game_chat";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
-import { StatusKinds } from "../constants";
+import { StatusKinds, WarriorKinds } from "../constants";
 
 export function startFight({ turn, me, opponent }) {
   return dispatch => {
@@ -22,6 +22,24 @@ export function sendMessage(msg, name) {
     const date = new Date();
     IO().gameIO.sendMessage(msg, name, date);
     dispatch(gameChatAddMessage(msg, name, date));
+  };
+}
+
+export function addWarrior(kind: WarriorKinds, position: number) {
+  return dispatch => {
+    const io = IO().gameIO;
+    io.addWarrior(kind, position);
+  };
+}
+
+export function updateWarriors(data: {
+  owner_name: string;
+  warriors: Warrior[];
+  money: number;
+}) {
+  return dispatch => {
+    const { warriors, money, owner_name } = data;
+    warriorsSet(owner_name, warriors);
   };
 }
 

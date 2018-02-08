@@ -22,7 +22,14 @@ export function PositionToDrop({
   //const isActive = canDrop && isOver;
 
   return connectDropTarget(
-    <div style={{ maxWidth: width_in_percents, minWidth: width_in_percents, minHeight: 40 }}>
+    <div
+      style={{
+        border: "1px solid black",
+        maxWidth: width_in_percents,
+        minWidth: width_in_percents,
+        minHeight: 80
+      }}
+    >
       {children}
     </div>
   );

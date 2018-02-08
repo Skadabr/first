@@ -17,13 +17,11 @@ const WARRIORS_SET = "WARRIORS_SET";
 
 let id = 0;
 
-interface Warrior {
-  id: number;
+export interface Warrior {
+  id: string;
   health: number;
-  damage: number;
-  price: number;
   type: WarriorKinds;
-  position?: number;
+  position: number;
 }
 
 export interface WarriorsState {
@@ -44,27 +42,28 @@ export default function warriorsReducer(
       return state;
 
     case WARRIORS_ADD: {
-      const { type, position } = payload;
+//    const { type, position } = payload;
 
-      const warrior = createWarrior(type);
+//    // fail: warrior was created inside(here) so it's create coupling
+//    const warrior = createWarrior(type);
 
-      if (warriors.find(w => w.position === warrior.position)) {
-        return state;
-      }
+//    if (warriors.find(w => w.position === warrior.position)) {
+//      return state;
+//    }
 
-      if (warriors.length === 0) {
-        warrior.position = MIDDLE_POSITION;
-        return { ...state, [owner_name]: [warrior] };
-      }
+//    if (warriors.length === 0) {
+//      warrior.position = MIDDLE_POSITION;
+//      return { ...state, [owner_name]: [warrior] };
+//    }
 
-      if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
-        return state;
-      }
+//    if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
+//      return state;
+//    }
 
-      return {
-        ...state,
-        [owner_name]: adjustWarriors(warriors, warrior, position)
-      };
+//    return {
+//      ...state,
+//      [owner_name]: adjustWarriors(warriors, warrior, position)
+//    };
     }
 
     case WARRIORS_SET: {
@@ -141,27 +140,6 @@ export function warriorsSet(owner_name, warriors) {
 //
 // ============ helpers ============
 //
-
-function createWarrior(type: WarriorKinds): Warrior {
-  switch (type) {
-    case WarriorKinds.PAWN:
-      return {
-        type: WarriorKinds.PAWN,
-        health: 6,
-        damage: 1,
-        price: 1,
-        id: id++
-      };
-    case WarriorKinds.OFFICER:
-      return {
-        type: WarriorKinds.OFFICER,
-        health: 6,
-        damage: 2,
-        price: 2,
-        id: id++
-      };
-  }
-}
 
 function adjustWarriors(warriors, warrior, position) {
   if (position > maxPosition(warriors))

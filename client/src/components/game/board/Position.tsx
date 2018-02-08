@@ -12,8 +12,9 @@ export default function Position({ children, width }: PropTypes) {
     <div
       style={{
         maxWidth: width_in_percents,
+        border: "1px solid black",
         minWidth: width_in_percents,
-        minHeight: 40
+        minHeight: 80
       }}
     >
       {children}
