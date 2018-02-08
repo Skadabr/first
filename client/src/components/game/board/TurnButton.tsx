@@ -1,8 +1,8 @@
-import * as React from "react";
+import React from "react";
 
 interface PropTypes {
   turn: boolean;
-  onTurn: Function;
+  onTurn: (ev: React.MouseEvent<any>) => void;
 }
 
 export default function TurnButton({ turn, onTurn }: PropTypes) {

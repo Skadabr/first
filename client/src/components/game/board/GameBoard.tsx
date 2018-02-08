@@ -33,6 +33,7 @@ interface PropTypes {
   opponent_warriors: any;
   turn: boolean;
   warriorsAdd: Function;
+
   oneSideKickOtherSide: Function;
   passTheTurn: Function;
   gameTurnOff: Function;
@@ -116,7 +117,7 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
       my_gamer,
       opponent_gamer,
       my_warriors,
-      opponent_warriors,
+      opponent_warriors
     } = this.props;
     const { error } = this.state;
 

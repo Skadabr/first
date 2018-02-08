@@ -11,8 +11,10 @@ interface PropTypes {
   fight: boolean;
 }
 
-export function UserPage({ fight }: PropTypes) {
-  return fight ? <Game /> : <Dashboard />;
+export class UserPage extends React.PureComponent<PropTypes> {
+  render() {
+    return this.props.fight ? <Game /> : <Dashboard />;
+  }
 }
 
 function mapStateToProps(state: any) {

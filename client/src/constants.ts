@@ -1,4 +1,4 @@
-export enum StateKinds {
+export enum StatusKinds {
   PEACE,
   READY,
   FIGHT

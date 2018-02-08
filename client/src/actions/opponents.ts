@@ -1,4 +1,4 @@
-import { CLEAN_STATE, StateKinds } from "../constants";
+import { CLEAN_STATE, StatusKinds } from "../constants";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
@@ -13,7 +13,7 @@ const EMPTY = [];
 
 interface Opponent {
   name: string;
-  status: StateKinds;
+  status: StatusKinds;
 }
 export type OpponentsState = Opponent[];
 

@@ -6,12 +6,12 @@ import uniqueValidator from "mongoose-unique-validator";
 import jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-export const PEACE = "PEACE";
-export const READY = "READY";
-export const FIGHT = "FIGHT";
+export const PEACE = 0;
+export const READY = 1;
+export const FIGHT = 2;
 
-export const PAWN = "PAWN";
-export const OFFICER = "OFFICER";
+export const PAWN = 0;
+export const OFFICER = 1;
 
 const { JWT_SECRET } = process.env;
 
@@ -50,7 +50,7 @@ export default function() {
     },
     socket_id: String,
     status: {
-      type: String,
+      type: Number,
       enum: [PEACE, READY, FIGHT],
       default: PEACE
     },

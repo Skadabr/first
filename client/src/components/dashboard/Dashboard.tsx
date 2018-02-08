@@ -1,20 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import OpponentsHeader from "./OpponentsHeader";
+import StatusBadge from "./StatusBadge";
 import OpponentsList from "./OpponentsList";
 import UserInfo from "./UserInfo";
 
 import { readyToFight } from "../../actions/dashboard";
 import { opponentsSelector } from "../../selectors/opponents";
 import { userInfoSelector } from "../../selectors/user";
-import { StateKinds } from "../../constants";
+import { StatusKinds } from "../../constants";
 
 interface PropTypes {
   user: {
     email: string;
     name: string;
-    status: string;
+    status: StatusKinds;
     rate: number;
   };
   opponents: { name; status }[];
@@ -26,7 +26,7 @@ export class Dashboard extends React.Component<PropTypes> {
     const { readyToFight, user } = this.props;
 
     switch (user.status) {
-      case StateKinds.PEACE:
+      case StatusKinds.PEACE:
         return readyToFight();
     }
   };
@@ -43,7 +43,8 @@ export class Dashboard extends React.Component<PropTypes> {
           <UserInfo {...user} />
         </div>
         <div className="card-header">
-          <OpponentsHeader toggle={this.toggle} user_status={user.status} />
+          <span>Opponents</span>
+          <StatusBadge toggle={this.toggle} user_status={user.status} />
         </div>
         <div className="card-body">
           <OpponentsList opponents={opponents} />

@@ -6,9 +6,9 @@ import { isAuthenticatedSelector } from "../../selectors/user";
 
 interface PropTypes {
   isAuthenticated: boolean;
-  component: React.Component;
+  component: any;
   path: string;
-  exact: boolean;
+  exact?: boolean;
 }
 
 function User({ isAuthenticated, component: Component, ...rest }: PropTypes) {

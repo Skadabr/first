@@ -11,10 +11,6 @@ export default class WarriorList extends React.Component {
         {warriors_list.map((w, i) => (
           <div
             key={i}
-            data-type={w.type}
-            data-health={w.health}
-            data-damage={w.damage}
-            data-price={w.price}
             className="card-block"
           >
             <WarriorSample {...w} />

@@ -16,7 +16,7 @@ export default combineReducers({
   warriors
 });
 
-interface State {
+export interface State {
   user: UserState;
   opponents: OpponentsState;
   game_chat: GameChatState;

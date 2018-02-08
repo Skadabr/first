@@ -5,11 +5,11 @@ import { gameTurnOn, gameTurnOff, gameInit, gameInActive } from "./game";
 import { warriorsInit, warriorsSet } from "./warriors";
 import { gameChatAddMessage } from "./game_chat";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
-import { StateKinds } from "../constants";
+import { StatusKinds } from "../constants";
 
 export function startFight({ turn, me, opponent }) {
   return dispatch => {
-    dispatch(userUpdateStatus(StateKinds.FIGHT));
+    dispatch(userUpdateStatus(StatusKinds.FIGHT));
     dispatch(gamerAdd(me.name));
     dispatch(gamerAdd(opponent.name));
     dispatch(warriorsInit([me.name, opponent.name]));

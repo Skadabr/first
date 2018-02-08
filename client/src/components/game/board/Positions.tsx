@@ -22,13 +22,13 @@ export default function Positions({
       className="card-block"
       style={{ display: "flex", flexDirection: "row" }}
     >
-      {[...positions()].map((w, i) => {
-        w = warriors.find(w => w.position === i);
+      {[...positions()].map(position => {
+        const w = warriors.find(w => w.position === position);
         return (
           <Position
-            key={i}
+            key={position}
             width={width}
-            onDrop={warrior => submit({ owner_name, position: i, warrior })}
+            onDrop={warrior => submit({ owner_name, position, warrior })}
           >
             {w != null ? <Warrior {...w} /> : null}
           </Position>

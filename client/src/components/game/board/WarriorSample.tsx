@@ -1,6 +1,11 @@
-import * as React from "react"
+import * as React from "react";
 import { DragSource } from "react-dnd";
 import { DragTypes, WarriorKinds } from "../../../constants";
+
+const WarriorTypes = {
+  [WarriorKinds.PAWN]: "Pawn",
+  [WarriorKinds.OFFICER]: "Officer"
+};
 
 export interface WarriorSample {
   type: WarriorKinds;
@@ -9,13 +14,12 @@ export interface WarriorSample {
   price: number;
 }
 
-
 interface Draggable {
   connectDragSource: Function;
   isDragging: boolean;
 }
 
-type PropTypes = Draggable & WarriorType;
+type PropTypes = Draggable & WarriorSample;
 
 export class WarriorSample extends React.Component<PropTypes> {
   render() {
@@ -31,9 +35,7 @@ export class WarriorSample extends React.Component<PropTypes> {
 
     return connectDragSource(
       <div>
-        <strong className="primary-font">
-          {type[0].toUpperCase() + type.slice(1)}
-        </strong>
+        <strong className="primary-font">{WarriorTypes[type]}</strong>
         <small className="float-right text-muted">
           {health} / {damage} - price({price})
         </small>

@@ -1,8 +1,8 @@
-import * as React from "react"
+import React from "react"
 
 import Auth from "../auth/Auth";
 
-export default class RootPage extends React.Component {
+export default class RootPage extends React.PureComponent {
   render() {
     return (
       <div className="row">

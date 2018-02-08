@@ -7,6 +7,8 @@ interface PropTypes {
   isOver: boolean;
   canDrop: boolean;
   width: number;
+  children: any;
+  onDrop: Function;
 }
 
 export function PositionToDrop({
@@ -16,11 +18,11 @@ export function PositionToDrop({
   connectDropTarget,
   width
 }: PropTypes) {
-  width = (width | 0) + "%";
+  const width_in_percents = (width | 0) + "%";
   //const isActive = canDrop && isOver;
 
   return connectDropTarget(
-    <div style={{ maxWidth: width, minWidth: width, minHeight: 40 }}>
+    <div style={{ maxWidth: width_in_percents, minWidth: width_in_percents, minHeight: 40 }}>
       {children}
     </div>
   );

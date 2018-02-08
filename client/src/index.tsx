@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import decode from "jwt-decode";
 
 import "./index.css";
 

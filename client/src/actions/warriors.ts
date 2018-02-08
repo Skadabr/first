@@ -17,10 +17,11 @@ const WARRIORS_SET = "WARRIORS_SET";
 
 let id = 0;
 
-interface WarriorState {
+interface Warrior {
   id: number;
   health: number;
   damage: number;
+  price: number;
   type: WarriorKinds;
   position?: number;
 }
@@ -29,7 +30,10 @@ export interface WarriorsState {
   [s: string]: Warrior[];
 }
 
-export default function warriorsReducer(state: WarriorsState = EMPTY, { type, payload }) {
+export default function warriorsReducer(
+  state: WarriorsState = EMPTY,
+  { type, payload }
+) {
   const owner_name = payload && payload.owner_name;
   const warriors = state[owner_name];
 
@@ -90,7 +94,7 @@ export default function warriorsReducer(state: WarriorsState = EMPTY, { type, pa
         ...state,
         [owner_name]: warriors
           .filter(w => w.id !== id)
-          .map(w => separateMyWarriors(w, warrior.position))
+          .map(w => closeTheGapBetweenWarriors(w, warrior.position))
       };
     }
 
@@ -145,13 +149,15 @@ function createWarrior(type: WarriorKinds): Warrior {
         type: WarriorKinds.PAWN,
         health: 6,
         damage: 1,
+        price: 1,
         id: id++
       };
     case WarriorKinds.OFFICER:
       return {
         type: WarriorKinds.OFFICER,
-        health: 4,
+        health: 6,
         damage: 2,
+        price: 2,
         id: id++
       };
   }
@@ -164,7 +170,7 @@ function adjustWarriors(warriors, warrior, position) {
   if (position < minPosition(warriors))
     return adjust(shiftWarriorsToRight, wrs => minPosition(wrs) - 2);
 
-  return adjust(w => separateMyWarriors(w, position), () => position);
+  return adjust(w => separateWarriors(w, position), () => position);
 
   function adjust(move, calcPos) {
     warriors = warriors.map(move);
@@ -190,8 +196,14 @@ function shiftWarriorsToRight(w) {
   return { ...w, position: w.position + 1 };
 }
 
-function separateMyWarriors(w, pivot) {
+function separateWarriors(w, pivot) {
   return w.position < pivot
     ? { ...w, position: w.position - 1 }
     : { ...w, position: w.position + 1 };
+}
+
+function closeTheGapBetweenWarriors(w, pivot) {
+  return w.position < pivot
+    ? { ...w, position: w.position + 1 }
+    : { ...w, position: w.position - 1 };
 }
