@@ -1,4 +1,4 @@
-import sio from "socket.io";
+import * as sio from "socket.io";
 
 import auth from "./middlewares/auth";
 import notify from "./middlewares/notify";

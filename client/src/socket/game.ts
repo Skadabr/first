@@ -5,7 +5,7 @@ import {
   opponentsUpsert,
   opponentGoes
 } from "../actions/opponents";
-import { startFight, acquireTurn } from "../actions/battle";
+import { startFight, acquireTurn, updateWarriors } from "../actions/battle";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
@@ -20,6 +20,7 @@ const TURN = "TURN";
 const ACQUIRE_TURN = "ACQUIRE_TURN";
 const FINISH_FIGHT = "FINISH_FIGHT";
 const ADD_WARRIOR = "ADD_WARRIOR";
+const ON_ADD_WARRIOR = "ON_ADD_WARRIOR";
 
 const ME = "ME";
 const OPPONENT = "OPPONENT";
@@ -42,13 +43,14 @@ export default function Game(ws, store) {
     startFight(val)(store.dispatch);
   });
   //ws.on(END_OF_FIGHT, val => endOfFight(val)(store.dispatch));
-  ws.on(ACQUIRE_TURN, val => {
-    acquireTurn(val)(store.dispatch);
-  });
+  //ws.on(ACQUIRE_TURN, val => {
+  //  acquireTurn(val)(store.dispatch);
+  //});
   ws.on(ADD_MESSAGE, ({ msg, name, date }) => {
     date = new Date(parseInt(date));
     store.dispatch(gameChatAddMessage(msg, name, date));
   });
+  ws.on(ON_ADD_WARRIOR, val => val && updateWarriors(val)(store.dispatch));
 
   return {
     ws,
@@ -62,8 +64,8 @@ export default function Game(ws, store) {
       ws.emit(SEND_MESSAGE, { msg, name, date });
     },
 
-    addWarrior(kind, position) {
-      ws.emit(ADD_WARRIOR, {kind, position});
+    addWarrior(kind, position, cb) {
+      ws.emit(ADD_WARRIOR, { kind, position }, cb);
     },
 
     passTheTurn(data) {

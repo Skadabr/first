@@ -37,7 +37,7 @@ export default function opponentsReducer(
       return state.filter(user => user.name !== payload);
 
     case CLEAN_STATE:
-      return {};
+      return [];
     default:
       return state;
   }

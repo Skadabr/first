@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "prestart": "babel src -d dist",
+    "typecheck": "tsc --lib es2017 --noEmit -w --pretty src/*.ts",
+    "prestart": "tsc --lib es2017 --sourceMap --outDir dist src/*.ts",
     "start": "node dist",
     "test:ui": "mocha --require babel-register -b -t 3000 -R min --recursive test/acceptance",
     "test:ui:i": "mocha --require babel-register -b -t 3000 test/acceptance/init.test.js",
-    "prestart:dev": "babel src -s -d dist --watch &",
-    "start:dev": "babel src -d dist && nodemon dist",
+    "prestart:dev": "tsc --lib es2017 --sourceMap --outDir dist -w src/*.ts &",
+    "start:dev": "tsc --lib es2017 --sourceMap --outDir dist src/*.ts && nodemon -r source-map-support/register dist",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -42,6 +43,8 @@
     "validator": "^9.2.0"
   },
   "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/node": "^8.9.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -59,6 +62,8 @@
     "prettier": "^1.9.2",
     "puppeteer": "^1.0.0",
     "sinon": "^4.1.6",
+    "source-map-support": "^0.5.3",
+    "ts-node": "^4.1.0",
     "typescript": "^2.7.1"
   },
   "name": "first-server",

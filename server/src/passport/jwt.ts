@@ -1,7 +1,7 @@
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const { JWT_SECRET } = process.env;
 
-module.exports = function jwt(User, logger) {
+export default function jwt(User, logger) {
   return new Strategy(
     {
       secretOrKey: JWT_SECRET,

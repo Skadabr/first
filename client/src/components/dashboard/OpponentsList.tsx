@@ -1,13 +1,15 @@
 import React from "react";
 
+import {StatusKinds} from "../../constants"
+
 interface PropTypes {
   opponents: {name: string; status: string}[];
 }
 
 const colors = {
-  PEACE: "alert-success",
-  READY: "alert-warning",
-  FIGHT: "alert-danger"
+  [StatusKinds.PEACE]: "alert-success",
+  [StatusKinds.READY]: "alert-warning",
+  [StatusKinds.FIGHT]: "alert-danger"
 };
 
 export default class OpponentsList extends React.Component<PropTypes> {

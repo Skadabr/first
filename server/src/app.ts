@@ -1,9 +1,7 @@
-import express from "express";
-import p from "path";
+import express = require("express");
+import p = require("path");
 
 const { NODE_ENV = "development" } = process.env;
-
-global.window = undefined;
 
 export default function init({ router, morgan, passport }) {
   const app = express();

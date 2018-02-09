@@ -1,7 +1,7 @@
 import { WarriorKinds } from "./constants";
 
-export default {
-  [WarriorKinds.PAWN]: {
+export default [
+  {
     name: "Pawn",
     kind: WarriorKinds.PAWN,
     health: 6,
@@ -9,14 +9,14 @@ export default {
     price: 1
   },
 
-  [WarriorKinds.OFFICER]: {
+  {
     name: "Officer",
     kind: WarriorKinds.OFFICER,
     health: 6,
     damage: 2,
     price: 2
   }
-};
+];
 
 export interface WarriorSample {
   name: string;

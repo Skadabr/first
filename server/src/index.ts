@@ -1,4 +1,4 @@
-import http from "http";
+import http = require("http");
 import initApp from "./app";
 
 import Models from "./models";

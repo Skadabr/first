@@ -12,5 +12,8 @@
     "test:ui": "docker exec fg_testing_1 yarn test:ui",
     "test:ui:i": "docker container stop fg_testing_1 && docker container rm fg_testing_1 && yarn start:dev && docker exec -it fg_testing_1 bash",
     "stop": "docker-compose down"
+  },
+  "devDependencies": {
+    "source-map-support": "^0.5.3"
   }
 }

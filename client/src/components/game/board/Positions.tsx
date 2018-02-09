@@ -1,6 +1,5 @@
 import React from "react";
 import { POSITIONS, WarriorKinds } from "../../../constants";
-import warrior_samples, { WarriorSample } from "../../../warrior_samples";
 
 import Warrior from "./Warrior";
 

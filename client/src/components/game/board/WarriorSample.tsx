@@ -26,7 +26,9 @@ export class WarriorSample extends React.Component<PropTypes> {
   render() {
     const { kind, isDragging, connectDragSource } = this.props;
     const opacity = isDragging ? 0.4 : 1;
-    const { name, health, damage, price } = warrior_samples[kind];
+    const { name, health, damage, price } = warrior_samples.find(
+      w => w.kind === kind
+    );
 
     return connectDragSource(
       <div>

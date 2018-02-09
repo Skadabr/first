@@ -1,3 +1,5 @@
+import { UserJSON } from "../models/user";
+
 export default function UserController({ logger, models }) {
   const User = models.model("User");
 
@@ -24,7 +26,7 @@ export default function UserController({ logger, models }) {
     },
 
     user(req, resp) {
-      const data = req.user.toJSON();
+      const data: UserJSON = req.user.toJSON();
       resp.status(200).json({ data });
     }
   };

@@ -1,5 +1,10 @@
 import IO from "../socket";
-import { gamerKicked, gamerRelease, gamerAdd, gamerSetHealth } from "./gamers";
+import {
+  gamerRelease,
+  gamerAdd,
+  gamerSetHealth,
+  gamerSetMoney
+} from "./gamers";
 import { warriorKicked, warriorsRelease } from "./warriors";
 import { gameTurnOn, gameTurnOff, gameInit, gameInActive } from "./game";
 import { warriorsInit, warriorsSet, Warrior } from "./warriors";
@@ -10,8 +15,8 @@ import { StatusKinds, WarriorKinds } from "../constants";
 export function startFight({ turn, me, opponent }) {
   return dispatch => {
     dispatch(userUpdateStatus(StatusKinds.FIGHT));
-    dispatch(gamerAdd(me.name));
-    dispatch(gamerAdd(opponent.name));
+    dispatch(gamerAdd(me));
+    dispatch(gamerAdd(opponent));
     dispatch(warriorsInit([me.name, opponent.name]));
     dispatch(gameInit(me.name, opponent.name, turn));
   };
@@ -28,18 +33,23 @@ export function sendMessage(msg, name) {
 export function addWarrior(kind: WarriorKinds, position: number) {
   return dispatch => {
     const io = IO().gameIO;
-    io.addWarrior(kind, position);
+    io.addWarrior(kind, position, val => {
+      if (!val) {
+        alert(
+          "Either money is not enough or you try put your warrior on top of another"
+        );
+        return;
+      }
+      updateWarriors(val)(dispatch);
+    });
   };
 }
 
-export function updateWarriors(data: {
-  owner_name: string;
-  warriors: Warrior[];
-  money: number;
-}) {
+export function updateWarriors(data) {
   return dispatch => {
     const { warriors, money, owner_name } = data;
-    warriorsSet(owner_name, warriors);
+    dispatch(warriorsSet(owner_name, warriors));
+    dispatch(gamerSetMoney(owner_name, money));
   };
 }
 

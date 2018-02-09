@@ -41,11 +41,7 @@ interface PropTypes {
   oneSideKickOtherSide: Function;
   passTheTurn: Function;
   gameTurnOff: Function;
-}
-
-interface StateTypes {
-  error: string;
-  money: number;
+  addWarrior: Function;
 }
 
 interface AddWarriorInput {
@@ -54,18 +50,9 @@ interface AddWarriorInput {
   warrior: { kind: WarriorKinds };
 }
 
-export class GameBoard extends React.Component<PropTypes, StateTypes> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      money: props.my_gamer.money,
-      error: ""
-    };
-  }
-
+export class GameBoard extends React.Component<PropTypes> {
   addWarrior = (warrior_data: AddWarriorInput) => {
-    const { money } = this.state;
+    const { money } = this.props.my_gamer;
     const { owner_name, position, warrior } = warrior_data;
 
     //  TODO: it should be calculated on the server
@@ -130,7 +117,6 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
       my_warriors,
       opponent_warriors
     } = this.props;
-    const { error } = this.state;
 
     //  if (!fight) {
     //    if (status === "win") {
@@ -183,9 +169,7 @@ export class GameBoard extends React.Component<PropTypes, StateTypes> {
           >
             <div className="card">
               <WarriorList />
-              {error.length > 0 && (
-                <div className="alert alert-danger">{error}</div>
-              )}
+              <div>money: {my_gamer.money}</div>
             </div>
           </div>
         </div>
@@ -214,4 +198,4 @@ export default connect(mapStateToProps, {
   passTheTurn,
   gameTurnOff,
   addWarrior
-})(GameBoard);
+})(GameBoard as any);

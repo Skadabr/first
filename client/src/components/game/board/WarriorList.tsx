@@ -8,12 +8,12 @@ export default class WarriorList extends React.Component {
   render() {
     return (
       <div id="warrior_samples">
-        {Object.keys(warrior_samples).map(kind => (
+        {warrior_samples.map(sample => (
           <div
-            key={kind}
+            key={sample.kind}
             className="card-block"
           >
-            <WarriorSample kind={kind} />
+            <WarriorSample kind={sample.kind} />
           </div>
         ))}
       </div>

@@ -1,4 +1,4 @@
-export default function AuthController() {
+export default function AuthController(opts) {
   return {
     async authSuccess(req, resp) {
       const token = req.user.generateJWT();

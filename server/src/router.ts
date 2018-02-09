@@ -5,7 +5,7 @@ import AuthController from "./controllers/auth";
 import MiscController from "./controllers/misc";
 
 export default function setRoutes(opts) {
-  const router = new Router();
+  const router = Router();
   const { passport } = opts;
 
   const userController = UserController(opts);

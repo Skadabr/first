@@ -1,6 +1,6 @@
 //import ssr from "/app/server/public/ssr";
 
-export default function MiscController() {
+export default function MiscController(opts) {
   return {
     index(req, resp) {
       //const token = req.user ? req.user.generateJWT() : undefined;

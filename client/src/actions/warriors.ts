@@ -20,7 +20,7 @@ let id = 0;
 export interface Warrior {
   id: string;
   health: number;
-  type: WarriorKinds;
+  kind: WarriorKinds;
   position: number;
 }
 
@@ -42,28 +42,23 @@ export default function warriorsReducer(
       return state;
 
     case WARRIORS_ADD: {
-//    const { type, position } = payload;
-
-//    // fail: warrior was created inside(here) so it's create coupling
-//    const warrior = createWarrior(type);
-
-//    if (warriors.find(w => w.position === warrior.position)) {
-//      return state;
-//    }
-
-//    if (warriors.length === 0) {
-//      warrior.position = MIDDLE_POSITION;
-//      return { ...state, [owner_name]: [warrior] };
-//    }
-
-//    if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
-//      return state;
-//    }
-
-//    return {
-//      ...state,
-//      [owner_name]: adjustWarriors(warriors, warrior, position)
-//    };
+      //    const { type, position } = payload;
+      //    // fail: warrior was created inside(here) so it's create coupling
+      //    const warrior = createWarrior(type);
+      //    if (warriors.find(w => w.position === warrior.position)) {
+      //      return state;
+      //    }
+      //    if (warriors.length === 0) {
+      //      warrior.position = MIDDLE_POSITION;
+      //      return { ...state, [owner_name]: [warrior] };
+      //    }
+      //    if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
+      //      return state;
+      //    }
+      //    return {
+      //      ...state,
+      //      [owner_name]: adjustWarriors(warriors, warrior, position)
+      //    };
     }
 
     case WARRIORS_SET: {
@@ -141,44 +136,6 @@ export function warriorsSet(owner_name, warriors) {
 // ============ helpers ============
 //
 
-function adjustWarriors(warriors, warrior, position) {
-  if (position > maxPosition(warriors))
-    return adjust(shiftWarriorsToLeft, wrs => maxPosition(wrs) + 2);
-
-  if (position < minPosition(warriors))
-    return adjust(shiftWarriorsToRight, wrs => minPosition(wrs) - 2);
-
-  return adjust(w => separateWarriors(w, position), () => position);
-
-  function adjust(move, calcPos) {
-    warriors = warriors.map(move);
-    warrior.position = calcPos(warriors);
-    warriors.push(warrior);
-    return warriors;
-  }
-}
-
-function maxPosition(wrs) {
-  return Math.max(...wrs.map(w => w.position));
-}
-
-function minPosition(wrs) {
-  return Math.min(...wrs.map(w => w.position));
-}
-
-function shiftWarriorsToLeft(w) {
-  return { ...w, position: w.position - 1 };
-}
-
-function shiftWarriorsToRight(w) {
-  return { ...w, position: w.position + 1 };
-}
-
-function separateWarriors(w, pivot) {
-  return w.position < pivot
-    ? { ...w, position: w.position - 1 }
-    : { ...w, position: w.position + 1 };
-}
 
 function closeTheGapBetweenWarriors(w, pivot) {
   return w.position < pivot
