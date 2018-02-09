@@ -31,7 +31,14 @@ export class WarriorSample extends React.Component<PropTypes> {
     );
 
     return connectDragSource(
-      <div>
+      <div
+        style={{
+          maxWidth: 80,
+          border: "1px solid black",
+          minWidth: 80,
+          minHeight: 120
+        }}
+      >
         <strong className="primary-font">{name}</strong>
         <small className="float-right text-muted">
           {health} / {damage} - price({price})

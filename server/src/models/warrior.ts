@@ -14,12 +14,14 @@ export const WarriorSamples = {
   [WarriorKinds.PAWN]: {
     name: "Pawn",
     health: 6,
+    damage: 1,
     price: 1
   },
 
   [WarriorKinds.OFFICER]: {
     name: "Officer",
     health: 6,
+    damage: 2,
     price: 2
   }
 };
@@ -31,7 +33,7 @@ export interface WarriorJSON {
   position: number;
 }
 
-export default function WarriorModel() {
+export default function WarriorModel({logger}) {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -74,24 +76,28 @@ export default function WarriorModel() {
 
   Object.assign(schema.statics, {
     of(owner_id) {
-      return this.find({ owner_id });
+      return this.find({ owner_id }).then(wrs =>
+        wrs.map(w => w.toJSON())
+      );
     },
 
-    getSample(owner_id: string, kind: WarriorKinds) {
-      const { health } = WarriorSamples[kind];
-      return { health, kind, owner_id };
+    getSample(kind: WarriorKinds) {
+      return { ...WarriorSamples[kind], kind };
+    },
+
+    newWarrior(owner_id, kind) {
+      const { owner_id, health } = this.getSample(kind);
+      return { owner_id, health, kind};
     },
 
     async addWarrior(owner_id, kind: WarriorKinds, position: number) {
-      const warriors: WarriorJSON[] = await this.of(owner_id).then(wrs =>
-        wrs.map(w => w.toJSON())
-      );
+      const warriors: WarriorJSON[] = await this.of(owner_id);
 
       if (warriors.find(w => w.position === position)) {
         return null;
       }
 
-      const warriorSample = this.getSample(owner_id, kind);
+      const warriorSample = this.newWarrior(owner_id, kind);
 
       if (warriors.length === 0) {
         const warrior = await this.create({

@@ -5,7 +5,7 @@ const { MONGO_URL, NODE_ENV = "development" } = process.env;
 import user from "./user";
 import warrior from "./warrior";
 
-export default function Mongo() {
+export default function Mongo(opts) {
   const mongoose = require("mongoose");
 
   mongoose.Promise = Promise;
@@ -14,8 +14,8 @@ export default function Mongo() {
     autoIndex: NODE_ENV !== "production"
   });
 
-  user();
-  warrior();
+  user(opts);
+  warrior(opts);
 
   return mongoose;
 }

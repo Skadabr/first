@@ -6,7 +6,8 @@ interface PropTypes {
 }
 
 export default function Position({ children, width }: PropTypes) {
-  const width_in_percents = (width | 0) + "%";
+
+  const width_in_percents = (width + "").substr(0, 3) + "%";
 
   return (
     <div
@@ -14,7 +15,7 @@ export default function Position({ children, width }: PropTypes) {
         maxWidth: width_in_percents,
         border: "1px solid black",
         minWidth: width_in_percents,
-        minHeight: 80
+        minHeight: 100,
       }}
     >
       {children}

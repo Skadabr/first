@@ -31,7 +31,7 @@ interface Gamer {
   health: number;
 }
 
-export default function UserModel() {
+export default function UserModel(opts) {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -161,17 +161,18 @@ export default function UserModel() {
       };
     },
 
-    async resetGameData() {
-      this.status = StatusKinds.PEACE;
-      this.gamer = null;
-      await this.save();
-      await  this.model("Warrior").deleteMany({owner_id: this._id});
-    },
-
     async onDisconnect() {
       this.socket_id = null;
       await this.resetGameData();
     },
+
+    async resetGameData() {
+      this.status = StatusKinds.PEACE;
+      this.gamer = null;
+      await this.save();
+      await this.model("Warrior").deleteMany({owner_id: this._id});
+    },
+
 
   });
 

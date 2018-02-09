@@ -18,7 +18,7 @@ export function PositionToDrop({
   connectDropTarget,
   width
 }: PropTypes) {
-  const width_in_percents = (width | 0) + "%";
+  const width_in_percents = (width + "").substr(0, 3) + "%";
   //const isActive = canDrop && isOver;
 
   return connectDropTarget(
@@ -27,7 +27,7 @@ export function PositionToDrop({
         border: "1px solid black",
         maxWidth: width_in_percents,
         minWidth: width_in_percents,
-        minHeight: 80
+        minHeight: 100
       }}
     >
       {children}

@@ -9,8 +9,8 @@ import IO from "./io";
 
 const { PORT = 3000 } = process.env;
 
-const models = Models();
 const { logger, morgan } = Loggers();
+const models = Models({logger});
 const passport = Passport({ logger, models });
 const router = Router({ models, logger, passport });
 

@@ -87,3 +87,12 @@ export function gamerSetMoney(name, money) {
     payload: { money }
   };
 }
+
+export function gamerKicked(name, damage) {
+  return {
+    type: GAMER_KICKED,
+    name,
+    payload: { damage }
+  };
+}
+

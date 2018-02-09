@@ -1,3 +1,4 @@
+import { WarriorKinds } from "../constants";
 import { userUpdateStatus } from "../actions/user";
 import { gameChatAddMessage } from "../actions/game_chat";
 import {
@@ -21,6 +22,7 @@ const ACQUIRE_TURN = "ACQUIRE_TURN";
 const FINISH_FIGHT = "FINISH_FIGHT";
 const ADD_WARRIOR = "ADD_WARRIOR";
 const ON_ADD_WARRIOR = "ON_ADD_WARRIOR";
+const KICK_OPPONENTS = "KICK_OPPONENTS";
 
 const ME = "ME";
 const OPPONENT = "OPPONENT";
@@ -64,8 +66,12 @@ export default function Game(ws, store) {
       ws.emit(SEND_MESSAGE, { msg, name, date });
     },
 
-    addWarrior(kind, position, cb) {
+    addWarrior(kind: WarriorKinds, position, cb) {
       ws.emit(ADD_WARRIOR, { kind, position }, cb);
+    },
+
+    kickOpponent(kind: WarriorKinds, cb) {
+      ws.emit(KICK_OPPONENTS, { kind }, cb);
     },
 
     passTheTurn(data) {

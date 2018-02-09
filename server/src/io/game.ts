@@ -22,6 +22,7 @@ const TURN = "TURN";
 const ACQUIRE_TURN = "ACQUIRE_TURN";
 const ADD_WARRIOR = "ADD_WARRIOR";
 const ON_ADD_WARRIOR = "ON_ADD_WARRIOR";
+const KICK_OPPONENTS = "KICK_OPPONENTS";
 
 export default function(ws, opts) {
   const { models, logger } = opts;
@@ -36,13 +37,8 @@ export default function(ws, opts) {
 
     if (opponent) {
       await opponent.resetGameData();
-      await user.onDisconnect();
-
-      ws.to(ws.opponent_id).emit(END_OF_FIGHT, {
-        status: "break",
-        money: ws.orig_opponent_money
-      });
     }
+    await user.onDisconnect();
 
     logger.debug(`io:game - ${user.name}(id: ${ws.id}) goes`);
     ws.broadcast.emit(OPPONENT_GOES, user.name);
@@ -147,6 +143,41 @@ export default function(ws, opts) {
       money: user.gamer.current_money
     });
   });
+
+  ws.on(KICK_OPPONENTS, async ({ kind }, cb) => {
+    if (typeof kind !== "number" || kind < 0)
+      throw TypeError("Kind has wrong type");
+
+    const user = ws.user;
+    const opponent = await User.opponent(ws.user);
+
+    const opponent_warriors = await Warrior.of(opponent._id);
+    const warrior = Warrior.getSample(kind);
+
+    if (opponent_warriors.length === 0) {
+      const health = opponent.gamer.health - warrior.damage;
+      ws.emit(KICK_GAMER, { damage: warrior.damage }, )
+      return dispatch(gamerKicked(opponent.name, warrior.damage));
+    }
+
+
+//return dispatch => {
+//  console.debug("kickOpponents", warrior, opponent, opponent_warriors);
+
+//  const { position, damage } = warrior;
+//  const w = opponent_warriors.find(w => w.position === position);
+
+//  if (w) return dispatch(warriorKicked(opponent.name, w.id, damage));
+
+//  const ws = opponent_warriors.filter(
+//    w => w.position === position - 1 || w.position === position + 1
+//  );
+
+//  if (ws.length === 0) dispatch(gamerKicked(opponent.name, warrior.damage));
+//  else
+//    for (const w of ws) dispatch(warriorKicked(opponent.name, w.id, damage));
+//};
+  })
 
   //ws.on(TURN, async data => {
   //  const { me, opponent } = data;

@@ -5,7 +5,7 @@ import {
   gamerSetHealth,
   gamerSetMoney
 } from "./gamers";
-import { warriorKicked, warriorsRelease } from "./warriors";
+import { warriorKicked, warriorsRelease, WarriorsState } from "./warriors";
 import { gameTurnOn, gameTurnOff, gameInit, gameInActive } from "./game";
 import { warriorsInit, warriorsSet, Warrior } from "./warriors";
 import { gameChatAddMessage } from "./game_chat";
@@ -53,13 +53,23 @@ export function updateWarriors(data) {
   };
 }
 
-export function oneSideKickOtherSide(warriors, opponent, opponent_warriors) {
-  return dispatch => {
-    warriors.forEach(warrior => {
-      kickOpponents(warrior, opponent, opponent_warriors)(dispatch);
-    });
-  };
+export function onTurn(my_warriors: WarriorsState) {
+  return async dispath => {
+    const io = IO().gameIO;
+
+    for (const w of my_warriors) {
+      await new Promise((resolve, reject) => io.kickOpponent(w.kind, resolve));
+    }
+  }
 }
+
+//export function oneSideKickOtherSide(warriors, opponent, opponent_warriors) {
+//  return dispatch => {
+//    warriors.forEach(warrior => {
+//      kickOpponents(warrior, opponent, opponent_warriors)(dispatch);
+//    });
+//  };
+//}
 
 export function kickOpponents(warrior, opponent, opponent_warriors) {
   return dispatch => {

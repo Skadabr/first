@@ -66,28 +66,27 @@ export class GameBoard extends React.Component<PropTypes> {
     //  this.props.warriorsAdd(owner_name, position, type);
   };
 
-//onTurn = () => {
-//  const {
-//    turn,
-//    my_gamer,
-//    opponent_gamer,
-//    my_warriors,
-//    opponent_warriors
-//  } = this.props;
-//  const {
-//    oneSideKickOtherSide,
-//    gameTurnOff,
-//    gamerIncreaseMoney
-//  } = this.props;
+  onTurn = () => {
+    const {
+      turn,
+      my_gamer,
+      opponent_gamer,
+      my_warriors,
+      opponent_warriors
 
-//  if (!turn) return;
+      oneSideKickOtherSide,
+      gameTurnOff,
+      gamerIncreaseMoney
+    } = this.props;
 
-//  oneSideKickOtherSide(my_warriors, opponent_gamer, opponent_warriors);
-//  gameTurnOff();
-//  this.setState(prev => ({ ...prev, money: my_gamer.money + 1 }));
-//  gamerIncreaseMoney(my_gamer.name);
-//  this.setState({});
-//};
+    if (!turn) return;
+
+    oneSideKickOtherSide(my_warriors, opponent_gamer, opponent_warriors);
+    gameTurnOff();
+    this.setState(prev => ({ ...prev, money: my_gamer.money + 1 }));
+    gamerIncreaseMoney(my_gamer.name);
+    this.setState({});
+  };
 
   componentWillReceiveProps(nextProps) {
     if (/* turn off */ this.props.turn && !nextProps.turn) {
@@ -142,11 +141,19 @@ export class GameBoard extends React.Component<PropTypes> {
     //    }
     //    return null;
     //  }
+
     return (
       <DragDropContextProvider backend={HTML5Backend}>
-        <div id="game_board" className="row">
-          <div className="col-9 Board">
-            <GamerStats {...opponent_gamer} />
+        <div className="card Board">
+          <div className="card-header">
+            <div style={{ float: "left" }}>
+              <GamerStats {...opponent_gamer} turn={!turn} />
+            </div>
+            <div style={{ float: "right" }}>
+              <TurnButton onTurn={this.onTurn} turn={turn} />
+            </div>
+          </div>
+          <div className="card-body">
             <Positions
               owner_name={opponent_gamer.name}
               warriors={opponent_warriors}
@@ -159,17 +166,19 @@ export class GameBoard extends React.Component<PropTypes> {
               submit={this.addWarrior}
               box={PositionToDrop}
             />
-            <GamerStats {...my_gamer} />
           </div>
 
-          <div
-            className="col-3"
-            onDragStart={stopPropagationIfTurnedOff}
-            onClick={stopPropagationIfTurnedOff}
-          >
-            <div className="card">
-              <WarriorList />
-              <div>money: {my_gamer.money}</div>
+          <div className="card-header">
+            <GamerStats {...my_gamer} turn={turn} />
+          </div>
+          <div className="card-body">
+            <div
+              onDragStart={stopPropagationIfTurnedOff}
+              onClick={stopPropagationIfTurnedOff}
+            >
+              <div className="card">
+                <WarriorList />
+              </div>
             </div>
           </div>
         </div>

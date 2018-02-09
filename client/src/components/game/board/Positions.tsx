@@ -19,7 +19,7 @@ export default class Positions extends React.PureComponent<PositionsPropTypes> {
     return (
       <div
         className="card-block"
-        style={{ display: "flex", flexDirection: "row" }}
+        style={{ display: "flex", flexDirection: "row", maxHeight: "auto" }}
       >
         {positions.map(position => {
           const w = warriors.find(w => w.position === position);
