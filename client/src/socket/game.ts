@@ -6,7 +6,13 @@ import {
   opponentsUpsert,
   opponentGoes
 } from "../actions/opponents";
-import { startFight, acquireTurn, updateWarriors } from "../actions/battle";
+import {
+  startFight,
+  acquireTurn,
+  updateWarriors,
+  updateOnKick
+} from "../actions/battle";
+import { FINISH_FIGHT } from "../constants";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
@@ -16,16 +22,10 @@ const USER_READY = "USER_READY";
 const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 const START_FIGHT = "START_FIGHT";
 const ADD_MESSAGE = "ADD_MESSAGE";
-const END_OF_FIGHT = "END_OF_FIGHT";
 const TURN = "TURN";
-const ACQUIRE_TURN = "ACQUIRE_TURN";
-const FINISH_FIGHT = "FINISH_FIGHT";
 const ADD_WARRIOR = "ADD_WARRIOR";
-const ON_ADD_WARRIOR = "ON_ADD_WARRIOR";
+const UPDATE_WARRIOR = "UPDATE_WARRIOR";
 const KICK_OPPONENTS = "KICK_OPPONENTS";
-
-const ME = "ME";
-const OPPONENT = "OPPONENT";
 
 export default function Game(ws, store) {
   ws.on("error", console.error);
@@ -41,18 +41,14 @@ export default function Game(ws, store) {
 
   ws.on(USER_UPDATE_STATUS, val => store.dispatch(userUpdateStatus(val)));
 
-  ws.on(START_FIGHT, val => {
-    startFight(val)(store.dispatch);
-  });
-  //ws.on(END_OF_FIGHT, val => endOfFight(val)(store.dispatch));
-  //ws.on(ACQUIRE_TURN, val => {
-  //  acquireTurn(val)(store.dispatch);
-  //});
   ws.on(ADD_MESSAGE, ({ msg, name, date }) => {
     date = new Date(parseInt(date));
     store.dispatch(gameChatAddMessage(msg, name, date));
   });
-  ws.on(ON_ADD_WARRIOR, val => val && updateWarriors(val)(store.dispatch));
+  ws.on(START_FIGHT, val => { startFight(val)(store.dispatch); });
+  ws.on(UPDATE_WARRIOR, val => val && updateWarriors(val)(store.dispatch));
+  ws.on(KICK_OPPONENTS, val => val && updateOnKick(val)(store.dispatch));
+  ws.on(TURN, val => { acquireTurn(val)(store.dispatch); });
 
   return {
     ws,
@@ -70,12 +66,12 @@ export default function Game(ws, store) {
       ws.emit(ADD_WARRIOR, { kind, position }, cb);
     },
 
-    kickOpponent(kind: WarriorKinds, cb) {
-      ws.emit(KICK_OPPONENTS, { kind }, cb);
+    kickOpponents(_id: string, cb) {
+      ws.emit(KICK_OPPONENTS, { _id }, cb);
     },
 
-    passTheTurn(data) {
-      ws.emit(TURN, data);
+    passTheTurn(cb) {
+      ws.emit(TURN, cb);
     },
 
     finishFight(cb) {

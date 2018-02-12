@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
+import debounce from "lodash.debounce";
 
 import "./index.css";
 
@@ -14,12 +15,18 @@ import Socket from "./socket";
 import reducer from "./reducer";
 import { userAdd } from "./actions/user";
 import { logout } from "./actions/auth";
+import { statsSetDesktopWidth } from "./actions/stats";
 import App from "./App";
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 //const store = createStore(reducer, applyMiddleware(thunk));
-
 const token = localStorage.user_jwt;
+
+window.onresize = debounce(
+  () => store.dispatch(statsSetDesktopWidth(window.innerWidth)),
+  150
+) as any;
+
 Socket(token, store);
 
 if (token) {

@@ -16,6 +16,7 @@ export interface GamersState {
     name: string;
     health: number;
     money: number;
+    damaged: boolean;
   };
 }
 
@@ -88,11 +89,19 @@ export function gamerSetMoney(name, money) {
   };
 }
 
-export function gamerKicked(name, damage) {
+export function gamerIsKicked(name, damage) {
   return {
     type: GAMER_KICKED,
     name,
     payload: { damage }
+  };
+}
+
+export function gamerIsDamaged(name, damaged) {
+  return {
+    type: GAMER_UPDATE,
+    name,
+    payload: { damaged }
   };
 }
 

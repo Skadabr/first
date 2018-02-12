@@ -75,6 +75,7 @@ export default class LoginForm extends React.Component<PropTypes, StateTypes> {
               <label htmlFor="login_email">Email:</label>
               <input
                 id="login_email"
+                className="form-control"
                 name="email"
                 type="email"
                 onChange={this.onChange}
@@ -85,6 +86,7 @@ export default class LoginForm extends React.Component<PropTypes, StateTypes> {
               <label htmlFor="login_password">Password:</label>
               <input
                 id="login_password"
+                className="form-control"
                 name="password"
                 type="password"
                 onChange={this.onChange}
@@ -92,7 +94,7 @@ export default class LoginForm extends React.Component<PropTypes, StateTypes> {
               />
             </div>
             <div>
-              <button>Login</button>
+              <button className="btn btn-block btn-primary">Login</button>
             </div>
           </form>
         </div>

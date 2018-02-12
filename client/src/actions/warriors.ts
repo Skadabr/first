@@ -10,18 +10,19 @@ const EMPTY = {};
 const EMPTY_LIST = [];
 
 const WARRIORS_INIT = "WARRIORS_INIT";
-const WARRIORS_ADD = "WARRIORS_ADD";
 const WARRIORS_RELEASE = "WARRIORS_RELEASE";
-const WARRIOR_KICKED = "WARRIOR_KICKED";
 const WARRIORS_SET = "WARRIORS_SET";
-
-let id = 0;
+const WARRIOR_UPDATE = "WARRIOR_UPDATE";
+const WARRIOR_KICKED = "WARRIOR_KICKED";
+const WARRIOR_REMOVE = "WARRIOR_REMOVE";
 
 export interface Warrior {
-  id: string;
+  _id: string;
   health: number;
   kind: WarriorKinds;
   position: number;
+  damaged: boolean;
+  attacking: boolean;
 }
 
 export interface WarriorsState {
@@ -30,9 +31,8 @@ export interface WarriorsState {
 
 export default function warriorsReducer(
   state: WarriorsState = EMPTY,
-  { type, payload }
-) {
-  const owner_name = payload && payload.owner_name;
+  { type, payload, owner_name }
+): WarriorsState {
   const warriors = state[owner_name];
 
   switch (type) {
@@ -41,26 +41,6 @@ export default function warriorsReducer(
       payload.forEach(name => (state[name] = []));
       return state;
 
-    case WARRIORS_ADD: {
-      //    const { type, position } = payload;
-      //    // fail: warrior was created inside(here) so it's create coupling
-      //    const warrior = createWarrior(type);
-      //    if (warriors.find(w => w.position === warrior.position)) {
-      //      return state;
-      //    }
-      //    if (warriors.length === 0) {
-      //      warrior.position = MIDDLE_POSITION;
-      //      return { ...state, [owner_name]: [warrior] };
-      //    }
-      //    if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
-      //      return state;
-      //    }
-      //    return {
-      //      ...state,
-      //      [owner_name]: adjustWarriors(warriors, warrior, position)
-      //    };
-    }
-
     case WARRIORS_SET: {
       return { ...state, [owner_name]: payload.warriors };
     }
@@ -68,29 +48,36 @@ export default function warriorsReducer(
     case WARRIORS_RELEASE:
       return { ...state, [owner_name]: EMPTY_LIST };
 
-    case WARRIOR_KICKED: {
-      const { id, damage } = payload;
-      let warrior = warriors.find(w => w.id === id);
-
-      const health = warrior.health - damage;
-
-      // just update warrior
-      if (health > 0) {
-        warrior = { ...warrior, health };
-        return {
-          ...state,
-          [owner_name]: warriors.map(w => (w.id === id ? warrior : w))
-        };
-      }
-
-      // eliminate dead hero :( and readjust other positions
+    case WARRIOR_UPDATE:
       return {
         ...state,
-        [owner_name]: warriors
-          .filter(w => w.id !== id)
-          .map(w => closeTheGapBetweenWarriors(w, warrior.position))
+        [owner_name]: warriors.map(
+          w => (w._id === payload._id ? { ...w, ...payload } : w)
+        )
       };
+
+    case WARRIOR_KICKED: {
+      const { _id, health } = payload;
+      let warrior = warriors.find(w => w._id === _id);
+
+      if (!warrior) return state;
+
+      // just update warrior and sign him as damaged
+      if (health > 0) {
+        warrior = { ...warrior, health, damaged: true };
+        return {
+          ...state,
+          [owner_name]: warriors.map(w => (w._id === _id ? warrior : w))
+        };
+      }
+      return state;
     }
+
+    case WARRIOR_REMOVE:
+      return {
+        ...state,
+        [owner_name]: removeWarrior(warriors, payload._id)
+      };
 
     default:
       return state;
@@ -104,31 +91,50 @@ export function warriorsInit(names) {
   };
 }
 
-export function warriorsAdd(owner_name, position, type) {
+export function warriorIsKicked(owner_name, _id, health) {
   return {
-    type: WARRIORS_ADD,
-    payload: { owner_name: owner_name, type, position }
+    type: WARRIOR_KICKED,
+    owner_name,
+    payload: { _id, health }
   };
 }
 
-export function warriorKicked(owner_name, id, damage) {
+export function warriorRemove(owner_name, _id) {
   return {
-    type: WARRIOR_KICKED,
-    payload: { owner_name, id, damage }
+    type: WARRIOR_REMOVE,
+    owner_name,
+    payload: { _id }
+  };
+}
+
+export function warriorIsDamaged(owner_name, _id, damaged) {
+  return {
+    type: WARRIOR_UPDATE,
+    owner_name,
+    payload: { damaged, _id }
+  };
+}
+
+export function warriorIsAttacking(owner_name, _id, attacking) {
+  return {
+    type: WARRIOR_UPDATE,
+    owner_name,
+    payload: { attacking, _id }
   };
 }
 
 export function warriorsRelease(owner_name) {
   return {
     type: WARRIORS_RELEASE,
-    payload: owner_name
+    owner_name
   };
 }
 
 export function warriorsSet(owner_name, warriors) {
   return {
     type: WARRIORS_SET,
-    payload: { owner_name, warriors }
+    owner_name,
+    payload: { warriors }
   };
 }
 
@@ -136,9 +142,19 @@ export function warriorsSet(owner_name, warriors) {
 // ============ helpers ============
 //
 
-
 function closeTheGapBetweenWarriors(w, pivot) {
   return w.position < pivot
     ? { ...w, position: w.position + 1 }
     : { ...w, position: w.position - 1 };
+}
+
+function removeWarrior(warriors, id) {
+  let warrior = warriors.find(w => w._id === id);
+
+  return !warrior
+    ? warriors
+    : warriors
+        // eliminate dead hero :( and readjust other positions
+        .filter(w => w._id !== id)
+        .map(w => closeTheGapBetweenWarriors(w, warrior.position));
 }

@@ -77,6 +77,7 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
               <label htmlFor="signup_email">Email:</label>
               <input
                 id="signup_email"
+                className="form-control"
                 name="email"
                 type="email"
                 onChange={this.onChange}
@@ -87,6 +88,7 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
               <label htmlFor="signup_name">Name:</label>
               <input
                 id="signup_name"
+                className="form-control"
                 name="name"
                 type="text"
                 onChange={this.onChange}
@@ -96,6 +98,7 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
             <div className="form-group">
               <label htmlFor="signup_password">Password:</label>
               <input
+                className="form-control"
                 id="signup_password"
                 name="password"
                 type="password"
@@ -103,8 +106,8 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
                 value={data.password}
               />
             </div>
-            <div>
-              <button id="signup_submit_btn">Signup</button>
+            <div className="form-group">
+              <button id="signup_submit_btn" className="btn btn-block btn-primary">Signup</button>
             </div>
           </form>
         </div>

@@ -3,6 +3,8 @@ import React from "react";
 interface PropTypes {
   health: string;
   name: string;
+  money: number;
+  turn: boolean;
 }
 
 export default function GamerStats({ health, name, money, turn }: PropTypes) {

@@ -1,3 +1,7 @@
+body {
+  min-width: 600px;
+}
+
 .Board {
   margin: 0;
   padding: 0;

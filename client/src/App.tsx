@@ -9,11 +9,13 @@ import Header from "./components/Header";
 class App extends React.Component {
   render() {
     return (
-      <div className="App container-fluid">
-          <Header />
+      <main className="App container-fluid">
+        <Header />
+        <div className="mt-5 pt-3">
           <Guest path="/" exact component={RootPage} />
           <User path="/user" component={UserPage} />
-      </div>
+        </div>
+      </main>
     );
   }
 }

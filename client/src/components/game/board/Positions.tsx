@@ -15,7 +15,7 @@ interface PositionsPropTypes {
 export default class Positions extends React.PureComponent<PositionsPropTypes> {
   render() {
     const { owner_name, warriors, submit, box: Position } = this.props;
-    const width = 100 / POSITIONS;
+    const width = ( 100 / POSITIONS ) | 0;
     return (
       <div
         className="card-block"

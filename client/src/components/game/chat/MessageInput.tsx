@@ -27,23 +27,19 @@ export default class MessageInput extends React.Component<PropTypes> {
     const { message } = this.state;
 
     return (
-      <form className="form-inline" onSubmit={this.onSubmit}>
-        <div className="input-group">
+      <form onSubmit={this.onSubmit} style={{display: "flex", flexDirection: "row"}}>
           <input
             id="chat_message_input"
-            className="form-control input-sm"
+            className="form-control mr-0"
             name="message"
             type="text"
             autoComplete="off"
             value={message}
             onChange={this.onChange}
           />
-        </div>
-        <div className="input-group-btn">
           <button id="btn-chat" className="btn btn-secondary">
             Send
           </button>
-        </div>
       </form>
     );
   }

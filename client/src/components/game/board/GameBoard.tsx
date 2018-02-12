@@ -12,13 +12,7 @@ import Positions from "./Positions";
 import Position from "./Position";
 import PositionToDrop from "./PositionToDrop";
 
-import { warriorsAdd } from "../../../actions/warriors";
-import { gameTurnOff } from "../../../actions/game";
-import {
-  oneSideKickOtherSide,
-  passTheTurn,
-  addWarrior
-} from "../../../actions/battle";
+import { onTurn, addWarrior } from "../../../actions/battle";
 
 import {
   myGamerSelector,
@@ -36,11 +30,8 @@ interface PropTypes {
   my_warriors: any;
   opponent_warriors: any;
   turn: boolean;
-  warriorsAdd: Function;
 
-  oneSideKickOtherSide: Function;
-  passTheTurn: Function;
-  gameTurnOff: Function;
+  onTurn: Function;
   addWarrior: Function;
 }
 
@@ -55,54 +46,23 @@ export class GameBoard extends React.Component<PropTypes> {
     const { money } = this.props.my_gamer;
     const { owner_name, position, warrior } = warrior_data;
 
-    //  TODO: it should be calculated on the server
-    //  if (price > money) {
-    //    alert("You don't have enough money");
-    //    return;
-    //  }
-
     this.props.addWarrior(warrior.kind, position);
-    //  this.setState(prev => ({ ...prev, money: prev.money - price }));
-    //  this.props.warriorsAdd(owner_name, position, type);
   };
 
   onTurn = () => {
-    const {
-      turn,
-      my_gamer,
-      opponent_gamer,
-      my_warriors,
-      opponent_warriors
-
-      oneSideKickOtherSide,
-      gameTurnOff,
-      gamerIncreaseMoney
-    } = this.props;
+    const { turn, my_gamer, my_warriors } = this.props;
 
     if (!turn) return;
 
-    oneSideKickOtherSide(my_warriors, opponent_gamer, opponent_warriors);
-    gameTurnOff();
-    this.setState(prev => ({ ...prev, money: my_gamer.money + 1 }));
-    gamerIncreaseMoney(my_gamer.name);
-    this.setState({});
+    this.props.onTurn(my_gamer.name, my_warriors);
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (/* turn off */ this.props.turn && !nextProps.turn) {
-      const {
-        my_gamer,
-        opponent_gamer,
-        my_warriors,
-        opponent_warriors,
-        passTheTurn
-      } = nextProps;
-      passTheTurn(
-        { ...my_gamer, warriors: my_warriors },
-        { ...opponent_gamer, warriors: opponent_warriors }
-      );
-    }
-  }
+//componentWillReceiveProps(nextProps) {
+//  if (/* turn off */ this.props.turn && !nextProps.turn) {
+//    const { my_gamer, my_warriors, onTurn } = nextProps;
+//    onTurn(my_gamer.name, my_warriors);
+//  }
+//}
 
   //eliminateStatus = () => {
   //  this.props.eliminateStatus();
@@ -153,6 +113,7 @@ export class GameBoard extends React.Component<PropTypes> {
               <TurnButton onTurn={this.onTurn} turn={turn} />
             </div>
           </div>
+
           <div className="card-body">
             <Positions
               owner_name={opponent_gamer.name}
@@ -160,6 +121,7 @@ export class GameBoard extends React.Component<PropTypes> {
               submit={this.addWarrior}
               box={Position}
             />
+            <div style={{ minHeight: 10, backgroundColor: "#eef" }} />
             <Positions
               owner_name={my_gamer.name}
               warriors={my_warriors}
@@ -171,6 +133,7 @@ export class GameBoard extends React.Component<PropTypes> {
           <div className="card-header">
             <GamerStats {...my_gamer} turn={turn} />
           </div>
+
           <div className="card-body">
             <div
               onDragStart={stopPropagationIfTurnedOff}
@@ -202,9 +165,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  warriorsAdd,
-  oneSideKickOtherSide,
-  passTheTurn,
-  gameTurnOff,
+  onTurn,
   addWarrior
 })(GameBoard as any);

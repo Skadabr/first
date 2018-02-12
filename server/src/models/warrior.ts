@@ -4,27 +4,12 @@ import * as mongoose from "mongoose";
 
 import {
   WarriorKinds,
+  WARRIOR_SAMPLES,
   MIDDLE_POSITION,
   MAX_WARRIORS_ON_FIELD
 } from "../constants";
 
 const { JWT_SECRET } = process.env;
-
-export const WarriorSamples = {
-  [WarriorKinds.PAWN]: {
-    name: "Pawn",
-    health: 6,
-    damage: 1,
-    price: 1
-  },
-
-  [WarriorKinds.OFFICER]: {
-    name: "Officer",
-    health: 6,
-    damage: 2,
-    price: 2
-  }
-};
 
 export interface WarriorJSON {
   _id: string;
@@ -33,7 +18,7 @@ export interface WarriorJSON {
   position: number;
 }
 
-export default function WarriorModel({logger}) {
+export default function WarriorModel({ logger }) {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -76,25 +61,25 @@ export default function WarriorModel({logger}) {
 
   Object.assign(schema.statics, {
     of(owner_id) {
-      return this.find({ owner_id }).then(wrs =>
-        wrs.map(w => w.toJSON())
-      );
+      return this.find({ owner_id }).then(wrs => wrs.map(w => w.toJSON()));
     },
 
     getSample(kind: WarriorKinds) {
-      return { ...WarriorSamples[kind], kind };
+      return WARRIOR_SAMPLES.find(w => w.kind === kind);
     },
 
-    newWarrior(owner_id, kind) {
-      const { owner_id, health } = this.getSample(kind);
-      return { owner_id, health, kind};
+    newWarrior(owner_id, kind: WarriorKinds) {
+      const { health } = this.getSample(kind);
+      return { owner_id, health, kind };
     },
 
     async addWarrior(owner_id, kind: WarriorKinds, position: number) {
       const warriors: WarriorJSON[] = await this.of(owner_id);
 
       if (warriors.find(w => w.position === position)) {
-        return null;
+        const err = new Error("Position is already occupied") as any;
+        err.reason = "occupied";
+        throw err;
       }
 
       const warriorSample = this.newWarrior(owner_id, kind);
@@ -109,7 +94,11 @@ export default function WarriorModel({logger}) {
       }
 
       if (warriors.length >= MAX_WARRIORS_ON_FIELD) {
-        return null;
+        const err = new Error(
+          "There are too many warriors on positions"
+        ) as any;
+        err.reason = "overflow";
+        throw err;
       }
 
       const [newPosition, adjustedWarriors] = adjustWarriors(
@@ -119,7 +108,7 @@ export default function WarriorModel({logger}) {
       );
 
       logger.debug(
-        `warrior: - ${WarriorSamples[kind]} gonna stay on ${newPosition}`
+        `warrior: - ${this.getSample(kind).name} gonna stay on ${newPosition}`
       );
 
       await Promise.all(
@@ -137,6 +126,28 @@ export default function WarriorModel({logger}) {
 
       adjustedWarriors.push(warrior);
       return adjustedWarriors;
+    },
+
+    async kickWarrior(owner_id, warrior, damage) {
+      logger.debug(`model:warrior - kick warrior with damage = ${damage}, owner_id: ${owner_id}`)
+      warrior.health = warrior.health - damage;
+
+      if (warrior.health > 0) {
+        await this.updateOne({ _id: warrior._id }, { $set: { health: warrior.health } });
+        return false;
+      }
+      this.deleteOne({ _id: warrior._id });
+      const warriors = await this.find({ owner_id }).then();
+      warriors.forEach(async w => {
+        if (w.position > warrior.position) {
+          w.position--;
+          await w.save();
+        } else {
+          w.position++;
+          await w.save();
+        }
+      });
+      return true;
     }
   });
 

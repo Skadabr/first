@@ -6,6 +6,7 @@ import game, { GameState } from "./actions/game";
 import gamers, { GamersState } from "./actions/gamers";
 import game_chat, { GameChatState } from "./actions/game_chat";
 import warriors, { WarriorsState } from "./actions/warriors";
+import stats, { StatsState } from "./actions/stats";
 
 export default combineReducers({
   user,
@@ -13,7 +14,8 @@ export default combineReducers({
   game_chat,
   game,
   gamers,
-  warriors
+  warriors,
+  stats
 });
 
 export interface State {
@@ -23,4 +25,5 @@ export interface State {
   game: GameState;
   gamers: GamersState;
   warriors: WarriorsState;
+  stats: StatsState;
 }

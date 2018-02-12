@@ -13,7 +13,7 @@ const { JWT_SECRET } = process.env;
 
 const INIT_MONEY = 1;
 const INIT_HEALTH = 10;
-
+const MAX_MONEY = 10;
 
 export interface UserJSON {
   name: string;
@@ -95,7 +95,7 @@ export default function UserModel(opts) {
           isAsync: false,
           validator: h => h >= 0,
           msg: "Health should be bigger than 0"
-        },
+        }
       }
     }
   });
@@ -131,7 +131,7 @@ export default function UserModel(opts) {
         opponent_id: opponent._id,
         money: INIT_MONEY,
         current_money: INIT_MONEY,
-        health: INIT_HEALTH,
+        health: INIT_HEALTH
       };
       await this.save();
       opponent.gamer = {
@@ -139,7 +139,7 @@ export default function UserModel(opts) {
         opponent_id: this._id,
         money: INIT_MONEY,
         current_money: INIT_MONEY,
-        health: INIT_HEALTH,
+        health: INIT_HEALTH
       };
       await opponent.save();
     },
@@ -170,9 +170,24 @@ export default function UserModel(opts) {
       this.status = StatusKinds.PEACE;
       this.gamer = null;
       await this.save();
-      await this.model("Warrior").deleteMany({owner_id: this._id});
+      await this.model("Warrior").deleteMany({ owner_id: this._id });
     },
 
+    async winFight() {
+      this.rate = this.rate + 1;
+      await this.save();
+    },
+
+    async loseFight() {
+      this.rate = this.rate - 1;
+      await this.save();
+    },
+
+    async increaseMoney() {
+      this.gamer.money = this.gamer.money >= MAX_MONEY ? MAX_MONEY : this.gamer.money + 1;
+      this.gamer.current_money = this.gamer.money;
+      await this.save();
+    }
 
   });
 

@@ -1,6 +1,11 @@
 import * as React from "react";
 import { DragSource } from "react-dnd";
-import { DragTypes, WarriorKinds } from "../../../constants";
+import {
+  DragTypes,
+  WarriorKinds,
+  CARD_WIDTH,
+  CARD_HEIGHT
+} from "../../../constants";
 import warrior_samples from "../../../warrior_samples";
 
 const WarriorTypes = {
@@ -20,6 +25,11 @@ interface Draggable {
   isDragging: boolean;
 }
 
+const numberStyle = {
+  paddingLeft: "0.2rem",
+  paddingRight: "0.2rem"
+};
+
 type PropTypes = Draggable & WarriorSample;
 
 export class WarriorSample extends React.Component<PropTypes> {
@@ -33,16 +43,38 @@ export class WarriorSample extends React.Component<PropTypes> {
     return connectDragSource(
       <div
         style={{
-          maxWidth: 80,
-          border: "1px solid black",
-          minWidth: 80,
-          minHeight: 120
+          maxWidth: CARD_WIDTH,
+          minWidth: CARD_WIDTH,
+          maxHeight: CARD_HEIGHT,
+          minHeight: CARD_HEIGHT,
+          border: "1px solid gray",
+          position: "relative",
+          display: "flex",
+          flexDirection: "column"
         }}
       >
-        <strong className="primary-font">{name}</strong>
-        <small className="float-right text-muted">
-          {health} / {damage} - price({price})
-        </small>
+        <div>
+          <small className="text-muted" style={numberStyle}>
+            {health}
+          </small>
+          <small className="text-muted" style={{ numberStyle, float: "right" }}>
+            {damage}
+          </small>
+        </div>
+        <div
+          style={{
+            paddingTop: "2rem",
+            marginBottom: "auto",
+            textAlign: "center"
+          }}
+        >
+          <strong className="primary-font">{name}</strong>
+        </div>
+        <div>
+          <small className="float-left text-muted" style={numberStyle}>
+            {price}
+          </small>
+        </div>
       </div>
     );
   }
