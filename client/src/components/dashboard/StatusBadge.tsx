@@ -30,7 +30,7 @@ export default class StatusBadge extends React.PureComponent<
         id="user_status_badge"
         onClick={toggle}
         className={colors[user_status]}
-        style={{ float: "right" }}
+        style={{ float: "right", cursor: "pointer" }}
       >
         {statusText[user_status]}
       </span>

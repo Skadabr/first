@@ -1,8 +1,10 @@
 import { createSelector } from "reselect";
 
+import { GameStatus} from "../actions/game";
+
 export const fightIsStartedSelector = createSelector(
   state => state.game,
-  game => game.active
+  game => game.status !== GameStatus.None
 );
 
 export const myTurnSelector = createSelector(
@@ -12,5 +14,11 @@ export const myTurnSelector = createSelector(
 
 export const showChatSelector = createSelector(
   state => state.game,
-  ({ active, show_chat }) => active && show_chat
+  ({ status, show_chat }) => status !== GameStatus.None && show_chat
 );
+
+export const gameStatusSelector = createSelector(
+  state => state.game,
+  game => game.status
+);
+

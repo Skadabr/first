@@ -50,7 +50,8 @@ export class WarriorSample extends React.Component<PropTypes> {
           border: "1px solid gray",
           position: "relative",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          cursor: "pointer"
         }}
       >
         <div>

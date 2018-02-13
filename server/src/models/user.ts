@@ -31,7 +31,7 @@ interface Gamer {
   health: number;
 }
 
-export default function UserModel(opts) {
+export default function UserModel({logger}) {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -175,15 +175,16 @@ export default function UserModel(opts) {
 
     async winFight() {
       this.rate = this.rate + 1;
-      await this.save();
+      await this.resetGameData();
     },
 
     async loseFight() {
       this.rate = this.rate - 1;
-      await this.save();
+      await this.resetGameData();
     },
 
     async increaseMoney() {
+      logger.debug(`model:user - increase money for gamer ${this.gamer}`);
       this.gamer.money = this.gamer.money >= MAX_MONEY ? MAX_MONEY : this.gamer.money + 1;
       this.gamer.current_money = this.gamer.money;
       await this.save();

@@ -24,7 +24,7 @@ import {
 } from "../../../selectors/warriors";
 import { myTurnSelector } from "../../../selectors/game";
 
-interface PropTypes {
+interface GameBoardPropTypes {
   my_gamer: any;
   opponent_gamer: any;
   my_warriors: any;
@@ -41,7 +41,7 @@ interface AddWarriorInput {
   warrior: { kind: WarriorKinds };
 }
 
-export class GameBoard extends React.Component<PropTypes> {
+export class GameBoard extends React.Component<GameBoardPropTypes> {
   addWarrior = (warrior_data: AddWarriorInput) => {
     const { money } = this.props.my_gamer;
     const { owner_name, position, warrior } = warrior_data;
@@ -76,31 +76,6 @@ export class GameBoard extends React.Component<PropTypes> {
       my_warriors,
       opponent_warriors
     } = this.props;
-
-    //  if (!fight) {
-    //    if (status === "win") {
-    //      return (
-    //        <div className="alert alert-danger">
-    //          You are a winner <button onClick={this.eliminateStatus} className="close">&times;</button>
-    //        </div>
-    //      );
-    //    }
-    //    if (status === "lose") {
-    //      return (
-    //        <div className="alert alert-danger">
-    //          You are a loser <button onClick={this.eliminateStatus} className="close">&times;</button>
-    //        </div>
-    //      );
-    //    }
-    //    if (status === "break") {
-    //      return (
-    //        <div className="alert alert-danger">
-    //          Game process was broken <button onClick={this.eliminateStatus} className="close">&times;</button>
-    //        </div>
-    //      );
-    //    }
-    //    return null;
-    //  }
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>

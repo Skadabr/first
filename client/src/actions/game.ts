@@ -2,9 +2,19 @@ import { CLEAN_STATE } from "../constants";
 
 const GAME_UPDATE = "GAME_UPDATE";
 const GAME_TOOGLE = "GAME_TOOGLE";
+const GAME_SET_WINNER = "GAME_SET_WINNER";
+const GAME_INACTIVE = "GAME_INACTIVE";
+
+export enum GameStatus {
+  None,
+  Active,
+  Win,
+  Lose,
+  Broken
+}
 
 const EMPTY = {
-  active: false,
+  status: GameStatus.None,
   show_chat: false
 };
 
@@ -13,7 +23,7 @@ const EMPTY = {
 //
 
 export interface GameState {
-  active: boolean;
+  status: GameStatus;
   show_chat: boolean;
   turn?: boolean;
   my_name?: string;
@@ -31,6 +41,14 @@ export default function gameReducer(
     case GAME_TOOGLE:
       return { ...state, show_chat: !state.show_chat };
 
+    case GAME_SET_WINNER:
+      return payload === state.my_name
+        ? { ...state, status: GameStatus.Win }
+        : payload === state.opponent_name
+          ? { ...state, status: GameStatus.Lose }
+          : { ...state, status: GameStatus.Broken };
+
+    case GAME_INACTIVE:
     case CLEAN_STATE:
       return EMPTY;
     default:
@@ -49,7 +67,7 @@ export function gameInit(
 ) {
   return {
     type: GAME_UPDATE,
-    payload: { my_name, opponent_name, turn, active: true }
+    payload: { my_name, opponent_name, turn, status: GameStatus.Active }
   };
 }
 
@@ -67,22 +85,21 @@ export function gameTurnOff() {
   };
 }
 
-export function gameActive() {
+export function gameToggleChat() {
   return {
-    type: GAME_UPDATE,
-    payload: { active: true }
+    type: GAME_TOOGLE
   };
 }
 
 export function gameInActive() {
   return {
-    type: GAME_UPDATE,
-    payload: { active: false }
+    type: GAME_INACTIVE,
   };
 }
 
-export function gameToggleChat() {
+export function gameSetWinner(name) {
   return {
-    type: GAME_TOOGLE
+    type: GAME_SET_WINNER,
+    payload: name
   };
 }

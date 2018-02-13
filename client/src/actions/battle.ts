@@ -16,7 +16,13 @@ import {
   warriorRemove,
   Warrior
 } from "./warriors";
-import { gameTurnOn, gameTurnOff, gameInit, gameInActive } from "./game";
+import {
+  gameTurnOn,
+  gameTurnOff,
+  gameInit,
+  gameInActive,
+  gameSetWinner
+} from "./game";
 import { gameChatAddMessage } from "./game_chat";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
 import {
@@ -79,23 +85,22 @@ export function onTurn(my_name: string, my_warriors: Warrior[]) {
     for (const w of my_warriors) {
       dispatch(warriorIsAttacking(my_name, w._id, true));
 
-      const val = (await new Promise((resolve, reject) =>
-        io.kickOpponents(w._id, resolve)
-      )) as any;
+      const val = (await new Promise(ok => io.kickOpponents(w._id, ok))) as any;
 
       if (val.error) return console.error(val.error);
-      updateOnKick(val)(dispatch);
+
+      const finished = await updateOnKick(val, my_name)(dispatch);
+      if (finished) return;
+
       dispatch(warriorIsAttacking(my_name, w._id, false));
     }
 
     dispatch(gameTurnOff());
-    io.passTheTurn(val => {
-      resetMoney(val)(dispatch);
-    });
+    io.passTheTurn(val => resetMoney(val)(dispatch));
   };
 }
 
-export function updateOnKick(val) {
+export function updateOnKick(val, my_name) {
   return async dispatch => {
     const { data, error } = val;
 
@@ -110,7 +115,7 @@ export function updateOnKick(val) {
           setTimeout(() => {
             dispatch(gamerIsDamaged(name, false));
             ok();
-          }, 500);
+          }, 1000);
         });
       } else if (msg.type === WARRIOR_REMOVE) {
         const { owner_name, _id } = msg.data;
@@ -123,10 +128,22 @@ export function updateOnKick(val) {
           setTimeout(() => {
             dispatch(warriorIsDamaged(owner_name, _id, false));
             ok();
-          }, 500);
+          }, 1000);
         });
       } else if (msg.type === FINISH_FIGHT) {
-        //const { owner_name, _id, health } = msg.data;
+        const { winner_name } = msg.data;
+        dispatch(gameSetWinner(winner_name));
+        if (winner_name === my_name) {
+          dispatch(userIncreaseRate());
+        } else if (winner_name !== my_name) {
+          dispatch(userDecreaseRate());
+        }
+        setTimeout(() => {
+          dispatch(gameInActive());
+          dispatch(userUpdateStatus(StatusKinds.PEACE));
+        }, 2000);
+
+        return true;
       }
     }
   };
@@ -141,62 +158,6 @@ export function resetMoney(val) {
   };
 }
 
-//export function oneSideKickOtherSide(warriors, opponent, opponent_warriors) {
-//  return dispatch => {
-//    warriors.forEach(warrior => {
-//      kickOpponents(warrior, opponent, opponent_warriors)(dispatch);
-//    });
-//  };
-//}
-
-//export function kickOpponents(warrior, opponent, opponent_warriors) {
-//  return dispatch => {
-//    console.debug("kickOpponents", warrior, opponent, opponent_warriors);
-//    if (opponent_warriors.length === 0) {
-//      return dispatch(gamerKicked(opponent.name, warrior.damage));
-//    }
-//
-//    const { position, damage } = warrior;
-//    const w = opponent_warriors.find(w => w.position === position);
-//
-//    if (w) return dispatch(warriorKicked(opponent.name, w.id, damage));
-//
-//    const ws = opponent_warriors.filter(
-//      w => w.position === position - 1 || w.position === position + 1
-//    );
-//
-//    if (ws.length === 0) dispatch(gamerKicked(opponent.name, warrior.damage));
-//    else
-//      for (const w of ws) dispatch(warriorKicked(opponent.name, w.id, damage));
-//  };
-//}
-
-export function passTheTurn(me, opponent) {
-  return dispatch => {
-    const io = IO().gameIO;
-
-    if (opponent.health < 1) {
-      io.winFight();
-      cleanGameState(me.name, opponent.name)(dispatch);
-      dispatch(userIncreaseRate());
-      return;
-    }
-
-    io.passTheTurn({
-      opponent: {
-        health: opponent.health,
-        warriors: opponent.warriors,
-        name: opponent.name
-      },
-      me: {
-        warriors: me.warriors,
-        name: me.name
-      }
-    });
-    dispatch(gameTurnOff());
-  };
-}
-
 export function acquireTurn(val) {
   return dispatch => {
     dispatch(gameTurnOn());
@@ -204,19 +165,13 @@ export function acquireTurn(val) {
   };
 }
 
-export function looseTheGame(myName, opponentName) {
-  return dispatch => {
-    cleanGameState(myName, opponentName)(dispatch);
-    dispatch(userDecreaseRate());
-  };
-}
-
-function cleanGameState(myName, opponentName) {
-  return dispatch => {
-    dispatch(gamerRelease(myName));
-    dispatch(gamerRelease(opponentName));
-    dispatch(warriorsRelease(myName));
-    dispatch(warriorsRelease(opponentName));
-    dispatch(gameInActive());
-  };
-}
+//
+//function cleanGameState(myName, opponentName) {
+//  return dispatch => {
+//    dispatch(gamerRelease(myName));
+//    dispatch(gamerRelease(opponentName));
+//    dispatch(warriorsRelease(myName));
+//    dispatch(warriorsRelease(opponentName));
+//    dispatch(gameInActive());
+//  };
+//}

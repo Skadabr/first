@@ -49,6 +49,7 @@ export default function(ws, opts) {
   });
 
   ws.on(OPPONENTS_LOAD, cb => {
+    logger.debug("io:game ---- OPPONENTS_LOAD ----");
     User.find({ socket_id: { $ne: null } })
       .then(users => {
         const data = users.map(({ name, status }) => ({ name, status }));
@@ -62,6 +63,7 @@ export default function(ws, opts) {
   });
 
   ws.on(USER_READY, async cb => {
+    logger.debug("io:game ---- USER_READY ----");
     const user = ws.user;
     const opponent = await User.acquireOpponent(ws.user);
 
@@ -77,10 +79,7 @@ export default function(ws, opts) {
     await user.updateStatus(StatusKinds.FIGHT);
     await user.initGame(opponent);
 
-    ws.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-    ws.broadcast.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-    ws.emit(OPPONENT_UPSERT, only(user, "name status"));
-    ws.broadcast.emit(OPPONENT_UPSERT, only(user, "name status"));
+    hailAboutStatusUpdate(ws, user, opponent);
 
     logger.debug(
       `io:game - ${user.name}(${ws.id}) fights with ${opponent.name}(${
@@ -101,6 +100,7 @@ export default function(ws, opts) {
   });
 
   ws.on(SEND_MESSAGE, async data => {
+    logger.debug("io:game ----  SEND_MESSAGE ----");
     const opponent = await User.opponent(ws.user);
     if (!opponent) return;
     ws.to(opponent.socket_id).emit(ADD_MESSAGE, data);
@@ -108,6 +108,7 @@ export default function(ws, opts) {
   });
 
   ws.on(ADD_WARRIOR, async ({ kind, position }, cb) => {
+    logger.debug("io:game ----  ADD_WARRIOR ----");
     if (typeof kind !== "number" || kind < 0)
       throw TypeError("Kind has wrong type");
     if (typeof position !== "number" || position < 0)
@@ -173,6 +174,7 @@ export default function(ws, opts) {
   });
 
   ws.on(KICK_OPPONENTS, async ({ _id }, cb) => {
+    logger.debug("io:game ----  KICK_OPPONENTS ----");
     try {
       const warrior = await Warrior.findOne({ _id });
 
@@ -266,31 +268,6 @@ export default function(ws, opts) {
     );
   });
 
-  //ws.on(FINISH_FIGHT, async () => {
-  //  const opponent = await User.findOneAndUpdate(
-  //    { socket_id: ws.opponent_id },
-  //    { status: "PEACE" },
-  //    { new: true }
-  //  );
-  //  const gain = ws.orig_opponent_money - opponent.money;
-  //  const money = ws.orig_user_money + gain;
-  //  await ws.user.update({ money, status: "PEACE" });
-
-  //  ws.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-  //  ws.broadcast.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-  //  ws.broadcast.emit(OPPONENT_UPSERT, { name: ws.user.name, status: "PEACE" });
-
-  //  ws.emit(END_OF_FIGHT, { status: "win", money });
-  //  ws
-  //    .to(ws.opponent_id)
-  //    .emit(END_OF_FIGHT, { status: "lose", money: opponent.money });
-
-  //  logger.debug(`winner ${ws.user.name} and gain ${gain}`);
-
-  //  ws.nsp.connected[ws.opponent_id] = undefined;
-  //  ws.opponent_id = undefined;
-  //});
-
   //
   // ============ helpers ============
   //
@@ -313,11 +290,12 @@ export default function(ws, opts) {
       await user.winFight();
       await opponent.loseFight();
 
+      hailAboutStatusUpdate(ws, user, opponent);
+
       data.push({
         type: FINISH_FIGHT,
         data: {
-          winner: user.name,
-          rate: opponent.rate
+          winner_name: user.name
         }
       });
     }
@@ -351,5 +329,12 @@ export default function(ws, opts) {
     }
     ws.to(opponent.socket_id).emit(KICK_OPPONENTS, { data });
     cb({ data });
+  }
+
+  function hailAboutStatusUpdate(ws, user, opponent) {
+    ws.emit(OPPONENT_UPSERT, only(opponent, "name status"));
+    ws.broadcast.emit(OPPONENT_UPSERT, only(opponent, "name status"));
+    ws.emit(OPPONENT_UPSERT, only(user, "name status"));
+    ws.broadcast.emit(OPPONENT_UPSERT, only(user, "name status"));
   }
 }

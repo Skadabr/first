@@ -8,9 +8,9 @@ import {
 } from "../actions/opponents";
 import {
   startFight,
-  acquireTurn,
   updateWarriors,
-  updateOnKick
+  updateOnKick,
+  acquireTurn,
 } from "../actions/battle";
 import { FINISH_FIGHT } from "../constants";
 
@@ -45,10 +45,14 @@ export default function Game(ws, store) {
     date = new Date(parseInt(date));
     store.dispatch(gameChatAddMessage(msg, name, date));
   });
-  ws.on(START_FIGHT, val => { startFight(val)(store.dispatch); });
-  ws.on(UPDATE_WARRIOR, val => val && updateWarriors(val)(store.dispatch));
-  ws.on(KICK_OPPONENTS, val => val && updateOnKick(val)(store.dispatch));
-  ws.on(TURN, val => { acquireTurn(val)(store.dispatch); });
+  ws.on(START_FIGHT, val => {
+    startFight(val)(store.dispatch);
+  });
+  ws.on(UPDATE_WARRIOR, val => updateWarriors(val)(store.dispatch));
+  ws.on(KICK_OPPONENTS, val =>
+    updateOnKick(val, store.getState().game.my_name)(store.dispatch)
+  );
+  ws.on(TURN, val => acquireTurn(val)(store.dispatch));
 
   return {
     ws,
@@ -72,10 +76,6 @@ export default function Game(ws, store) {
 
     passTheTurn(cb) {
       ws.emit(TURN, cb);
-    },
-
-    finishFight(cb) {
-      ws.emit(FINISH_FIGHT);
     }
   };
 }
