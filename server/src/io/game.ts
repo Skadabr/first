@@ -70,16 +70,16 @@ export default function(ws, opts) {
     if (!opponent) {
       const { name, status } = await ws.user.updateStatus(StatusKinds.READY);
       logger.debug(`io:game - user "${name}" ready to fight`);
-      ws.broadcast.emit(OPPONENT_UPSERT, { name, status });
-      ws.emit(OPPONENT_UPSERT, { name, status });
+      informAboutStatusUpdate(ws, {name, status});
       ws.emit(USER_UPDATE_STATUS, status);
       return;
     }
 
     await user.updateStatus(StatusKinds.FIGHT);
-    await user.initGame(opponent);
+    const battle = await Battle.createBattle(user, opponent);
 
-    hailAboutStatusUpdate(ws, user, opponent);
+    informAboutStatusUpdate(ws, user);
+    informAboutStatusUpdate(ws, opponent);
 
     logger.debug(
       `io:game - ${user.name}(${ws.id}) fights with ${opponent.name}(${
@@ -290,7 +290,7 @@ export default function(ws, opts) {
       await user.winFight();
       await opponent.loseFight();
 
-      hailAboutStatusUpdate(ws, user, opponent);
+      informAboutStatusUpdate(ws, user, opponent);
 
       data.push({
         type: FINISH_FIGHT,
@@ -331,10 +331,8 @@ export default function(ws, opts) {
     cb({ data });
   }
 
-  function hailAboutStatusUpdate(ws, user, opponent) {
-    ws.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-    ws.broadcast.emit(OPPONENT_UPSERT, only(opponent, "name status"));
-    ws.emit(OPPONENT_UPSERT, only(user, "name status"));
-    ws.broadcast.emit(OPPONENT_UPSERT, only(user, "name status"));
+  function informAboutStatusUpdate(ws, { name, status }) {
+    ws.emit(OPPONENT_UPSERT, { name, status });
+    ws.broadcast.emit(OPPONENT_UPSERT, { name, status });
   }
 }

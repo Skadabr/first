@@ -4,7 +4,7 @@ export enum StatusKinds {
   FIGHT
 }
 
-export enum WarriorKinds {
+export enum UnitTypes {
   PAWN,
   OFFICER
 }
