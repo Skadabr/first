@@ -55,11 +55,8 @@ export class WarriorSample extends React.Component<PropTypes> {
         }}
       >
         <div>
-          <small className="text-muted" style={numberStyle}>
-            {health}
-          </small>
-          <small className="text-muted" style={{ numberStyle, float: "right" }}>
-            {damage}
+          <small className="float-left text-muted" style={numberStyle}>
+            {price}
           </small>
         </div>
         <div
@@ -72,8 +69,11 @@ export class WarriorSample extends React.Component<PropTypes> {
           <strong className="primary-font">{name}</strong>
         </div>
         <div>
-          <small className="float-left text-muted" style={numberStyle}>
-            {price}
+          <small className="text-muted" style={numberStyle}>
+            {damage}
+          </small>
+          <small className="text-muted" style={{ numberStyle, float: "right" }}>
+            {health}
           </small>
         </div>
       </div>

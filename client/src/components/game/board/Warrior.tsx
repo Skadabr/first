@@ -36,11 +36,8 @@ export default function Warrior({ kind, health }: WarriorPropTypes) {
       }}
     >
       <div>
-        <small className="text-muted" style={numberStyle}>
-          {health}
-        </small>
-        <small className="text-muted" style={{ numberStyle, float: "right" }}>
-          {damage}
+        <small className="float-left text-muted" style={numberStyle}>
+          {price}
         </small>
       </div>
       <div
@@ -53,8 +50,11 @@ export default function Warrior({ kind, health }: WarriorPropTypes) {
         <strong className="primary-font">{name}</strong>
       </div>
       <div>
-        <small className="float-left text-muted" style={numberStyle}>
-          {price}
+        <small className="text-muted" style={numberStyle}>
+          {damage}
+        </small>
+        <small className="text-muted" style={{ numberStyle, float: "right" }}>
+          {health}
         </small>
       </div>
     </div>
