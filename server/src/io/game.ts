@@ -1,11 +1,11 @@
 import only = require("only");
 
-import BattleController from "./controllers/battle";
+import GameController from "./controllers/game";
 
 export const OPPONENT_GOES = "OPPONENT_GOES";
 export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 export const OPPONENT_UPSERT = "OPPONENT_UPSERT";
-export const USER_TRY_CREATE_BATTLE = "USER_TRY_CREATE_BATTLE";
+export const BATTLE_REQUEST = "BATTLE_REQUEST";
 export const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 export const BATTLE_CREATE = "BATTLE_CREATE";
 export const SEND_MESSAGE = "SEND_MESSAGE";
@@ -23,7 +23,7 @@ export default function(ws, opts) {
   const User = models.model("User");
   const Warrior = models.model("Warrior");
 
-  const battleController = new BattleController(opts);
+  const gameController = new GameController(opts);
 
   //ws.on("disconnect", async () => {
   //  logger.debug("io:game - disconnect of ", ws.id);
@@ -38,9 +38,10 @@ export default function(ws, opts) {
   //  ws.broadcast.emit(OPPONENT_GOES, user.name);
   //});
 
-  ws.on(OPPONENTS_LOAD, battleController.loadOpponents);
-  ws.on(USER_TRY_CREATE_BATTLE, battleController.tryCreateBattle);
-  ws.on(SEND_MESSAGE, battleController.sendMessage);
+  ws.on(OPPONENTS_LOAD, gameController.loadOpponents);
+  ws.on(BATTLE_REQUEST, gameController.tryCreateBattle);
+  ws.on(SEND_MESSAGE,   gameController.sendMessage);
+
   //ws.on(ADD_UNIT, battleController.addWarrior);
 
   //ws.on(TURN, async cb => { });

@@ -1,18 +1,21 @@
 import flatMap from "lodash.flatmap";
-import { createActions } from "../lib/actions";
+
 import { UnitTypes } from "../constants";
+import { UnitBasicCharacteristic } from ".";
+
+import { createActions } from "../lib/actions";
+import { createToggleActivityEffect} from "../effects";
 
 export default function createUnit(type: UnitTypes) {
   switch (type) {
     case UnitTypes.Pawn:
       return {
-        type: UnitTypes.Pawn,
-        name: "Pawn",
-        cost: 1,
-        init_health: 6,
-        damage: 1,
+        ...UnitBasicCharacteristic[UnitTypes.Pawn],
 
         effects: [createToggleActivityEffect()],
+
+        findUnitTargets() {
+        }
 
         action(unit, opts) {
           const targets = findUnitTargets();
@@ -28,11 +31,7 @@ export default function createUnit(type: UnitTypes) {
 
     case UnitTypes.Officer:
       return {
-        type: UnitTypes.Officer,
-        name: "Officer",
-        cost: 2,
-        init_health: 6,
-        damage: 2,
+        ...UnitBasicCharacteristic[UnitTypes.Officer],
 
         effects: [createToggleActivityEffect()],
 

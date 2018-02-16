@@ -17,17 +17,18 @@ export const morgan = Morgan("dev", {
   }
 });
 
-export function log(beforeLogger, afterLogger) {
+export function log(beforeLogger: any, afterLogger: any): any {
   return function(target, key, desc) {
+    console.log(target[key], desc);
     const fn = desc.value;
 
-    const value = function() {
+    const value = function(...args) {
       try {
-        beforeLogger && beforeLogger(arguments);
-        const res = fn.apply(this, arguments);
-        afterLogger && afterLogger(null, res, arguments);
+        beforeLogger && beforeLogger(args);
+        const res = fn.apply(this, args);
+        afterLogger && afterLogger(null, res, args);
       } catch (err) {
-        afterLogger && afterLogger(err, null, arguments);
+        afterLogger && afterLogger(err, null, args);
       }
     };
 

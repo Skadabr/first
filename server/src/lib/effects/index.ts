@@ -1,3 +1,4 @@
+//
 // unit: {                target: {
 //   effects                effects
 // }                      }
@@ -15,6 +16,7 @@
 //           v        |         v
 //                    v
 // [....preactions, action, ...postactions]
+//
 
 export default function applyEffects(unit, action) {
   const [preActions, action, postActions] = unit.effects.reduce(
@@ -34,31 +36,17 @@ export function applyEffect(action, effect) {
   switch (effect.type) {
     case TOGGLE_ACTIVITY: {
       const unit = action.unit;
-      return [createDisActivateAction(unit), { ...action }, createActivateAction(unit)];
+      return [createActivateAction(unit), { ...action }, createDisActivateAction(unit)];
     }
   }
 }
+
+//
+// ============ Effects ============
+//
 
 export function createToggleActivityEffect() {
   return {
     type: TOGGLE_ACTIVITY,
   };
 }
-
-
-// export function createEffect(type: ActionType, when: ActionOrderType, payload) {
-//   return {
-//     type: ActionType.Attack,
-//     when: ActionOrderType.To,
-//     payload: {
-//       count,
-//       damage
-//     }
-//   };
-// }
-//
-// export function attackEffect(count, damage) {
-//   return unit => {
-//     unit.health - damage;
-//   };
-// }

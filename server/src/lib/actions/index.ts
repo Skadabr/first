@@ -1,9 +1,7 @@
 import applyEffects from "./effects";
 
-export function createActions(effects, initAction) {
-  let actions = [initAction];
-  actions = applyEffects(unitEffects, actions);
-  actions = applyEffects(targetEffects, actions);
+export function createActions(initAction, unitEffects, targetEffects) {
+  actions = applyEffects([...unitEffects, targetEffects], actions);
 }
 
 //

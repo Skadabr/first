@@ -15,5 +15,9 @@
   },
   "devDependencies": {
     "source-map-support": "^0.5.3"
+  },
+  "dependencies": {
+    "lodash.flatmap": "^4.5.0",
+    "reselect": "^3.0.1"
   }
 }

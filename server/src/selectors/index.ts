@@ -7,6 +7,6 @@ export const opponentPlayerSelector = (state, id) =>
   state.players.find(p => p.user._id !== id);
 
 export const nextTurnOwnerSelector = createSelector(
-  getOpponentPlayer,
+  opponentPlayerSelector,
   player => player.user._id
 );

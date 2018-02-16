@@ -7,7 +7,7 @@ import * as uniqueValidator from "mongoose-unique-validator";
 import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-import { StatusKinds, POSITIONS } from "../constants";
+import { UnitTypes, UserStatusType, POSITIONS } from "../constants";
 
 const { JWT_SECRET } = process.env;
 
@@ -48,13 +48,13 @@ export default function BattleModel({ logger }) {
 
   const schema = new Schema({
     turn_owner: {
-      type: Scheme.ObjectId,
+      type: Schema.ObjectId,
       required: true
     },
     players: [
       {
         user: {
-          _id: Scheme.ObjectId,
+          _id: Schema.ObjectId,
           socket_id: String,
           name: {
             type: String,
@@ -70,7 +70,7 @@ export default function BattleModel({ logger }) {
           {
             type: {
               type: Number,
-              enum: [WarriorKinds.PAWN, WarriorKinds.OFFICER],
+              enum: [UnitTypes.Pawn, UnitTypes.Officer],
               required: true
             },
             health: {
