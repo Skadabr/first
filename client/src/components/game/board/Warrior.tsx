@@ -32,7 +32,8 @@ export default function Warrior({ kind, health }: WarriorPropTypes) {
         border: "1px solid gray",
         position: "relative",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        cursor: "pointer"
       }}
     >
       <div>

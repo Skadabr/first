@@ -1,4 +1,4 @@
-import { StatusKinds, CLEAN_STATE } from "../constants";
+import { UserStatusType, CLEAN_STATE } from "../constants";
 
 const USER_ADD = "USER_ADD";
 const USER_REMOVE = "USER_REMOVE";
@@ -11,7 +11,7 @@ export interface UserState {
   email?: string;
   token?: string;
   rate?: number;
-  status?: StatusKinds;
+  status?: UserStatusType;
 }
 
 const EMPTY = {};
@@ -41,7 +41,7 @@ export default function userReducer(
   }
 }
 
-export function userAdd(name, email, token, rate, status: StatusKinds = StatusKinds.PEACE ) {
+export function userAdd(name, email, token, rate, status: UserStatusType = UserStatusType.Peace ) {
   return {
     type: USER_ADD,
     payload: { name, email, token, rate, status }
@@ -60,7 +60,7 @@ export function userIncreaseRate() {
   };
 }
 
-export function userUpdateStatus(status: StatusKinds) {
+export function userUpdateStatus(status: UserStatusType) {
   return {
     type: USER_UPDATE,
     payload: { status }

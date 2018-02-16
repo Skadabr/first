@@ -1,9 +1,8 @@
 import { CLEAN_STATE, StatusKinds } from "../constants";
 
-const OPPONENT_UPSERT = "OPPONENT_UPSERT";
-const OPPONENT_GOES = "OPPONENT_GOES";
+const OPPONENTS_UPSERT = "OPPONENTS_UPSERT";
+const OPPONENTS_GOES = "OPPONENTS_GOES";
 const OPPONENTS_LOAD = "OPPONENTS_LOAD";
-const OPPONENTS_RELEASE = "OPPONENTS_RELEASE";
 
 const EMPTY = [];
 
@@ -15,6 +14,7 @@ interface Opponent {
   name: string;
   status: StatusKinds;
 }
+
 export type OpponentsState = Opponent[];
 
 export default function opponentsReducer(
@@ -24,8 +24,8 @@ export default function opponentsReducer(
   switch (type) {
     case OPPONENTS_LOAD:
       return payload;
-    case OPPONENT_UPSERT:
-      const idx = state.findIndex(op => op.name === payload.name);
+    case OPPONENTS_UPSERT:
+      const idx = state.findIndex(u => u.name === payload.name);
       if (idx === -1) {
         return [...state, payload];
       } else {
@@ -33,8 +33,9 @@ export default function opponentsReducer(
         state[idx] = { ...state[idx], ...payload };
         return state;
       }
-    case OPPONENT_GOES:
-      return state.filter(user => user.name !== payload);
+    case OPPONENTS_GOES:
+      const { name } = payload;
+      return state.filter(opponent => opponent.name !== name);
 
     case CLEAN_STATE:
       return [];
@@ -49,7 +50,7 @@ export default function opponentsReducer(
 
 export function opponentsUpsert(opponent: Opponent) {
   return {
-    type: OPPONENT_UPSERT,
+    type: OPPONENTS_UPSERT,
     payload: opponent
   };
 }
@@ -61,9 +62,11 @@ export function opponentsLoad(opponents: OpponentsState) {
   };
 }
 
-export function opponentGoes(opponent_name: string) {
+export function opponentGoes(name: string) {
   return {
-    type: OPPONENT_GOES,
-    payload: opponent_name
+    type: OPPONENTS_GOES,
+    payload: {
+      name
+    }
   };
 }

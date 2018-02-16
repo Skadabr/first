@@ -1,13 +1,14 @@
-export enum StatusKinds {
-  PEACE,
-  READY,
-  FIGHT
+export enum UserStatusType {
+  Peace,
+  Ready,
+  Fight
 }
 
-export enum WarriorKinds {
-  PAWN,
-  OFFICER
+export enum UnitTypes {
+  Pawn,
+  Officer
 }
+
 
 export const POSITIONS = 13;
 export const MAX_WARRIORS_ON_FIELD = 7;

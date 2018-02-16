@@ -2,14 +2,13 @@ import http = require("http");
 import initApp from "./app";
 
 import Models from "./models";
-import Loggers from "./logger";
+import {logger, morgan} from "./logger";
 import Passport from "./passport";
 import Router from "./router";
 import IO from "./io";
 
 const { PORT = 3000 } = process.env;
 
-const { logger, morgan } = Loggers();
 const models = Models({logger});
 const passport = Passport({ logger, models });
 const router = Router({ models, logger, passport });

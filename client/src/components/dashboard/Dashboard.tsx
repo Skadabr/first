@@ -8,13 +8,13 @@ import UserInfo from "./UserInfo";
 import { readyToFight } from "../../actions/dashboard";
 import { opponentsSelector } from "../../selectors/opponents";
 import { userInfoSelector } from "../../selectors/user";
-import { StatusKinds } from "../../constants";
+import { UserStatusType } from "../../constants";
 
 interface PropTypes {
   user: {
     email: string;
     name: string;
-    status: StatusKinds;
+    status: UserStatusType;
     rate: number;
   };
   opponents: { name; status }[];
@@ -26,7 +26,7 @@ export class Dashboard extends React.Component<PropTypes> {
     const { readyToFight, user } = this.props;
 
     switch (user.status) {
-      case StatusKinds.PEACE:
+      case UserStatusType.Peace:
         return readyToFight();
     }
   };

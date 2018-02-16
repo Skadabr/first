@@ -1,12 +1,12 @@
 {
   "scripts": {
-    "typecheck": "tsc --lib es2017 --noEmit -w --pretty src/*.ts",
-    "prestart": "tsc --lib es2017 --sourceMap --outDir dist src/*.ts",
+    "typecheck": "tsc --lib es2017 --noEmit -w --pretty --experimentalDecorators src/*.ts",
+    "prestart": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist src/*.ts",
     "start": "node dist",
     "test:ui": "mocha --require babel-register -b -t 3000 -R min --recursive test/acceptance",
     "test:ui:i": "mocha --require babel-register -b -t 3000 test/acceptance/init.test.js",
-    "prestart:dev": "tsc --lib es2017 --sourceMap --outDir dist -w src/*.ts &",
-    "start:dev": "tsc --lib es2017 --sourceMap --outDir dist src/*.ts && nodemon -r source-map-support/register dist",
+    "prestart:dev": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist -w src/*.ts &",
+    "start:dev": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist src/*.ts && nodemon -r source-map-support/register dist",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -23,6 +23,7 @@
     "express": "^4.16.2",
     "jsonwebtoken": "^8.1.0",
     "jwt-decode": "^2.2.0",
+    "lodash.flatmap": "^4.5.0",
     "moment": "^2.20.1",
     "mongoose": "^4.13.9",
     "mongoose-unique-validator": "^1.0.6",
@@ -38,6 +39,7 @@
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
     "validator": "^9.2.0"

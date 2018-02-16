@@ -1,12 +1,12 @@
 import { createSelector } from "reselect";
 
-import { StatusKinds } from "../constants";
+import { UserStatusType } from "../constants";
 import { State } from "../reducer";
 import { UserState } from "../actions/user";
 
 interface UserInfo {
   name: string;
-  status: StatusKinds;
+  status: UserStatusType;
   email: string;
   rate: number;
 }

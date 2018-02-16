@@ -34,7 +34,7 @@ interface Unit {
 
 interface Battle {
   turn_owner: ObjectId;
-  users: {
+  players: {
     user: User;
     hero: Hero;
     units: Unit[];
@@ -51,7 +51,7 @@ export default function BattleModel({ logger }) {
       type: Scheme.ObjectId,
       required: true
     },
-    users: [
+    players: [
       {
         user: {
           _id: Scheme.ObjectId,
@@ -120,37 +120,14 @@ export default function BattleModel({ logger }) {
   });
 
   Object.assign(schema.methods, {
-    //  toJSON(): UserJSON {
-    //    const { name, email, status, socket_id, rate } = this;
-    //    return { name, email, status, socket_id, rate };
-    //  },
+    //toJSON(): UserJSON { },
 
-    getUsers() {
-      this.users
-    }
-
-    gamerInitData(): {
-      name: string,
-      gamer: {
-        money: number,
-        health: number
-      }
-    } {
-      const { current_money, health, turn } = this.gamer;
-      return {
-        name: this.name,
-        gamer: {
-          money: current_money,
-          health
-        }
-      };
-    }
   });
 
   Object.assign(schema.statics, {
     createBattle(user, opponent) {
       const turn_owner = user._id;
-      const users = [
+      const players = [
         {
           user: {
             _id: user._id,
@@ -178,7 +155,12 @@ export default function BattleModel({ logger }) {
           pocket_size: INIT_MONEY
         }
       ];
-      return this.create({turn_owner, users});
+      return this.create({turn_owner, players});
+    },
+
+    nextTurnOwner() {
+      const { turn_owner } = this;
+      return this.players.find(p => p.user._id !== turn_owner)._id;
     }
   });
 

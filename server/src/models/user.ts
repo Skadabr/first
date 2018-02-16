@@ -7,7 +7,7 @@ import * as uniqueValidator from "mongoose-unique-validator";
 import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-import { StatusKinds } from "../constants";
+import { UserStatusType } from "../constants";
 
 const { JWT_SECRET } = process.env;
 
@@ -19,7 +19,7 @@ export interface UserJSON {
   name: string;
   email: string;
   socket_id: string;
-  status: StatusKinds;
+  status: UserStatusType;
   rate: number;
 }
 
@@ -31,7 +31,7 @@ interface Gamer {
   health: number;
 }
 
-export default function UserModel({logger}) {
+export default function UserModel({ logger }) {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -61,8 +61,8 @@ export default function UserModel({logger}) {
     socket_id: String,
     status: {
       type: Number,
-      enum: [StatusKinds.PEACE, StatusKinds.READY, StatusKinds.FIGHT],
-      default: StatusKinds.PEACE
+      enum: [UserStatusType.Peace, UserStatusType.Ready, UserStatusType.Fight],
+      default: UserStatusType.Peace
     },
     rate: {
       type: Number,
@@ -167,7 +167,7 @@ export default function UserModel({logger}) {
     },
 
     async resetGameData() {
-      this.status = StatusKinds.PEACE;
+      this.status = UserStatusType.Peace;
       this.gamer = null;
       await this.save();
       await this.model("Warrior").deleteMany({ owner_id: this._id });
@@ -185,24 +185,37 @@ export default function UserModel({logger}) {
 
     async increaseMoney() {
       logger.debug(`model:user - increase money for gamer ${this.gamer}`);
-      this.gamer.money = this.gamer.money >= MAX_MONEY ? MAX_MONEY : this.gamer.money + 1;
+      this.gamer.money =
+        this.gamer.money >= MAX_MONEY ? MAX_MONEY : this.gamer.money + 1;
       this.gamer.current_money = this.gamer.money;
       await this.save();
     }
-
   });
 
   Object.assign(schema.statics, {
     acquireOpponent(user) {
       return this.findOneAndUpdate(
-        { status: StatusKinds.READY, name: { $ne: user.name } },
-        { status: StatusKinds.FIGHT },
+        { status: UserStatusType.Ready, name: { $ne: user.name } },
+        { status: UserStatusType.Fight },
         { new: true }
       ).exec();
     },
 
     opponent(user: { gamer: Gamer }) {
       return this.findOne({ _id: user.gamer.opponent_id });
+    },
+
+    loadOpponents() {
+      return this.find({ socket_id: { $ne: null } })
+        .then(users => {
+          const data = users.map(({ name, status }) => ({ name, status }));
+          //logger.debug("model:user - load opponents");
+          return data;
+        })
+        .catch(err => {
+          logger.debug("model:user - can't load users: " + err.message);
+          return { error: { message: err.message } }
+        });
     }
   });
 

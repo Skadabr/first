@@ -6,26 +6,21 @@ import {
   opponentsUpsert,
   opponentGoes
 } from "../actions/opponents";
-import {
-  startFight,
-  updateWarriors,
-  updateOnKick,
-  acquireTurn,
-} from "../actions/battle";
+import { startFight } from "../actions/battle";
 import { FINISH_FIGHT } from "../constants";
 
 const OPPONENT_UPSERT = "OPPONENT_UPSERT";
 const OPPONENT_GOES = "OPPONENT_GOES";
 const OPPONENTS_LOAD = "OPPONENTS_LOAD";
 const SEND_MESSAGE = "SEND_MESSAGE";
-const USER_READY = "USER_READY";
+const USER_TRY_CREATE_BATTLE = "USER_TRY_CREATE_BATTLE";
 const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
-const START_FIGHT = "START_FIGHT";
-const ADD_MESSAGE = "ADD_MESSAGE";
-const TURN = "TURN";
-const ADD_WARRIOR = "ADD_WARRIOR";
-const UPDATE_WARRIOR = "UPDATE_WARRIOR";
-const KICK_OPPONENTS = "KICK_OPPONENTS";
+const CREATE_BATTLE = "CREATE_BATTLE";
+
+// const TURN = "TURN";
+// const ADD_UNIT = "ADD_WARRIOR";
+// const UPDATE_WARRIOR = "UPDATE_WARRIOR";
+// const KICK_OPPONENTS = "KICK_OPPONENTS";
 
 export default function Game(ws, store) {
   ws.on("error", console.error);
@@ -41,18 +36,15 @@ export default function Game(ws, store) {
 
   ws.on(USER_UPDATE_STATUS, val => store.dispatch(userUpdateStatus(val)));
 
-  ws.on(ADD_MESSAGE, ({ msg, name, date }) => {
-    date = new Date(parseInt(date));
-    store.dispatch(gameChatAddMessage(msg, name, date));
+  ws.on(SEND_MESSAGE, ({ msg, name, date }) => {
+    store.dispatch(gameChatAddMessage(msg, name, new Date(parseInt(date))));
   });
-  ws.on(START_FIGHT, val => {
-    startFight(val)(store.dispatch);
-  });
-  ws.on(UPDATE_WARRIOR, val => updateWarriors(val)(store.dispatch));
-  ws.on(KICK_OPPONENTS, val =>
-    updateOnKick(val, store.getState().game.my_name)(store.dispatch)
-  );
-  ws.on(TURN, val => acquireTurn(val)(store.dispatch));
+  ws.on(CREATE_BATTLE, val => createBattle(val)(store.dispatch));
+  //ws.on(UPDATE_WARRIOR, val => updateWarriors(val)(store.dispatch));
+  //ws.on(KICK_OPPONENTS, val =>
+  //  updateOnKick(val, store.getState().game.my_name)(store.dispatch)
+  //);
+  //ws.on(TURN, val => acquireTurn(val)(store.dispatch));
 
   return {
     ws,
@@ -66,16 +58,16 @@ export default function Game(ws, store) {
       ws.emit(SEND_MESSAGE, { msg, name, date });
     },
 
-    addWarrior(kind: WarriorKinds, position, cb) {
-      ws.emit(ADD_WARRIOR, { kind, position }, cb);
-    },
+//  addUnit(kind: WarriorKinds, position, cb) {
+//    ws.emit(ADD_UNIT, { kind, position }, cb);
+//  },
 
-    kickOpponents(_id: string, cb) {
-      ws.emit(KICK_OPPONENTS, { _id }, cb);
-    },
+//  act(_id: string, cb) {
+//    ws.emit(KICK_OPPONENTS, { _id }, cb);
+//  },
 
-    passTheTurn(cb) {
-      ws.emit(TURN, cb);
-    }
+//  passTheTurn(cb) {
+//    ws.emit(TURN, cb);
+//  }
   };
 }

@@ -3,7 +3,6 @@
 const { MONGO_URL, NODE_ENV = "development" } = process.env;
 
 import user from "./user";
-import warrior from "./warrior";
 
 export default function Mongo(opts) {
   const mongoose = require("mongoose");
@@ -15,7 +14,6 @@ export default function Mongo(opts) {
   });
 
   user(opts);
-  warrior(opts);
 
   return mongoose;
 }
