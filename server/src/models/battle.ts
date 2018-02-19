@@ -15,7 +15,6 @@ const INIT_MONEY = 1;
 const INIT_HEALTH = 10;
 const MAX_MONEY = 10;
 
-
 interface User {
   _id: ObjectId;
   socket_id: string;
@@ -40,7 +39,7 @@ interface Battle {
     units: Unit[];
     money: number;
     pocket_size: number;
-  }[]
+  }[];
 }
 
 export default function BattleModel({ logger }) {
@@ -54,8 +53,16 @@ export default function BattleModel({ logger }) {
     players: [
       {
         user: {
-          _id: Schema.ObjectId,
-          socket_id: String,
+          _id: {
+            type: Schema.ObjectId,
+            index: true,
+            unique: true,
+            required: true
+          },
+          socket_id: {
+            type: String
+            //required: true
+          },
           name: {
             type: String,
             required: true,
@@ -119,11 +126,6 @@ export default function BattleModel({ logger }) {
     ]
   });
 
-  Object.assign(schema.methods, {
-    //toJSON(): UserJSON { },
-
-  });
-
   Object.assign(schema.statics, {
     createBattle(user, opponent) {
       const turn_owner = user._id;
@@ -155,7 +157,7 @@ export default function BattleModel({ logger }) {
           pocket_size: INIT_MONEY
         }
       ];
-      return this.create({turn_owner, players});
+      return this.create({ turn_owner, players });
     },
 
     nextTurnOwner() {
@@ -166,5 +168,5 @@ export default function BattleModel({ logger }) {
 
   schema.plugin(uniqueValidator);
 
-  mongoose.model("User", schema);
+  mongoose.model("Battle", schema);
 }

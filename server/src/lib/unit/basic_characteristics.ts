@@ -1,4 +1,4 @@
-import { UnitTypes } from "../constants";
+import { UnitTypes } from "../../constants";
 
 export default {
   [UnitTypes.Pawn]: {

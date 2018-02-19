@@ -1,6 +1,5 @@
 import { UserStatusType } from "../../constants";
 import { log } from "../../logger";
-import { loadOpponentsLog } from "../../logger/controllers/battle";
 import {
   OPPONENT_GOES,
   OPPONENTS_LOAD,
@@ -12,73 +11,11 @@ import {
 } from "../game";
 
 export default class BattleController {
-  private ws: any;
-  private Battle: any;
-  private User: any;
-
-  constructor(opts) {
-    const { ws, models } = opts;
-    this.ws = ws;
-    this.Battle = models.model("Battle");
-    this.User = models.model("User");
-  }
-
-  @log(null, loadOpponentsLog)
-  public loadOpponents = async cb => {
-    const opponents = await User.loadOpponents();
-    cb(opponents);
-  };
-
-  public tryCreateBattle = async () => {
-    //logger.debug("io:game ---- USER_READY ----");
-    const user = this.ws.user;
-    const opponent = await User.acquireOpponent(ws.user);
-    if (!opponent) return this._setUserReady(user);
-    this._createBattle(user, opponent);
-  };
-
-  public sendMessage = async data => {
-    //logger.debug("io:game ----  SEND_MESSAGE ----");
-    const opponent = await User.opponent(ws.user);
-    if (!opponent) return;
-    ws.to(opponent.socket_id).emit(SEND_MESSAGE, data);
-    //logger.debug(`io:game - send message to ${opponent.name}`);
-  };
 
   //
   // ============ private ============
   //
 
-  private _setUserReady = async user => {
-    const { name, status } = await user.updateStatus(UserStatusType.Ready);
-    //logger.debug(`io:game - user "${name}" ready to fight`);
-    this._broadcastStatusUpdate({ name, status });
-    ws.emit(USER_UPDATE_STATUS, status);
-  };
-
-  private _createBattle = async (user, opponent) => {
-    await user.updateStatus(UserStatusType.Fight);
-    const battle = await this.Battle.createBattle(user, opponent);
-
-    this._broadcastStatusUpdate(user);
-    this._broadcastStatusUpdate(opponent);
-
-    //logger.debug(
-    //  `io:game - ${user.name}(${ws.id}) fights with ${opponent.name}(${
-    //    opponent.socket_id
-    //  })`
-    //);
-
-    this._sendBattleStart(battle.toJSON(), opponent.socket_id);
-  };
-
-  private _broadcastStatusUpdate = ({ name, status }) => {
-    this._broadcast(OPPONENT_UPSERT, { name, status });
-  };
-
-  private _sendBattleStart = (battle, opponent_sid) => {
-    this._send(BATTLE_CREATE, opponent_sid, battle);
-  };
 
   private _send = (event, opponent_sid, ...args) => {
     this.ws.emit(event, ...args);

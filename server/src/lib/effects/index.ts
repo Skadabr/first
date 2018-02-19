@@ -1,3 +1,7 @@
+import {createActivateAction, createDisActivateAction} from "../actions";
+
+const TOGGLE_ACTIVITY = "TOGGLE_ACTIVITY";
+
 //
 // unit: {                target: {
 //   effects                effects
@@ -19,24 +23,25 @@
 //
 
 export default function applyEffects(unit, action) {
-  const [preActions, action, postActions] = unit.effects.reduce(
+  const [preActions, newAction, postActions] = unit.effects.reduce(
     (eff, [pre, currentAction, post]) => {
-      const [preActions, action, postActions] = applyEffect(
-        eff,
-        currentAction
-      );
+      const [preActions, action, postActions] = applyEffect(eff, currentAction);
       return [[...pre, ...preActions], action, [...postActions, ...post]];
     },
     [[], action, []]
   );
-  return [...preActions, action, ...postActions];
+  return [...preActions, newAction, ...postActions];
 }
 
 export function applyEffect(action, effect) {
   switch (effect.type) {
     case TOGGLE_ACTIVITY: {
       const unit = action.unit;
-      return [createActivateAction(unit), { ...action }, createDisActivateAction(unit)];
+      return [
+        createActivateAction(unit),
+        { ...action },
+        createDisActivateAction(unit)
+      ];
     }
   }
 }
@@ -47,6 +52,6 @@ export function applyEffect(action, effect) {
 
 export function createToggleActivityEffect() {
   return {
-    type: TOGGLE_ACTIVITY,
+    type: TOGGLE_ACTIVITY
   };
 }

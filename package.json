@@ -14,6 +14,7 @@
     "stop": "docker-compose down"
   },
   "devDependencies": {
+    "bind-decorator": "^1.0.11",
     "source-map-support": "^0.5.3"
   },
   "dependencies": {

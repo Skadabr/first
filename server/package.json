@@ -1,12 +1,12 @@
 {
   "scripts": {
-    "typecheck": "tsc --lib es2017 --noEmit -w --pretty --experimentalDecorators src/*.ts",
-    "prestart": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist src/*.ts",
+    "typecheck": "tsc --lib es2017 --noEmit --pretty --experimentalDecorators --rootDir src",
+    "prestart": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist --rootDir src",
     "start": "node dist",
     "test:ui": "mocha --require babel-register -b -t 3000 -R min --recursive test/acceptance",
     "test:ui:i": "mocha --require babel-register -b -t 3000 test/acceptance/init.test.js",
-    "prestart:dev": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist -w src/*.ts &",
-    "start:dev": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist src/*.ts && nodemon -r source-map-support/register dist",
+    "prestart:dev": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist -w --rootDir src &",
+    "start:dev": "tsc --lib es2017 --sourceMap  --experimentalDecorators --outDir dist --rootDir src && nodemon -r source-map-support/register dist",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -51,6 +51,7 @@
     "babel-eslint": "^8.2.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "bind-decorator": "^1.0.11",
     "chai": "^4.1.2",
     "del": "^3.0.0",
     "eslint": "^4.15.0",

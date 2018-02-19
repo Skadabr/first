@@ -17,24 +17,72 @@ export const morgan = Morgan("dev", {
   }
 });
 
-export function log(beforeLogger: any, afterLogger: any): any {
-  return function(target, key, desc) {
-    console.log(target[key], desc);
+export function log(logger: Function, opts?: any): Function {
+  const { isAsync = true } = opts || {};
+  return function(
+    target: Object,
+    key: string | symbol,
+    desc: TypedPropertyDescriptor<any>
+  ): TypedPropertyDescriptor<any> {
     const fn = desc.value;
 
-    const value = function(...args) {
-      try {
-        beforeLogger && beforeLogger(args);
-        const res = fn.apply(this, args);
-        afterLogger && afterLogger(null, res, args);
-      } catch (err) {
-        afterLogger && afterLogger(err, null, args);
-      }
-    };
+    let value;
+    if (!isAsync) {
+      value = function(...args) {
+        try {
+          const res = fn.apply(this, args);
+          logger.call(this, null, res, ...args);
+        } catch (err) {
+          logger.call(this, err, null, ...args);
+          throw err;
+        }
+      };
+    } else {
+      value = function(...args) {
+        if (fnReceiveCallback(args)) {
+          const cb = args.pop();
+          args.push((...cbArgs) => {
+            logger.call(this, ...cbArgs);
+            cb(...cbArgs);
+          });
+          fn.call(this, ...args);
+          return;
+        }
+        try {
+          const res = fn.apply(this, args);
+
+          if (res && isPromise(res)) {
+            return res.then(
+              res => {
+                logger.call(this, null, res, ...args);
+                return res;
+              },
+              err => {
+                logger.call(this, err, null, ...args);
+                throw err;
+              }
+            );
+          } else {
+            logger.call(this, null, res, ...args);
+          }
+        } catch (err) {
+          logger.call(this, err, null, ...args);
+          throw err;
+        }
+      };
+    }
 
     return {
       ...desc,
       value
     };
   };
+}
+
+function isPromise(p) {
+  return typeof p.then === "function" && typeof p.catch === "function";
+}
+
+function fnReceiveCallback(args) {
+  return typeof args[args.length - 1] === "function";
 }

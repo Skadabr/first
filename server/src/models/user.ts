@@ -9,6 +9,9 @@ import validator, { isEmail, isAlphanumeric } from "validator";
 
 import { UserStatusType } from "../constants";
 
+import { log } from "../logger";
+import { createUserLog } from "../logger/models/user";
+
 const { JWT_SECRET } = process.env;
 
 const INIT_MONEY = 1;
@@ -125,42 +128,6 @@ export default function UserModel({ logger }) {
       return this.save();
     },
 
-    async initGame(opponent) {
-      this.gamer = {
-        turn: true,
-        opponent_id: opponent._id,
-        money: INIT_MONEY,
-        current_money: INIT_MONEY,
-        health: INIT_HEALTH
-      };
-      await this.save();
-      opponent.gamer = {
-        turn: false,
-        opponent_id: this._id,
-        money: INIT_MONEY,
-        current_money: INIT_MONEY,
-        health: INIT_HEALTH
-      };
-      await opponent.save();
-    },
-
-    gamerInitData(): {
-      name: string;
-      gamer: {
-        money: number;
-        health: number;
-      };
-    } {
-      const { current_money, health, turn } = this.gamer;
-      return {
-        name: this.name,
-        gamer: {
-          money: current_money,
-          health
-        }
-      };
-    },
-
     async onDisconnect() {
       this.socket_id = null;
       await this.resetGameData();
@@ -181,28 +148,22 @@ export default function UserModel({ logger }) {
     async loseFight() {
       this.rate = this.rate - 1;
       await this.resetGameData();
-    },
-
-    async increaseMoney() {
-      logger.debug(`model:user - increase money for gamer ${this.gamer}`);
-      this.gamer.money =
-        this.gamer.money >= MAX_MONEY ? MAX_MONEY : this.gamer.money + 1;
-      this.gamer.current_money = this.gamer.money;
-      await this.save();
     }
   });
 
   Object.assign(schema.statics, {
+    async createUser({ email, name, password }) {
+      const user = new this({ email, name });
+      await user.setPassword(password);
+      return user.save().then();
+    },
+
     acquireOpponent(user) {
       return this.findOneAndUpdate(
         { status: UserStatusType.Ready, name: { $ne: user.name } },
         { status: UserStatusType.Fight },
         { new: true }
       ).exec();
-    },
-
-    opponent(user: { gamer: Gamer }) {
-      return this.findOne({ _id: user.gamer.opponent_id });
     },
 
     loadOpponents() {
@@ -214,7 +175,7 @@ export default function UserModel({ logger }) {
         })
         .catch(err => {
           logger.debug("model:user - can't load users: " + err.message);
-          return { error: { message: err.message } }
+          return { error: { message: err.message } };
         });
     }
   });

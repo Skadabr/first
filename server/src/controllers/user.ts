@@ -7,10 +7,7 @@ export default function UserController({ logger, models }) {
     async create(req, resp) {
       try {
         const { email, name, password } = req.body;
-        const user = new User({ email, name });
-        await user.setPassword(password);
-        await user.save().then();
-        logger.debug(`user ${email} created`, email);
+        const user = User.createUser({ email, name, password });
         resp.status(201).send("");
       } catch (err) {
         let message;

@@ -1,7 +1,15 @@
-import applyEffects from "./effects";
+import applyEffects from "../effects";
+
+const ATTACK = "ATTACK";
+const ACTIVATE = "ACTIVATE";
+const DISACTIVATE = "DISACTIVATE";
+
+//
+// ============ Reducer ============
+//
 
 export function createActions(initAction, unitEffects, targetEffects) {
-  actions = applyEffects([...unitEffects, targetEffects], actions);
+  actions = applyEffects([...unitEffects, ...targetEffects], initAction);
 }
 
 //
