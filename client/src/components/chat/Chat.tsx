@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import MessageBoard from "./MessageBoard";
 import MessageInput from "./MessageInput";
 import ChatHeader from "./ChatHeader";
-import { sendMessage } from "../../../actions/battle";
+import { sendMessage } from "../../actions/chat";
 
-import { chatMessagesSelector } from "../../../selectors/game_chat";
-import { userInfoSelector } from "../../../selectors/user";
+import { chatMessagesSelector } from "../../selectors/chat";
+import { userInfoSelector } from "../../selectors/user";
 
 interface PropTypes {
   messages: {date, msg, name}[];

@@ -1,6 +1,6 @@
 import only = require("only");
 
-import GameController from "./controllers/game";
+import BattleController from "./controllers/battle";
 
 export const OPPONENT_GOES = "OPPONENT_GOES";
 export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
@@ -19,30 +19,28 @@ export const WARRIOR_REMOVE = "WARRIOR_REMOVE";
 export const FINISH_FIGHT = "FINISH_FIGHT";
 
 export default function(ws, opts) {
-  const { models, logger } = opts;
-  const User = models.model("User");
-  const Warrior = models.model("Warrior");
+  const { logger } = opts;
+  const battleController = new BattleController(ws, opts);
 
-  const gameController = new GameController(opts);
+  ws.on("disconnect", onDisconnect);
 
-  //ws.on("disconnect", async () => {
-  //  logger.debug("io:game - disconnect of ", ws.id);
-  //  const user = ws.user;
-  //  if (!user) return;
-
-  //  const opponent = await User.opponent(ws.user);
-  //  if (opponent) await opponent.resetGameData();
-  //  await user.onDisconnect();
-
-  //  logger.debug(`io:game - ${user.name}(id: ${ws.id}) goes`);
-  //  ws.broadcast.emit(OPPONENT_GOES, user.name);
-  //});
-
-  ws.on(OPPONENTS_LOAD, gameController.loadOpponents);
-  ws.on(BATTLE_REQUEST, gameController.tryCreateBattle);
-  ws.on(SEND_MESSAGE,   gameController.sendMessage);
+  ws.on(OPPONENTS_LOAD, battleController.loadOpponents);
+  ws.on(BATTLE_REQUEST, battleController.tryCreateBattle);
+  ws.on(SEND_MESSAGE, battleController.sendMessage);
 
   //ws.on(ADD_UNIT, battleController.addWarrior);
-
   //ws.on(TURN, async cb => { });
+
+  async function onDisconnect() {
+    const { user } = ws;
+    if (!user) return;
+
+//  const opponent = await user.getOpponent();
+//  if (opponent) await opponent.resetGameData();
+//  await user.onDisconnect();
+
+    ws.broadcast.emit(OPPONENT_GOES, user.name);
+
+    logger.debug(`io:game - disconnect - ${user.name}(id: ${ws.id}) goes`);
+  }
 }

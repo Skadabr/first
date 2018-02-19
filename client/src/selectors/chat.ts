@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
 export const chatMessagesSelector = createSelector(
-  state => state.game_chat,
+  state => state.chat,
   msgs => msgs
 );

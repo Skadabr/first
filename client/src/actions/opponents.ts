@@ -1,4 +1,4 @@
-import { CLEAN_STATE, StatusKinds } from "../constants";
+import { CLEAN_STATE, UserStatusType } from "../constants";
 
 const OPPONENTS_UPSERT = "OPPONENTS_UPSERT";
 const OPPONENTS_GOES = "OPPONENTS_GOES";
@@ -12,7 +12,7 @@ const EMPTY = [];
 
 interface Opponent {
   name: string;
-  status: StatusKinds;
+  status: UserStatusType;
 }
 
 export type OpponentsState = Opponent[];
@@ -47,6 +47,14 @@ export default function opponentsReducer(
 //
 // ============ Actions ============
 //
+
+export function loadOpponents(val) {
+  return dispatch => {
+    const { data, error } = val;
+    if (error) return console.error(error);
+    dispatch(opponentsLoad(data));
+  };
+}
 
 export function opponentsUpsert(opponent: Opponent) {
   return {

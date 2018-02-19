@@ -2,34 +2,58 @@ import React from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 
-import { fightIsStartedSelector, showChatSelector, gameStatusSelector } from "../../selectors/game";
-import { isDesktopSelector } from "../../selectors/stats";
-import { GameStatus } from "../../actions/game";
+import { battleIsStartedSelector } from "../../selectors/battle";
+import { showBattleChatSelector, isDesktopSelector } from "../../selectors/ui";
+import { GameStatus } from "../../constants";
 
 import Dashboard from "../dashboard/Dashboard";
-import Game from "../game/Game";
+import Battle from "../battle/Battle";
+import Chat from "../chat/Chat";
 
 interface UserPagePropTypes {
-  fight: boolean;
-  game_status: GameStatus;
+  battleIsStarted: boolean;
   isDesktop: boolean;
   showChat: boolean;
 }
 
 export class UserPage extends React.PureComponent<UserPagePropTypes> {
   render() {
-    const { fight, game_status, isDesktop, showChat } = this.props;
-    return fight ? <Game isDesktop={isDesktop} showChat={showChat} status={game_status} /> : <Dashboard />;
+    const { battleIsStarted, isDesktop, showChat } = this.props;
+    return battleIsStarted ? (
+      isDesktop ? (
+        <div className="row">
+          <div className="col-lg-9">
+            <Battle />
+          </div>
+          <div className="col-lg-3">
+            <Chat />
+          </div>
+        </div>
+      ) : (
+        <div className="row">
+          {showChat ? (
+            <div className="col-12">
+              <Chat />
+            </div>
+          ) : (
+            <div className="col-12">
+              <Battle />
+            </div>
+          )}
+        </div>
+      )
+    ) : (
+      <Dashboard />
+    );
   }
 }
 
 function mapStateToProps(state: any) {
   return {
-    fight: fightIsStartedSelector(state),
-    game_status: gameStatusSelector(state),
-    showChat: showChatSelector(state),
+    battleIsStarted: battleIsStartedSelector(state),
+    showChat: showBattleChatSelector(state),
     isDesktop: isDesktopSelector(state)
   };
 }
 
-export default connect(mapStateToProps)(UserPage);
+export default connect(mapStateToProps)(UserPage as any);

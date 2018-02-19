@@ -1,5 +1,13 @@
+import bind from "bind-decorator";
+
 import { UserStatusType } from "../../constants";
 import { log } from "../../logger";
+import {
+  loadOpponentsLog,
+  _createBattleLog,
+  _setUserReadyLog,
+  sendMessageLog
+} from "../../logger/controllers/battle";
 import {
   OPPONENT_GOES,
   OPPONENTS_LOAD,
@@ -7,31 +15,102 @@ import {
   SEND_MESSAGE,
   USER_UPDATE_STATUS,
   BATTLE_CREATE,
-  TURN,
+  TURN
 } from "../game";
 
 export default class BattleController {
+  private ws: any;
+  private Battle: any;
+  private User: any;
+
+  constructor(ws, opts) {
+    const { models } = opts;
+    this.ws = ws;
+    this.Battle = models.model("Battle");
+    this.User = models.model("User");
+  }
+
+  @bind
+  @log(loadOpponentsLog)
+  public async loadOpponents(cb) {
+    const opponents = await this.User.getOnlineUsers()
+      .then(data => ({ data }))
+      .catch(err => ({ error: { message: err.message } }));
+    cb(opponents);
+  }
+
+  @bind
+  public async tryCreateBattle() {
+    const { ws, User } = this;
+    const opponent = await User.acquireOpponent(ws.user);
+    if (!opponent) {
+      await this._setUserReady(ws.user);
+      return;
+    }
+    await this._createBattle(ws.user, opponent);
+  }
+
+  @bind
+  @log(sendMessageLog)
+  public async sendMessage(data) {
+    const { User, ws } = this;
+    const opponent = await User.opponent(ws.user);
+    if (!opponent) return;
+    ws.to(opponent.socket_id).emit(SEND_MESSAGE, data);
+    return opponent;
+  }
+
+  //public addUnit = async data => {
+  //  battle = findBattle(by ws.user)
+
+  //}
 
   //
   // ============ private ============
   //
 
+  @log(_setUserReadyLog)
+  private async _setUserReady(user) {
+    const { ws } = this;
+    const { name, status } = await user.updateStatus(UserStatusType.Ready);
+    this._broadcastStatusUpdate({ name, status });
+    ws.emit(USER_UPDATE_STATUS, status);
+  }
 
-  private _send = (event, opponent_sid, ...args) => {
+  @log(_createBattleLog)
+  private async _createBattle(user, opponent) {
+    await user.updateStatus(UserStatusType.Fight);
+    const battle = await this.Battle.createBattle(user, opponent);
+
+    this._broadcastStatusUpdate(user);
+    this._broadcastStatusUpdate(opponent);
+
+    this._sendBattleStart(battle.toJSON(), opponent.socket_id);
+  }
+
+  private _broadcastStatusUpdate({ name, status }) {
+    this._broadcast(OPPONENT_UPSERT, { name, status });
+  }
+
+  private _sendBattleStart(battle, opponent_sid) {
+    this._send(BATTLE_CREATE, opponent_sid, battle);
+  }
+
+  private _send(event, opponent_sid, ...args) {
     this.ws.emit(event, ...args);
     this.ws.to(opponent_sid).emit(event, ...args);
-  };
+  }
 
-  private _sendWithCallBack = (event, opponent_sid, ...args) => {
+  private _sendWithCallBack(event, opponent_sid, ...args) {
     const cb = args.pop();
     this.ws.emit(event, ...args);
     cb(...args);
-  };
+  }
 
-  private _broadcast = (event, ...args) => {
+  private _broadcast(event, ...args) {
     this.ws.emit(event, ...args);
     this.ws.broadcast.emit(event, ...args);
-  };
+  }
 }
 
 //    addWarrior({type, position}, cb) {

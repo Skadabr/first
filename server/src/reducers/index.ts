@@ -7,7 +7,7 @@ export default function battleReducer(state, action) {
   switch (action.type) {
     case TURN:
       return {
-        turn_owner: nextTurnOwnerSelector(state, state.turn_owner),
+        turn_owner: nextTurnOwnerSelector(state),
         players: state.players
       };
 

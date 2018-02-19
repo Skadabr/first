@@ -32,7 +32,7 @@ interface Unit {
 }
 
 interface Battle {
-  turn_owner: ObjectId;
+  turnOwner: ObjectId;
   players: {
     user: User;
     hero: Hero;
@@ -45,90 +45,100 @@ interface Battle {
 export default function BattleModel({ logger }) {
   const { Schema } = mongoose;
 
-  const schema = new Schema({
-    turn_owner: {
+  const PlayerSchema = new Schema(
+    {
+      user: {
+        _id: {
+          type: Schema.ObjectId,
+          index: true,
+          unique: true,
+          required: true
+        },
+        socket_id: {
+          type: String
+          //required: true
+        },
+        name: {
+          type: String,
+          required: true,
+          validate: {
+            isAsync: false,
+            validator: isAlphanumeric,
+            msg: "Invalid name"
+          }
+        }
+      },
+      units: [
+        {
+          type: {
+            type: Number,
+            enum: [UnitTypes.Pawn, UnitTypes.Officer],
+            required: true
+          },
+          health: {
+            type: Number,
+            required: true,
+            validate: {
+              validator: h => h > 0,
+              msg: "Health should be bigger than 0"
+            }
+          },
+          position: {
+            type: Number,
+            required: true,
+            validate: {
+              validator: val => val > 0 && val < POSITIONS,
+              msg: "Position is out of range"
+            }
+          }
+        }
+      ],
+      hero: {
+        health: {
+          type: Number,
+          validate: {
+            isAsync: false,
+            validator: h => h >= 0,
+            msg: "Health should be bigger than 0"
+          }
+        }
+      },
+      money: {
+        type: Number,
+        validate: {
+          validator: h => h >= 0,
+          msg: "Money should be bigger than 0"
+        }
+      },
+      pocket_size: {
+        type: Number,
+        validate: {
+          validator: h => h >= 0,
+          msg: "Current money should be bigger than 0"
+        }
+      }
+    },
+    { _id: false }
+  );
+
+  const BattleSchema = new Schema({
+    turnOwner: {
       type: Schema.ObjectId,
       required: true
     },
-    players: [
-      {
-        user: {
-          _id: {
-            type: Schema.ObjectId,
-            index: true,
-            unique: true,
-            required: true
-          },
-          socket_id: {
-            type: String
-            //required: true
-          },
-          name: {
-            type: String,
-            required: true,
-            validate: {
-              isAsync: false,
-              validator: isAlphanumeric,
-              msg: "Invalid name"
-            }
-          }
-        },
-        units: [
-          {
-            type: {
-              type: Number,
-              enum: [UnitTypes.Pawn, UnitTypes.Officer],
-              required: true
-            },
-            health: {
-              type: Number,
-              required: true,
-              validate: {
-                validator: h => h > 0,
-                msg: "Health should be bigger than 0"
-              }
-            },
-            position: {
-              type: Number,
-              required: true,
-              validate: {
-                validator: val => val > 0 && val < POSITIONS,
-                msg: "Position is out of range"
-              }
-            }
-          }
-        ],
-        hero: {
-          health: {
-            type: Number,
-            validate: {
-              isAsync: false,
-              validator: h => h >= 0,
-              msg: "Health should be bigger than 0"
-            }
-          }
-        },
-        money: {
-          type: Number,
-          validate: {
-            validator: h => h >= 0,
-            msg: "Money should be bigger than 0"
-          }
-        },
-        pocket_size: {
-          type: Number,
-          validate: {
-            validator: h => h >= 0,
-            msg: "Current money should be bigger than 0"
-          }
-        }
-      }
-    ]
+    players: [PlayerSchema]
   });
 
-  Object.assign(schema.statics, {
+  Object.assign(BattleSchema.methods, {
+    toJSON() {
+      const { turnOwner, players } = this;
+      return { turnOwner, players };
+    }
+  });
+
+  Object.assign(BattleSchema.statics, {
     createBattle(user, opponent) {
-      const turn_owner = user._id;
+      const turnOwner = user._id;
       const players = [
         {
           user: {
@@ -157,16 +167,16 @@ export default function BattleModel({ logger }) {
           pocket_size: INIT_MONEY
         }
       ];
-      return this.create({ turn_owner, players });
+      return this.create({ turnOwner, players });
     },
 
     nextTurnOwner() {
-      const { turn_owner } = this;
-      return this.players.find(p => p.user._id !== turn_owner)._id;
+      const { turnOwner } = this;
+      return this.players.find(p => p.user._id !== turnOwner)._id;
     }
   });
 
-  schema.plugin(uniqueValidator);
+  BattleSchema.plugin(uniqueValidator);
 
-  mongoose.model("Battle", schema);
+  mongoose.model("Battle", BattleSchema);
 }

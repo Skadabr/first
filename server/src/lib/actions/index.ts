@@ -9,7 +9,7 @@ const DISACTIVATE = "DISACTIVATE";
 //
 
 export function createActions(initAction, unitEffects, targetEffects) {
-  actions = applyEffects([...unitEffects, ...targetEffects], initAction);
+  return applyEffects([...unitEffects, ...targetEffects], initAction);
 }
 
 //

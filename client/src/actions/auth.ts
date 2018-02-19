@@ -29,11 +29,3 @@ export function logout() {
     dispatch({ type: CLEAN_STATE });
   };
 }
-
-//({ status, opponent_socket_id }) => {
-//      if (status === READY) {
-//        dispatch({ type: USER_STATUS, payload: READY });
-//      } else {
-//        dispatch(createStartFight(opponent_socket_id));
-//      }
-//    }

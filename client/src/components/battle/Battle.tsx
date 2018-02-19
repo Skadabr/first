@@ -3,56 +3,47 @@ import { connect } from "react-redux";
 import { DragDropContextProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import { WarriorKinds } from "../../../constants";
+import { UnitTypes } from "../../constants";
 
-import WarriorList from "./WarriorList";
-import GamerStats from "./GamerStats";
+import Deck from "./Deck";
 import TurnButton from "./TurnButton";
 import Positions from "./Positions";
 import Position from "./Position";
-import PositionToDrop from "./PositionToDrop";
+import DropPosition from "./DropPosition";
+import Pocket from "./Pocket";
+import Hero from "./Hero";
 
-import { onTurn, addWarrior, Player } from "../../../actions/battle";
+import { onTurn, addUnit, Player } from "../../actions/battle";
 
 import {
-  myGamerSelector,
-  opponentGamerSelector
-} from "../../../selectors/gamers";
-import {
-  myWarriorsSelector,
-  opponentWarriorsSelector
-} from "../../../selectors/warriors";
-import { myTurnSelector } from "../../../selectors/game";
+  playerSelector,
+  playerOpponentSelector,
+  isTurnOwnerSelector
+} from "../../selectors/battle";
 
-interface BattleFieldPropTypes {
+interface BattlePropTypes {
   player: Player;
   opponent: Player;
   turn: boolean;
 
   onTurn: Function;
-  addWarrior: Function;
+  addUnit: Function;
 }
 
-// interface AddWarriorInput {
-//   owner_name: string;
-//   position: number;
-//   warrior: { kind: WarriorKinds };
-// }
+export class Battle extends React.Component<BattlePropTypes> {
+  addUnit = unit_data => {
+    const { money } = this.props.player;
+    const { owner_name, position, unit } = unit_data;
 
-export class BattleField extends React.Component<BattleFieldPropTypes> {
-  addWarrior = (warrior_data: AddWarriorInput) => {
-    const { money } = this.props.my_gamer;
-    const { owner_name, position, warrior } = warrior_data;
-
-    this.props.addWarrior(warrior.kind, position);
+    this.props.addUnit(unit.type, position);
   };
 
   onTurn = () => {
-    const { turn, my_gamer, my_warriors } = this.props;
+    const { turn, player, opponent } = this.props;
 
     if (!turn) return;
 
-    this.props.onTurn(my_gamer.name, my_warriors);
+    //this.props.onTurn(my_gamer.name, my_warriors);
   };
 
   //componentWillReceiveProps(nextProps) {
@@ -86,7 +77,7 @@ export class BattleField extends React.Component<BattleFieldPropTypes> {
             <div style={{ minHeight: 10, backgroundColor: "#eef" }} />
             <Positions
               owner_name={player.user.name}
-              warriors={player.units}
+              units={player.units}
               submit={this.addUnit}
               box={DropPosition}
             />
@@ -99,20 +90,17 @@ export class BattleField extends React.Component<BattleFieldPropTypes> {
               <TurnButton onTurn={this.onTurn} turn={turn} />
             </div>
           </div>
+
+          <div
+            className="card-body"
+            onDragStart={stopPropagationIfTurnedOff}
+            onClick={stopPropagationIfTurnedOff}
+          >
+            <Deck />
+          </div>
         </div>
       </DragDropContextProvider>
     );
-
-    //  <div className="card-body">
-    //    <div
-    //      onDragStart={stopPropagationIfTurnedOff}
-    //      onClick={stopPropagationIfTurnedOff}
-    //    >
-    //      <div className="card">
-    //        <WarriorList />
-    //      </div>
-    //    </div>
-    //  </div>
 
     function stopPropagationIfTurnedOff(ev) {
       if (!turn) ev.stopPropagation();
@@ -124,11 +112,12 @@ function mapStateToProps(state) {
   return {
     user: playerSelector(state),
     opponent: playerOpponentSelector(state),
-    turn: turnSelector(state)
+    turn: isTurnOwnerSelector(state)
+
   };
 }
 
 export default connect(mapStateToProps, {
   onTurn,
-  addWarrior
-})(GameBoard as any);
+  addUnit
+})(Battle as any);

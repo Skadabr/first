@@ -1,37 +1,37 @@
 import React from "react";
-import { POSITIONS, WarriorKinds } from "../../../constants";
+import { POSITIONS, UnitTypes } from "../../constants";
 
-import Warrior from "./Warrior";
+import Unit from "./Unit";
 
 const positions = [...getPositions()];
 
 interface PositionsPropTypes {
   owner_name: string;
-  warriors: any[];
+  units: any[];
   submit: Function;
   box: any;
 }
 
 export default class Positions extends React.PureComponent<PositionsPropTypes> {
   render() {
-    const { owner_name, warriors, submit, box: Position } = this.props;
-    const width = ( 100 / POSITIONS ) | 0;
+    const { owner_name, units, submit, box: Position } = this.props;
+    const width = (100 / POSITIONS) | 0;
     return (
       <div
         className="card-block"
         style={{ display: "flex", flexDirection: "row", maxHeight: "auto" }}
       >
         {positions.map(position => {
-          const w = warriors.find(w => w.position === position);
+          const u = units.find(u => u.position === position);
           return (
             <Position
               key={position}
               width={width}
-              onDrop={({ kind }: { kind: WarriorKinds }) =>
-                submit({ owner_name, position, warrior: {kind} })
+              onDrop={({ type }: { type: UnitTypes }) =>
+                submit({ owner_name, position, unit: { type } })
               }
             >
-              {w != null ? <Warrior {...w} /> : null}
+              {u != null ? <Unit {...u} /> : null}
             </Position>
           );
         })}

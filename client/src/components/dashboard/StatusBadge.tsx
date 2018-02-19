@@ -1,22 +1,22 @@
 import React from "react";
 
-import { StatusKinds } from "../../constants";
+import { UserStatusType } from "../../constants";
 
 const colors = {
-  [StatusKinds.PEACE]: "badge badge-success",
-  [StatusKinds.READY]: "badge badge-warning",
-  [StatusKinds.FIGHT]: "badge badge-danger"
+  [UserStatusType.Peace]: "badge badge-success",
+  [UserStatusType.Ready]: "badge badge-warning",
+  [UserStatusType.Fight]: "badge badge-danger"
 };
 
 const statusText = {
-  [StatusKinds.PEACE]: "peace",
-  [StatusKinds.READY]: "ready",
-  [StatusKinds.FIGHT]: "fight"
+  [UserStatusType.Peace]: "peace",
+  [UserStatusType.Ready]: "ready",
+  [UserStatusType.Fight]: "fight"
 };
 
 interface StatusBadgePropTypes {
   toggle: (any) => void;
-  user_status: StatusKinds;
+  user_status: UserStatusType;
 }
 
 export default class StatusBadge extends React.PureComponent<

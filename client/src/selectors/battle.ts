@@ -1,29 +1,28 @@
 import { createSelector } from "reselect";
 
-export const myUserSelector = createSelector(
-  state => state.battle,
-  state => state.user.name,
-  (battle, name) => {
-    return battle.users.find(u => u.user.name === name);
+export const playerSelector = createSelector(
+  state => state.battle.players,
+  state => state.user._id,
+  (players, _id) => {
+    return players.find(p => p.user._id === _id);
   }
 );
 
-export const opponentUserSelector = createSelector(
-  state => state.battle,
-  state => state.user.name,
-  (battle, name) => {
-    return battle.users.find(u => u.user.name !== name);
+export const playerOpponentSelector = createSelector(
+  state => state.battle.players,
+  state => state.user._id,
+  (players, _id) => {
+    return players.find(p => p.user._id !== _id);
   }
 );
 
-export const myTurnSelector = createSelector(
+export const isTurnOwnerSelector = createSelector(
   state => state.battle,
-  state => state.user.name,
-  (battle, name) => battle.turnOwner  === name
+  state => state.user._id,
+  (battle, _id) => battle.turnOwner === _id
 );
 
-// export const opponentGamerSelector = createSelector(
-//   state => state.gamers,
-//   state => state.game,
-//   (gamers, game) => gamers[game.opponent_name]
-// );
+export const battleIsStartedSelector = createSelector(
+  state => state.battle,
+  battle => battle.players
+);

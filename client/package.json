@@ -12,6 +12,7 @@
     "deep-copy": "^1.4.2",
     "jwt-decode": "^2.2.0",
     "lodash.debounce": "^4.0.8",
+    "lodash.flatmap": "^4.5.0",
     "moment": "^2.20.1",
     "react": "^16.2.0",
     "react-dnd": "^2.5.4",

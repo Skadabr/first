@@ -1,10 +1,10 @@
 import React from "react"
 import m from "moment";
 
-import { GameChatState } from "../../../actions/game_chat"
+import { ChatState } from "../../actions/chat"
 
 interface PropTypes {
-  messages: GameChatState;
+  messages: ChatState;
 }
 
 export default class MessageBoard extends React.Component<PropTypes> {

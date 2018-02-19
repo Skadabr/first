@@ -26,7 +26,6 @@ export default function authIO({ logger, models }) {
         if (ESCAPE_AUTH.includes(event_name)) return next();
         try {
           ws.user = await User.findOne({ name, socket_id: id });
-          logger.debug(`io:ws:auth - user("${name}") is authenticated`);
           next();
         } catch (err) {
           next(err);

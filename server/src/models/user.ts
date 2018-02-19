@@ -8,9 +8,9 @@ import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
 import { UserStatusType } from "../constants";
-
 import { log } from "../logger";
 import { createUserLog } from "../logger/models/user";
+import { playerOpponentSelector} from "../selectors";
 
 const { JWT_SECRET } = process.env;
 
@@ -135,9 +135,7 @@ export default function UserModel({ logger }) {
 
     async resetGameData() {
       this.status = UserStatusType.Peace;
-      this.gamer = null;
       await this.save();
-      await this.model("Warrior").deleteMany({ owner_id: this._id });
     },
 
     async winFight() {
@@ -148,6 +146,16 @@ export default function UserModel({ logger }) {
     async loseFight() {
       this.rate = this.rate - 1;
       await this.resetGameData();
+    },
+
+    getBattle() {
+      return this.model("Battle").findOne({ "players.user._id": this._id });
+    },
+
+    async getOpponent() {
+      const battle = await this.getBattle()
+      if (!battle) return;
+      return playerOpponentSelector({user: this, battle});
     }
   });
 
@@ -166,18 +174,11 @@ export default function UserModel({ logger }) {
       ).exec();
     },
 
-    loadOpponents() {
-      return this.find({ socket_id: { $ne: null } })
-        .then(users => {
-          const data = users.map(({ name, status }) => ({ name, status }));
-          //logger.debug("model:user - load opponents");
-          return data;
-        })
-        .catch(err => {
-          logger.debug("model:user - can't load users: " + err.message);
-          return { error: { message: err.message } };
-        });
-    }
+    getOnlineUsers() {
+      return this.find({ socket_id: { $ne: null } }).then(users =>
+        users.map(({ name, status }) => ({ name, status }))
+      );
+    },
   });
 
   schema.plugin(uniqueValidator);

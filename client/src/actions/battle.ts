@@ -1,7 +1,6 @@
 import IO from "../socket";
-import { gameChatAddMessage } from "./game_chat";
+import { chatAddMessage } from "./chat";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
-import { battleFieldUpdate } from "./battle_field";
 import {
   UserStatusType,
   UnitTypes,
@@ -11,37 +10,71 @@ import {
   FINISH_FIGHT
 } from "../constants";
 
-export function updateBattleField(val) {
-  return dispatch => {
-    const { error, data } = val;
-    dispatch(battleFieldUpdate(data));
+const BATTLEFIELD_UPDATE = "BATTLEFIELD_UPDATE";
+
+export interface Unit {
+  id: string;
+  type: number;
+  health: number;
+  position: number;
+}
+
+export interface Player {
+  user: {
+    name: string;
   };
+  units: Unit[];
+  hero: {
+    health;
+  };
+  money: number;
+}
+
+export interface BattleState {
+  turn_owner: string;
+  player: Player[]
+}
+
+const EMPTY = {};
+
+export default function battleFieldReducer(state = EMPTY, {type, payload}) : BattleState | Object {
+  switch(type) {
+    case BATTLEFIELD_UPDATE:
+      return payload;
+    default:
+      return state;
+  }
+}
+
+//
+// ============ Actions ============
+//
+
+export function battleUpdate(battle: BattleState) {
+  return {
+    type: BATTLEFIELD_UPDATE,
+    payload: battle
+  }
 }
 
 export function createBattle(val) {
   return dispatch => {
     dispatch(userUpdateStatus(UserStatusType.Fight));
-    dispatch(battleFieldUpdate(val));
+    dispatch(battleUpdate(val));
   };
 }
 
-export function sendMessage(msg, name) {
-  return dispatch => {
-    const date = new Date();
-    IO().gameIO.sendMessage(msg, name, date);
-    dispatch(gameChatAddMessage(msg, name, date));
-  };
-}
 
 export function addUnit(type: UnitTypes, position: number) {
   return dispatch => {
     const io = IO().gameIO;
     io.addUnit(type, position, val => {
-      updateBattleField(val)(dispatch);
+      dispatch(battleUpdate(val));
     });
   };
 }
 
+export function onTurn() {}
 // export function onTurn(my_name: string, my_warriors: Warrior[]) {
 //   return async dispatch => {
 //     const io = IO().gameIO;

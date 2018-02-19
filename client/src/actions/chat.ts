@@ -16,10 +16,10 @@ interface Message {
   name: string;
 }
 
-export type GameChatState = Message[];
+export type ChatState = Message[];
 
 export default function gameChat(
-  state: GameChatState = EMPTY,
+  state: ChatState = EMPTY,
   { type, payload }
 ) {
   switch (type) {
@@ -36,9 +36,17 @@ export default function gameChat(
 // ============ Actions ============
 //
 
-export function gameChatAddMessage(msg: string, name: string, date: Date) {
+export function chatAddMessage(msg: string, name: string, date: Date) {
   return {
     type: CHAT_ADD_MESSAGE,
     payload: { msg, name, date }
+  };
+}
+
+export function sendMessage(msg, name) {
+  return dispatch => {
+    const date = new Date();
+    IO().gameIO.sendMessage(msg, name, date);
+    dispatch(chatAddMessage(msg, name, date));
   };
 }

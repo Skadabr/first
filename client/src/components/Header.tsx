@@ -3,15 +3,16 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { logout } from "../actions/auth";
-import { gameToggleChat } from "../actions/game";
+import { toggleBattleChat } from "../actions/ui";
+
 import { isAuthenticatedSelector, userInfoSelector } from "../selectors/user";
-import { fightIsStartedSelector } from "../selectors/game";
-import { isDesktopSelector } from "../selectors/stats";
+import { battleIsStartedSelector } from "../selectors/battle";
+import { isDesktopSelector } from "../selectors/ui";
 
 interface HeaderPropTypes {
   logout: Function;
-  gameToggleChat: Function;
-  fight: boolean;
+  toggleBattleChat: Function;
+  battleIsStarted: boolean;
   isAuthenticated: boolean;
   isDesktop: boolean;
   name: string;
@@ -24,11 +25,11 @@ export class Header extends React.Component<HeaderPropTypes> {
   };
 
   toggleChat = e => {
-    this.props.gameToggleChat();
+    this.props.toggleBattleChat();
   };
 
   render() {
-    const { isAuthenticated, isDesktop, fight } = this.props;
+    const { isAuthenticated, isDesktop, battleIsStarted } = this.props;
     const homeLink = isAuthenticated ? "/user" : "/";
 
     return (
@@ -59,7 +60,7 @@ export class Header extends React.Component<HeaderPropTypes> {
             </ul>
             <ul className="nav navbar-nav mr-auto">
               {isAuthenticated &&
-                fight &&
+                battleIsStarted &&
                 !isDesktop && (
                   <li className="nav-item">
                     <a
@@ -82,13 +83,13 @@ export class Header extends React.Component<HeaderPropTypes> {
 
 function mapStateToProps(state) {
   return {
-    fight: fightIsStartedSelector(state),
+    battleIsStarted: battleIsStartedSelector(state),
     isDesktop: isDesktopSelector(state),
     isAuthenticated: isAuthenticatedSelector(state),
     name: userInfoSelector(state).name
   };
 }
 
-export default connect(mapStateToProps, { logout, gameToggleChat })(
+export default connect(mapStateToProps, { logout, toggleBattleChat })(
   Header as any
 );

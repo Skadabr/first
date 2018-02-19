@@ -1,19 +1,20 @@
 import { logger } from "../index";
 import { getErrorMessage } from "../../utils";
 
-export function loadOpponentsLog(target, err, res) {
-  if (err) return logger.error(getErrorMessage(err));
+export function loadOpponentsLog(res) {
+  if (res instanceof Error) return logger.error(getErrorMessage(res));
+  if (res.error) return logger.error(res.error);
 
-  logger.debug(`io:game - load oppoonents for ${target.ws.user.name}`);
+  logger.debug(`io:game - load oppoonents for ${this.ws.user.name}`);
 }
 
-export function sendMessageLog(target, err, res) {
+export function sendMessageLog(err, opponent) {
   if (err) return logger.error(getErrorMessage(err));
 
   logger.debug(`io:game - send message to ${opponent.name}`);
 }
 
-export function _createBattleLog(target, err, res, [user, opponent]) {
+export function _createBattleLog(err, res, user, opponent) {
   if (err) return logger.error(getErrorMessage(err));
   logger.debug(
     `io:game - create battle between ${user.name}(${user.socket_id}) and ` +
@@ -21,7 +22,7 @@ export function _createBattleLog(target, err, res, [user, opponent]) {
   );
 }
 
-export function _setUserReadyLog(target, err, res, [user]) {
+export function _setUserReadyLog(err, res, user) {
   if (err) return logger.error(getErrorMessage(err));
   logger.debug(`io:game - user "${user.name}" ready to fight`);
 }

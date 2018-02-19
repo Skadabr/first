@@ -22,7 +22,7 @@ export default function createUnit(type: UnitTypes) {
             createActions(
               unit.effects,
               t.effects,
-              createAttackAction(unit, target)
+              createAttackAction(unit, t)
             )
           );
         }
@@ -42,7 +42,7 @@ export default function createUnit(type: UnitTypes) {
             createActions(
               unit.effects,
               t.effects,
-              createAttackAction(unit, target)
+              createAttackAction(unit, t)
             )
           );
         }

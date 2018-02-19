@@ -40,16 +40,35 @@ export function log(logger: Function, opts?: any): Function {
     } else {
       value = function(...args) {
         if (fnReceiveCallback(args)) {
+          let called = false;
           const cb = args.pop();
           args.push((...cbArgs) => {
+            called = true;
             logger.call(this, ...cbArgs);
             cb(...cbArgs);
           });
-          fn.call(this, ...args);
+          try {
+            const res = fn.call(this, ...args);
+            if (res && isPromise(res)) {
+              return res.then(
+                res => {
+                  if (called) return res;
+                  logger.call(this, null, res, ...args);
+                  return res;
+                },
+                err => {
+                  logger.call(this, err, null, ...args);
+                  throw err;
+                }
+              );
+            }
+          } catch (err) {
+            logger.call(this, err);
+          }
           return;
         }
         try {
-          const res = fn.apply(this, args);
+          const res = fn.call(this, ...args);
 
           if (res && isPromise(res)) {
             return res.then(
