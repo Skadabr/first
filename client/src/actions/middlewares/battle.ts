@@ -25,13 +25,10 @@ const TOGGLE_ACTIVITY = "TOGGLE_ACTIVITY";
 export default function battleMidlewareCreator() {
   return function battleMidleware({ dispatch, getState }) {
     return next => ({type, effects, payload}) => {
-      if (!/^UNIT_.*/.test(type)) return next(action);
+      if (!effects) return next(action);
 
-      const { unit, opponent } = payload;
-
-      if (!unit || !opponent) return; // how_to/should_i handle it?
-
-      for (const action of applyEffects(effects, {type, payload})) dispatch(action);
+      for (const action of applyEffects(effects, {type, payload}))
+        dispatch(action);
 
       next(action);
     };

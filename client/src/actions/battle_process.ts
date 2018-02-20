@@ -1,5 +1,4 @@
 import IO from "../socket";
-import { chatAddMessage } from "./chat";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
 import {
   UserStatusType,
@@ -9,42 +8,6 @@ import {
   WARRIOR_REMOVE,
   FINISH_FIGHT
 } from "../constants";
-
-const BATTLEFIELD_UPDATE = "BATTLEFIELD_UPDATE";
-
-export interface Unit {
-  id: string;
-  type: number;
-  health: number;
-  position: number;
-}
-
-export interface Player {
-  user: {
-    name: string;
-  };
-  units: Unit[];
-  hero: {
-    health;
-  };
-  money: number;
-}
-
-export interface BattleState {
-  turn_owner: string;
-  player: Player[]
-}
-
-const EMPTY = {};
-
-export default function battleFieldReducer(state = EMPTY, {type, payload}) : BattleState | Object {
-  switch(type) {
-    case BATTLEFIELD_UPDATE:
-      return payload;
-    default:
-      return state;
-  }
-}
 
 //
 // ============ Actions ============
