@@ -3,18 +3,13 @@ import bind from "bind-decorator";
 import { UserStatusType } from "../../constants";
 import { log } from "../../logger";
 import {
-  loadOpponentsLog,
   _createBattleLog,
-  _setUserReadyLog,
-  sendMessageLog
+  _setUserReadyLog
 } from "../../logger/controllers/battle";
 import {
-  OPPONENT_GOES,
-  OPPONENTS_LOAD,
-  OPPONENT_UPSERT,
-  SEND_MESSAGE,
+  USERS_UPSERT,
   USER_UPDATE_STATUS,
-  BATTLE_CREATE,
+  BATTLE_REQUEST,
   TURN
 } from "../game";
 
@@ -23,20 +18,10 @@ export default class BattleController {
   private Battle: any;
   private User: any;
 
-  constructor(ws, opts) {
-    const { models } = opts;
+  constructor(ws, { models }) {
     this.ws = ws;
     this.Battle = models.model("Battle");
     this.User = models.model("User");
-  }
-
-  @bind
-  @log(loadOpponentsLog)
-  public async loadOpponents(cb) {
-    const opponents = await this.User.getOnlineUsers()
-      .then(data => ({ data }))
-      .catch(err => ({ error: { message: err.message } }));
-    cb(opponents);
   }
 
   @bind
@@ -50,19 +35,8 @@ export default class BattleController {
     await this._createBattle(ws.user, opponent);
   }
 
-  @bind
-  @log(sendMessageLog)
-  public async sendMessage(data) {
-    const { User, ws } = this;
-    const opponent = await User.opponent(ws.user);
-    if (!opponent) return;
-    ws.to(opponent.socket_id).emit(SEND_MESSAGE, data);
-    return opponent;
-  }
-
   //public addUnit = async data => {
   //  battle = findBattle(by ws.user)
-
   //}
 
   //
@@ -85,15 +59,11 @@ export default class BattleController {
     this._broadcastStatusUpdate(user);
     this._broadcastStatusUpdate(opponent);
 
-    this._sendBattleStart(battle.toJSON(), opponent.socket_id);
+    this._send(BATTLE_REQUEST, opponent.socket_id, battle);
   }
 
   private _broadcastStatusUpdate({ name, status }) {
-    this._broadcast(OPPONENT_UPSERT, { name, status });
-  }
-
-  private _sendBattleStart(battle, opponent_sid) {
-    this._send(BATTLE_CREATE, opponent_sid, battle);
+    this._broadcast(USERS_UPSERT, { name, status });
   }
 
   private _send(event, opponent_sid, ...args) {

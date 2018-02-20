@@ -17,7 +17,7 @@ export default function UserController({ logger, models }) {
         } else {
           message = err.message;
         }
-        logger.debug("create user error: ", message);
+        logger.debug("controllers:user - create ", message);
         resp.status(400).json({ error: { message } });
       }
     },

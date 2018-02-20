@@ -133,6 +133,20 @@ export default function BattleModel({ logger }) {
     toJSON() {
       const { turnOwner, players } = this;
       return { turnOwner, players };
+    },
+
+    getOpponentOf(user_id) {
+      const user = this.players.find(p => p.user._id === user_id);
+      if (!user)
+        throw new Error(
+          `User with id: ${user_id} doens't participate in this battle`
+        );
+      return this.players.find(p => p.user._id !== user_id);
+    },
+
+    nextTurnOwner() {
+      const { turnOwner } = this;
+      return this.players.find(p => p.user._id !== turnOwner)._id;
     }
   });
 
@@ -168,11 +182,6 @@ export default function BattleModel({ logger }) {
         }
       ];
       return this.create({ turnOwner, players });
-    },
-
-    nextTurnOwner() {
-      const { turnOwner } = this;
-      return this.players.find(p => p.user._id !== turnOwner)._id;
     }
   });
 

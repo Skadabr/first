@@ -31,17 +31,16 @@ Socket(token, store);
 
 if (token) {
   setAuthHeader(token);
-  api.user.user().then(
-    ({ name, email, status, rate }) => {
-      store.dispatch(userAdd(name, email, token, rate, status));
+  api.user.user().then(({ error, data }) => {
+    if (data) {
+      store.dispatch(userAdd({ ...data, token }));
       renderApp();
-    },
-    err => {
-      console.error(err.message);
+    } else if (error) {
+      console.error(error.message);
       logout()(store.dispatch);
       renderApp();
     }
-  );
+  });
 } else {
   renderApp();
 }

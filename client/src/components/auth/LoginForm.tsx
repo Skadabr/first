@@ -38,13 +38,13 @@ export default class LoginForm extends React.Component<PropTypes, StateTypes> {
       return this.setState({ errors });
     }
 
-    try {
-      await this.props.submit(this.state.data);
-    } catch (e) {
+    const { error } = await this.props.submit(this.state.data);
+
+    if (error) {
       this.setState({
         data: EMPTY_DATA,
         errors: {
-          server: e.message
+          server: error.message
         }
       });
     }

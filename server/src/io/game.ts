@@ -1,32 +1,29 @@
 import only = require("only");
 
 import BattleController from "./controllers/battle";
+import UserController from "./controllers/user";
+import ChatController from "./controllers/chat";
 
-export const OPPONENT_GOES = "OPPONENT_GOES";
-export const OPPONENTS_LOAD = "OPPONENTS_LOAD";
-export const OPPONENT_UPSERT = "OPPONENT_UPSERT";
+export const USER_GOES = "USER_GOES";
+export const GET_USERS = "GET_USERS";
+export const USERS_UPSERT = "USERS_UPSERT";
 export const BATTLE_REQUEST = "BATTLE_REQUEST";
 export const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
-export const BATTLE_CREATE = "BATTLE_CREATE";
 export const SEND_MESSAGE = "SEND_MESSAGE";
 export const TURN = "TURN";
-
 export const ADD_UNIT = "ADD_UNIT";
-
-export const GAMER_KICKED = "GAMER_KICKED";
-export const WARRIOR_KICKED = "WARRIOR_KICKED";
-export const WARRIOR_REMOVE = "WARRIOR_REMOVE";
-export const FINISH_FIGHT = "FINISH_FIGHT";
 
 export default function(ws, opts) {
   const { logger } = opts;
   const battleController = new BattleController(ws, opts);
+  const userController = new UserController(ws, opts);
+  const chatController = new ChatController(ws, opts);
 
   ws.on("disconnect", onDisconnect);
 
-  ws.on(OPPONENTS_LOAD, battleController.loadOpponents);
+  ws.on(GET_USERS, userController.getOnlineUsers);
+  ws.on(SEND_MESSAGE, chatController.sendMessage);
   ws.on(BATTLE_REQUEST, battleController.tryCreateBattle);
-  ws.on(SEND_MESSAGE, battleController.sendMessage);
 
   //ws.on(ADD_UNIT, battleController.addWarrior);
   //ws.on(TURN, async cb => { });
@@ -34,13 +31,10 @@ export default function(ws, opts) {
   async function onDisconnect() {
     const { user } = ws;
     if (!user) return;
-
-//  const opponent = await user.getOpponent();
-//  if (opponent) await opponent.resetGameData();
-//  await user.onDisconnect();
-
-    ws.broadcast.emit(OPPONENT_GOES, user.name);
-
-    logger.debug(`io:game - disconnect - ${user.name}(id: ${ws.id}) goes`);
+    await user.onDisconnect();
+    ws.broadcast.emit(USER_GOES, user.name);
+    logger.debug(
+      `io:game - disconnect - ${user.name} goes`
+    );
   }
 }

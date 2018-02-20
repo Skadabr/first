@@ -2,13 +2,13 @@ import { combineReducers } from "redux";
 
 import user, { UserState } from "./actions/user";
 import battle, { BattleState } from "./actions/battle";
-import opponents, { OpponentsState } from "./actions/opponents";
+import users, { UsersState } from "./actions/users";
 import chat, { ChatState } from "./actions/chat";
 import ui, { UIState } from "./actions/ui";
 
 export default combineReducers({
   user,
-  opponents,
+  users,
   chat,
   ui,
   battle
@@ -16,7 +16,7 @@ export default combineReducers({
 
 export interface State {
   user: UserState;
-  opponents: OpponentsState;
+  users: UsersState;
   chat: ChatState;
   ui: UIState;
 }

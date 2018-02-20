@@ -1,8 +1,8 @@
 import { CLEAN_STATE, UserStatusType } from "../constants";
 
-const OPPONENTS_UPSERT = "OPPONENTS_UPSERT";
-const OPPONENTS_GOES = "OPPONENTS_GOES";
-const OPPONENTS_LOAD = "OPPONENTS_LOAD";
+const USERS_UPSERT = "USERS_UPSERT";
+const USERS_REMOVE = "USERS_REMOVE";
+const USERS_LOAD = "USERS_LOAD";
 
 const EMPTY = [];
 
@@ -10,21 +10,21 @@ const EMPTY = [];
 // ============ Reducer ============
 //
 
-interface Opponent {
+interface OtherUser {
   name: string;
   status: UserStatusType;
 }
 
-export type OpponentsState = Opponent[];
+export type UsersState = OtherUser[];
 
-export default function opponentsReducer(
-  state: OpponentsState = EMPTY,
+export default function usersReducer(
+  state: UsersState = EMPTY,
   { type, payload }
 ) {
   switch (type) {
-    case OPPONENTS_LOAD:
+    case USERS_LOAD:
       return payload;
-    case OPPONENTS_UPSERT:
+    case USERS_UPSERT:
       const idx = state.findIndex(u => u.name === payload.name);
       if (idx === -1) {
         return [...state, payload];
@@ -33,7 +33,7 @@ export default function opponentsReducer(
         state[idx] = { ...state[idx], ...payload };
         return state;
       }
-    case OPPONENTS_GOES:
+    case USERS_REMOVE:
       const { name } = payload;
       return state.filter(opponent => opponent.name !== name);
 
@@ -48,31 +48,31 @@ export default function opponentsReducer(
 // ============ Actions ============
 //
 
-export function loadOpponents(val) {
+export function loadUsers(val) {
   return dispatch => {
     const { data, error } = val;
     if (error) return console.error(error);
-    dispatch(opponentsLoad(data));
+    dispatch(usersLoad(data));
   };
 }
 
-export function opponentsUpsert(opponent: Opponent) {
+export function usersUpsert(opponent: OtherUser) {
   return {
-    type: OPPONENTS_UPSERT,
+    type: USERS_UPSERT,
     payload: opponent
   };
 }
 
-export function opponentsLoad(opponents: OpponentsState) {
+export function usersLoad(opponents: UsersState) {
   return {
-    type: OPPONENTS_LOAD,
+    type: USERS_LOAD,
     payload: opponents
   };
 }
 
-export function opponentGoes(name: string) {
+export function usersRemove(name: string) {
   return {
-    type: OPPONENTS_GOES,
+    type: USERS_REMOVE,
     payload: {
       name
     }

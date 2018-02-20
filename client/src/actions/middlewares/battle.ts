@@ -19,8 +19,24 @@ const TOGGLE_ACTIVITY = "TOGGLE_ACTIVITY";
 //                   |s|
 //           v        |         v
 //                    v
-// [....preactions, action, ...postactions]
+// [ ...preactions, action, ...postactions]
 //
+
+export default function battleMidlewareCreator() {
+  return function battleMidleware({ dispatch, getState }) {
+    return next => ({type, effects, payload}) => {
+      if (!/^UNIT_.*/.test(type)) return next(action);
+
+      const { unit, opponent } = payload;
+
+      if (!unit || !opponent) return; // how_to/should_i handle it?
+
+      for (const action of applyEffects(effects, {type, payload})) dispatch(action);
+
+      next(action);
+    };
+  };
+}
 
 export default function applyEffects(effects, action) {
   const [preActions, newAction, postActions] = effects.reduce(

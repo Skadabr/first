@@ -109,12 +109,9 @@ export class Battle extends React.Component<BattlePropTypes> {
 }
 
 function mapStateToProps(state) {
-  return {
-    user: playerSelector(state),
-    opponent: playerOpponentSelector(state),
-    turn: isTurnOwnerSelector(state)
-
-  };
+  const player = playerSelector(state);
+  const opponent = playerOpponentSelector(state);
+  return { player, opponent, turn: isTurnOwnerSelector(state) };
 }
 
 export default connect(mapStateToProps, {

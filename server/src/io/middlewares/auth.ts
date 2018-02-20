@@ -4,7 +4,7 @@ const { JWT_SECRET } = process.env;
 
 const ESCAPE_AUTH = ["OPPONENTS_LIST"];
 
-export default function authIO({ logger, models }) {
+export default function authIOMiddleware({ logger, models }) {
   const User = models.model("User");
 
   return async (ws, next) => {

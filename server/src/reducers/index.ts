@@ -1,20 +1,10 @@
-import playersReducer from "./players";
-import {nextTurnOwnerSelector} from "../selectors";
+const EMPTY = {};
 
-const TURN = "TURN";
-
-export default function battleReducer(state, action) {
-  switch (action.type) {
-    case TURN:
-      return {
-        turn_owner: nextTurnOwnerSelector(state),
-        players: state.players
-      };
-
+export default function battleFieldReducer(state = EMPTY, {type, payload}) : BattleState | Object {
+  switch(type) {
+    case BATTLEFIELD_UPDATE:
+      return payload;
     default:
-      return {
-        ...state,
-        players: playersReducer(state.players, action)
-      };
+      return state;
   }
 }

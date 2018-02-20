@@ -4,20 +4,27 @@ import * as api from "../api";
 import { userAdd } from "./user";
 import { CLEAN_STATE } from "../constants";
 
-export function signup(data) {
+export function signup(val) {
   return () => {
-    return api.auth.signup(data);
+    return api.auth.signup(val);
   };
 }
 
-export function login(data) {
+export function login(creadentials) {
   return async dispatch => {
-    const token = await api.auth.login(data);
+    const { data: token } = await api.auth.login(creadentials);
+
     setAuthHeader(token);
     localStorage.user_jwt = token;
-    const { name, email, status, rate } = await api.user.user();
-    IO(token);
-    dispatch(userAdd(name, email, token, rate, status));
+
+    const resp = await api.user.user();
+
+    if (resp.data) {
+      IO(token);
+      dispatch(userAdd({ ...resp.data, token }));
+    }
+
+    return resp;
   };
 }
 

@@ -19,6 +19,7 @@ const INIT_HEALTH = 10;
 const MAX_MONEY = 10;
 
 export interface UserJSON {
+  _id: string;
   name: string;
   email: string;
   socket_id: string;
@@ -73,40 +74,12 @@ export default function UserModel({ logger }) {
       required: true,
       min: [0, "Your rate can't be less than 0"]
     },
-    gamer: {
-      opponent_id: {
-        type: Schema.ObjectId
-      },
-      turn: Boolean,
-      money: {
-        type: Number,
-        validate: {
-          validator: h => h >= 0,
-          msg: "Money should be bigger than 0"
-        }
-      },
-      current_money: {
-        type: Number,
-        validate: {
-          validator: h => h >= 0,
-          msg: "Current money should be bigger than 0"
-        }
-      },
-      health: {
-        type: Number,
-        validate: {
-          isAsync: false,
-          validator: h => h >= 0,
-          msg: "Health should be bigger than 0"
-        }
-      }
-    }
   });
 
   Object.assign(schema.methods, {
     toJSON(): UserJSON {
-      const { name, email, status, socket_id, rate } = this;
-      return { name, email, status, socket_id, rate };
+      const { _id, name, email, status, socket_id, rate } = this;
+      return { _id, name, email, status, socket_id, rate };
     },
 
     async setPassword(password) {
@@ -130,33 +103,22 @@ export default function UserModel({ logger }) {
 
     async onDisconnect() {
       this.socket_id = null;
-      await this.resetGameData();
-    },
-
-    async resetGameData() {
-      this.status = UserStatusType.Peace;
       await this.save();
     },
 
     async winFight() {
       this.rate = this.rate + 1;
-      await this.resetGameData();
+      return this.updateStatus(UserStatusType.Peace);
     },
 
     async loseFight() {
       this.rate = this.rate - 1;
-      await this.resetGameData();
+      return this.updateStatus(UserStatusType.Peace);
     },
 
     getBattle() {
       return this.model("Battle").findOne({ "players.user._id": this._id });
     },
-
-    async getOpponent() {
-      const battle = await this.getBattle()
-      if (!battle) return;
-      return playerOpponentSelector({user: this, battle});
-    }
   });
 
   Object.assign(schema.statics, {

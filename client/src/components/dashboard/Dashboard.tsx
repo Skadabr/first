@@ -6,7 +6,7 @@ import OpponentsList from "./OpponentsList";
 import UserInfo from "./UserInfo";
 
 import { readyToFight } from "../../actions/dashboard";
-import { opponentsSelector } from "../../selectors/opponents";
+import { otherUsersSelector } from "../../selectors/users";
 import { userInfoSelector } from "../../selectors/user";
 import { UserStatusType } from "../../constants";
 
@@ -61,7 +61,7 @@ export class Dashboard extends React.Component<PropTypes> {
 function mapStateToProps(state) {
   return {
     user: userInfoSelector(state),
-    opponents: opponentsSelector(state)
+    opponents: otherUsersSelector(state)
   };
 }
 

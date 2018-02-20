@@ -4,7 +4,8 @@ export const playerSelector = createSelector(
   state => state.battle.players,
   state => state.user._id,
   (players, _id) => {
-    return players.find(p => p.user._id === _id);
+    const player = players.find(p => p.user._id === _id);
+    return player;
   }
 );
 
@@ -12,7 +13,8 @@ export const playerOpponentSelector = createSelector(
   state => state.battle.players,
   state => state.user._id,
   (players, _id) => {
-    return players.find(p => p.user._id !== _id);
+    const player = players.find(p => p.user._id !== _id);
+    return player;
   }
 );
 

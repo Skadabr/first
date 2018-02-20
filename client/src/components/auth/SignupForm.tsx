@@ -36,20 +36,20 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
       return this.setState({ errors });
     }
 
-    try {
-      await this.props.submit(this.state.data);
-      this.setState({
-        data: EMPTY_DATA,
-        errors: EMPTY
-      });
-    } catch (e) {
+    const resp = await this.props.submit(this.state.data);
+    if (resp.error) {
       this.setState({
         data: EMPTY_DATA,
         errors: {
           server: e.message
         }
       });
+      return
     }
+    this.setState({
+      data: EMPTY_DATA,
+      errors: EMPTY
+    });
   };
 
   render() {
@@ -107,7 +107,12 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
               />
             </div>
             <div className="form-group">
-              <button id="signup_submit_btn" className="btn btn-block btn-primary">Signup</button>
+              <button
+                id="signup_submit_btn"
+                className="btn btn-block btn-primary"
+              >
+                Signup
+              </button>
             </div>
           </form>
         </div>
@@ -117,7 +122,7 @@ export default class SignupForm extends React.Component<PropTypes, StateTypes> {
 }
 
 function validate({ email, name, password }) {
-  const errors: {password?: string} = {};
+  const errors: { password?: string } = {};
 
   if (password.length < 8) errors.password = "Password too short";
 

@@ -41,10 +41,10 @@ export default function userReducer(
   }
 }
 
-export function userAdd(name, email, token, rate, status: UserStatusType = UserStatusType.Peace ) {
+export function userAdd(user) {
   return {
     type: USER_ADD,
-    payload: { name, email, token, rate, status }
+    payload: user
   };
 }
 

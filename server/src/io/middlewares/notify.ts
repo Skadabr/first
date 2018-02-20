@@ -1,10 +1,17 @@
-const OPPONENT_UPSERT = "OPPONENT_UPSERT";
+import { getErrorMessage } from "../../utils";
 
-export default function({ logger }) {
+import { USERS_UPSERT } from "../game";
+
+export default function notifyIOMiddleware({ logger }) {
   return (ws, next) => {
-    const { name, status } = ws.user;
-    ws.broadcast.emit(OPPONENT_UPSERT, { name, status });
-    logger.debug("io:notify - notify opponents about yourself");
-    next();
+    try {
+      const { name, status } = ws.user;
+      ws.broadcast.emit(USERS_UPSERT, { name, status });
+      logger.debug(`io:notify - notify users about ${name}`);
+      next();
+    } catch (err) {
+      logger.error(getErrorMessage(err));
+      next(err);
+    }
   };
 }
