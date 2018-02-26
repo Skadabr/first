@@ -19,11 +19,12 @@ interface PropTypes {
   };
   opponents: { name; status }[];
   readyToFight: Function;
+  history: any;
 }
 
 export class Dashboard extends React.Component<PropTypes> {
   toggle = ev => {
-    const { readyToFight, user } = this.props;
+    const { readyToFight, user, history } = this.props;
 
     switch (user.status) {
       case UserStatusType.Peace:
@@ -35,23 +36,19 @@ export class Dashboard extends React.Component<PropTypes> {
     const { opponents, readyToFight, user } = this.props;
 
     return (
-      <div className="row">
-        <div className="col col-sm-5 col-md-4 col-lg-3">
-          <div className="card">
-            <div id="user_name" className="card-header">
-              {user.name}
-            </div>
-            <div id="user_email" className="card-body">
-              <UserInfo {...user} />
-            </div>
-            <div className="card-header">
-              <span>Opponents</span>
-              <StatusBadge toggle={this.toggle} user_status={user.status} />
-            </div>
-            <div className="card-body">
-              <OpponentsList opponents={opponents} />
-            </div>
-          </div>
+      <div className="card">
+        <div id="user_name" className="card-header">
+          {user.name}
+        </div>
+        <div id="user_email" className="card-body">
+          <UserInfo {...user} />
+        </div>
+        <div className="card-header">
+          <span>Opponents</span>
+          <StatusBadge toggle={this.toggle} user_status={user.status} />
+        </div>
+        <div className="card-body">
+          <OpponentsList opponents={opponents} />
         </div>
       </div>
     );

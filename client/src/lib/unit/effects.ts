@@ -1,11 +1,6 @@
-import { createActivateAction, createDisActivateAction } from "../actions";
+import { EffectScope, EffectImpact } from "../../constants";
+import { unitActivate, unitNotActivate } from "../../actions/battle/unit";
 
-const TOGGLE_ACTIVITY = "TOGGLE_ACTIVITY";
-
-//
-// unit: {                target: {
-//   effects                effects
-// }                      }
 //
 //          [ ]     action     [ ]
 //                    |
@@ -19,16 +14,22 @@ const TOGGLE_ACTIVITY = "TOGGLE_ACTIVITY";
 //                   |s|
 //           v        |         v
 //                    v
-// [....preactions, action, ...postactions]
+// [ ...preactions, action, ...postactions]
 //
 
-export default function applyEffects(effects, action) {
+export function applyEffects(effects, action) {
   const [preActions, newAction, postActions] = effects.reduce(
-    (eff, allActions) => applyEffect(eff, allActions),
+    (allActions, eff) => applyEffect(eff, allActions),
     [[], action, []]
   );
   return [...preActions, newAction, ...postActions];
 }
+
+const TOGGLE_ACTIVITY = "TOGGLE_ACTIVITY";
+
+//
+// ============ reducer ============
+//
 
 export function applyEffect(effect, allActions) {
   switch (effect.type) {
@@ -40,9 +41,9 @@ export function applyEffect(effect, allActions) {
 function toggleActivity(payload, [preActions, action, postActions]) {
   const unit = action.unit;
   return [
-    [createActivateAction(unit), ...pre],
+    [unitActivate(unit), ...preActions],
     action,
-    [...post, createDisActivateAction(unit)]
+    [...postActions, unitNotActivate(unit)]
   ];
 }
 
@@ -50,8 +51,10 @@ function toggleActivity(payload, [preActions, action, postActions]) {
 // ============ Effects ============
 //
 
-export function createToggleActivityEffect() {
+export function toggleActivityEffect() {
   return {
-    type: TOGGLE_ACTIVITY
+    type: TOGGLE_ACTIVITY,
+    scope: EffectScope.Local,
+    impact: EffectImpact.State
   };
 }

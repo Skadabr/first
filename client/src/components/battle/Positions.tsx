@@ -1,45 +1,45 @@
 import React from "react";
 import { POSITIONS, UnitTypes } from "../../constants";
+import { createNumberSequence } from "../../utils/common";
 
 import Unit from "./Unit";
+import UnitCardView from "./UnitCardView";
 
-const positions = [...getPositions()];
+const positions = createNumberSequence(POSITIONS);
 
-interface PositionsPropTypes {
-  owner_name: string;
-  units: any[];
-  submit: Function;
-  box: any;
-}
-
-export default class Positions extends React.PureComponent<PositionsPropTypes> {
+export default class Positions extends React.PureComponent<any> {
   render() {
-    const { owner_name, units, submit, box: Position } = this.props;
+    const { owner_name, units, onAddUnit, boxComponent: Position } = this.props;
+
     const width = (100 / POSITIONS) | 0;
+
     return (
       <div
         className="card-block"
         style={{ display: "flex", flexDirection: "row", maxHeight: "auto" }}
       >
         {positions.map(position => {
-          const u = units.find(u => u.position === position);
+          const unit = units.find(u => u.position === position);
+          let child;
+          if (!unit) {
+            child = null;
+          } else if (unit.available) {
+            child = <Unit {...unit} />;
+          } else {
+            child = <UnitCardView {...unit} />;
+          }
+
           return (
             <Position
               key={position}
               width={width}
-              onDrop={({ type }: { type: UnitTypes }) =>
-                submit({ owner_name, position, unit: { type } })
-              }
+              onDrop={({ card }) => onAddUnit({ card, position })}
             >
-              {u != null ? <Unit {...u} /> : null}
+              {child}
             </Position>
           );
         })}
       </div>
     );
   }
-}
-
-function* getPositions() {
-  for (let i = 0; i < POSITIONS; i++) yield i;
 }

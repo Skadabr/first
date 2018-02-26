@@ -6,13 +6,13 @@ import { logout } from "../actions/auth";
 import { toggleBattleChat } from "../actions/ui";
 
 import { isAuthenticatedSelector, userInfoSelector } from "../selectors/user";
-import { battleIsStartedSelector } from "../selectors/battle";
+import { isBattleStartedSelector } from "../selectors/battle";
 import { isDesktopSelector } from "../selectors/ui";
 
 interface HeaderPropTypes {
   logout: Function;
   toggleBattleChat: Function;
-  battleIsStarted: boolean;
+  isBattleStarted: boolean;
   isAuthenticated: boolean;
   isDesktop: boolean;
   name: string;
@@ -29,7 +29,7 @@ export class Header extends React.Component<HeaderPropTypes> {
   };
 
   render() {
-    const { isAuthenticated, isDesktop, battleIsStarted } = this.props;
+    const { isAuthenticated, isDesktop, isBattleStarted } = this.props;
     const homeLink = isAuthenticated ? "/user" : "/";
 
     return (
@@ -60,7 +60,7 @@ export class Header extends React.Component<HeaderPropTypes> {
             </ul>
             <ul className="nav navbar-nav mr-auto">
               {isAuthenticated &&
-                battleIsStarted &&
+                isBattleStarted &&
                 !isDesktop && (
                   <li className="nav-item">
                     <a
@@ -83,7 +83,7 @@ export class Header extends React.Component<HeaderPropTypes> {
 
 function mapStateToProps(state) {
   return {
-    battleIsStarted: battleIsStartedSelector(state),
+    isBattleStarted: isBattleStartedSelector(state),
     isDesktop: isDesktopSelector(state),
     isAuthenticated: isAuthenticatedSelector(state),
     name: userInfoSelector(state).name

@@ -1,20 +1,21 @@
 import React from "react";
 
-import DragUnit from "./DragUnit";
-import { UnitBasicCharacteristic } from "../../unit";
+import Card from "./Card";
+import { UnitCharacteristic } from "../../lib/unit";
 
 export default class Deck extends React.PureComponent<any> {
   render() {
+    const deck = this.props.deck;
+
     return (
       <div
         id="warrior_samples"
         style={{ display: "flex", flexDirection: "row" }}
       >
-        {Object.keys(UnitBasicCharacteristic).map(key => {
-          const type = parseInt(key);
+        {deck.map(card => {
           return (
-            <div key={type}>
-              <DragUnit type={type} />
+            <div key={card._id}>
+              <Card card={card} />
             </div>
           );
         })}

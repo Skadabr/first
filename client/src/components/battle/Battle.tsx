@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import { DragDropContextProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
@@ -12,36 +13,62 @@ import Position from "./Position";
 import DropPosition from "./DropPosition";
 import Pocket from "./Pocket";
 import Hero from "./Hero";
+import Unit from "./Unit";
+import Card from "./Card";
+import UnitCardView from "./UnitCardView";
 
-import { onTurn, addUnit, Player } from "../../actions/battle";
+import { onTurn, addUnit } from "../../actions/battle_process";
+
+import {validateAddUnitParams} from "../../validators/battle";
 
 import {
   playerSelector,
   playerOpponentSelector,
-  isTurnOwnerSelector
+  isTurnOwnerSelector,
+  isBattleStartedSelector,
+  playerDeckSelector,
+  opponentDeckSelector,
+  playerUnitsSelector,
+  opponentUnitsSelector,
+  playerHeroSelector,
+  opponentHeroSelector
 } from "../../selectors/battle";
 
 interface BattlePropTypes {
-  player: Player;
-  opponent: Player;
-  turn: boolean;
+  player: any;
+  opponent: any;
+  playerDeck: any;
+  opponentDeck: any;
+  playerUnits: any;
+  opponentUnits: any;
+  playerHero: any;
+  opponentHero: any;
+  isTurnOwner: boolean;
+  isBattleStarted: boolean;
 
   onTurn: Function;
   addUnit: Function;
 }
 
 export class Battle extends React.Component<BattlePropTypes> {
-  addUnit = unit_data => {
-    const { money } = this.props.player;
-    const { owner_name, position, unit } = unit_data;
+  addUnit = ({ position, card }) => {
+    const player = this.props.player;
 
-    this.props.addUnit(unit.type, position);
+    const {error} = validateAddUnitParams(card, player, position);
+
+    if (error) {
+      //.......
+      console.error(error.message);
+      return;
+    }
+
+    this.props.addUnit(card, position, player);
   };
 
   onTurn = () => {
-    const { turn, player, opponent } = this.props;
+    const { isTurnOwner, player, opponent } = this.props;
 
-    if (!turn) return;
+    if (!isTurnOwner) return;
 
     //this.props.onTurn(my_gamer.name, my_warriors);
   };
@@ -54,40 +81,57 @@ export class Battle extends React.Component<BattlePropTypes> {
   //}
 
   render() {
-    const { turn, player, opponent } = this.props;
+    const {
+      isTurnOwner,
+      isBattleStarted,
+      player,
+      opponent,
+      playerDeck,
+      opponentDeck,
+      playerUnits,
+      opponentUnits,
+      playerHero,
+      opponentHero
+    } = this.props;
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div className="card Board">
+          <div className="card-body">
+            <Deck deck={opponentDeck} box={UnitCardView} />
+          </div>
+
           <div className="card-header">
-            <Hero hero={opponent.hero} />
+            <Hero hero={opponentHero} />
             <Pocket money={opponent.money} />
             <div style={{ float: "right" }}>
-              <TurnButton onTurn={this.onTurn} turn={!turn} />
+              <TurnButton onTurn={this.onTurn} turn={!isTurnOwner} />
             </div>
           </div>
 
           <div className="card-body">
             <Positions
               owner_name={opponent.user.name}
-              units={opponent.units}
-              submit={this.addUnit}
-              box={Position}
+              units={opponentUnits}
+              onAddUnit={noop}
+              boxComponent={Position}
             />
+
             <div style={{ minHeight: 10, backgroundColor: "#eef" }} />
+
             <Positions
               owner_name={player.user.name}
-              units={player.units}
-              submit={this.addUnit}
-              box={DropPosition}
+              units={playerUnits}
+              onAddUnit={this.addUnit}
+              boxComponent={DropPosition}
             />
           </div>
 
           <div className="card-header">
-            <Hero hero={player.hero} />
+            <Hero hero={playerHero} />
             <Pocket money={player.money} />
             <div style={{ float: "right" }}>
-              <TurnButton onTurn={this.onTurn} turn={turn} />
+              <TurnButton onTurn={this.onTurn} turn={isTurnOwner} />
             </div>
           </div>
 
@@ -96,23 +140,50 @@ export class Battle extends React.Component<BattlePropTypes> {
             onDragStart={stopPropagationIfTurnedOff}
             onClick={stopPropagationIfTurnedOff}
           >
-            <Deck />
+            <Deck deck={playerDeck} box={Card} />
           </div>
         </div>
       </DragDropContextProvider>
     );
 
     function stopPropagationIfTurnedOff(ev) {
-      if (!turn) ev.stopPropagation();
+      if (!isTurnOwner) ev.stopPropagation();
     }
   }
 }
 
 function mapStateToProps(state) {
+  const isBattleStarted = isBattleStartedSelector(state);
+  const isTurnOwner = isTurnOwnerSelector(state);
+
   const player = playerSelector(state);
   const opponent = playerOpponentSelector(state);
-  return { player, opponent, turn: isTurnOwnerSelector(state) };
+
+  const playerDeck = playerDeckSelector(state);
+  const opponentDeck = opponentDeckSelector(state);
+
+  const playerUnits = playerUnitsSelector(state);
+  const opponentUnits = opponentUnitsSelector(state);
+
+  const playerHero = playerHeroSelector(state);
+  const opponentHero = opponentHeroSelector(state);
+
+  return {
+    isBattleStarted,
+    isTurnOwner,
+
+    player,
+    opponent,
+    playerDeck,
+    opponentDeck,
+    playerUnits,
+    opponentUnits,
+    playerHero,
+    opponentHero
+  };
 }
+
+function noop() {}
 
 export default connect(mapStateToProps, {
   onTurn,

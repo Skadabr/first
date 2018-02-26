@@ -1,17 +1,34 @@
 import bind from "bind-decorator";
 
-import { UserStatusType } from "../../constants";
+import { createRandomCards } from "../../lib/cards";
+import { UserStatusType, DECK_INIT_SIZE } from "../../constants";
+
 import { log } from "../../logger";
 import {
-  _createBattleLog,
+  _newBattleLog,
   _setUserReadyLog
 } from "../../logger/controllers/battle";
+
 import {
   USERS_UPSERT,
   USER_UPDATE_STATUS,
   BATTLE_REQUEST,
-  TURN
+  TURN,
+  SELECT_CARDS_FOR_DECK
 } from "../game";
+
+import { validateAddUnitParams } from "../../validators/battle";
+
+import { createStore } from "../../reducer";
+import {
+  playerAddCards,
+  playerAddUnit,
+  playerRemoveCard,
+  playerDecreseMoney
+} from "../../actions/battle/player";
+import { cardSelector, playerSelector } from "../../selectors/battle";
+
+import { applyEffects as applyCardEffects } from "../../lib/cards/effects";
 
 export default class BattleController {
   private ws: any;
@@ -32,12 +49,39 @@ export default class BattleController {
       await this._setUserReady(ws.user);
       return;
     }
-    await this._createBattle(ws.user, opponent);
+    const battle = await this._newBattle(ws.user, opponent);
+    const store = createStore(battle.toJSON(), ws.user.toJSON());
+    await this._createDeck(ws.user._id, opponent._id, store);
+
+    battle.updateState(store.getState().battle);
+
+    this._send(BATTLE_REQUEST, opponent.socket_id, {
+      data: store.getState().battle
+    });
   }
 
-  //public addUnit = async data => {
-  //  battle = findBattle(by ws.user)
-  //}
+  public addUnit = async ({ card_id, position }, cb) => {
+    const { ws } = this;
+    const battleJSON = ws.battle.toJSON();
+    const userJSON = ws.user.toJSON();
+    const store = createStore(battleJSON, userJSON);
+
+    const card = cardSelector(store.getState(), card_id);
+    const player = playerSelector(store.getState());
+
+    const { error } = validateAddUnitParams(card, player, position);
+    if (error) return cb({ error });
+
+    store.dispatch(playerRemoveCard(card));
+    store.dispatch(playerDecreseMoney(player, card.unit.cost));
+    store.dispatch(playerAddUnit(card.unit, position, card.effects));
+
+    ws.battle.updateState(store.getState().battle);
+
+    this._send(BATTLE_REQUEST, ws.opponent.socket_id, {
+      data: ws.battle.toJSON()
+    });
+  };
 
   //
   // ============ private ============
@@ -51,15 +95,33 @@ export default class BattleController {
     ws.emit(USER_UPDATE_STATUS, status);
   }
 
-  @log(_createBattleLog)
-  private async _createBattle(user, opponent) {
+  @log(_newBattleLog)
+  private async _newBattle(user, opponent) {
     await user.updateStatus(UserStatusType.Fight);
-    const battle = await this.Battle.createBattle(user, opponent);
+    const battle = await this.Battle.newBattle(user, opponent);
 
     this._broadcastStatusUpdate(user);
     this._broadcastStatusUpdate(opponent);
 
-    this._send(BATTLE_REQUEST, opponent.socket_id, battle);
+    return battle;
+  }
+
+  private async _createDeck(user_id, opponent_id, store) {
+    user_id = user_id.toString();
+    opponent_id = opponent_id.toString();
+    // let cards: any[] = (await new Promise(ok =>
+    //   this.ws.emit(SELECT_CARDS_FOR_DECK, createRandomCards(DECK_INIT_SIZE), ok)
+    // )) as any;
+    // if (cards.length < DECK_INIT_SIZE) {
+    //   cards = [...cards, ...createRandomCards(DECK_INIT_SIZE - cards.length)];
+    // }
+    // store.dispatch(playerAddCards(cards));
+    store.dispatch(
+      playerAddCards(user_id.toString(), createRandomCards(3, user_id))
+    );
+    store.dispatch(
+      playerAddCards(opponent_id.toString(), createRandomCards(3, opponent_id))
+    );
   }
 
   private _broadcastStatusUpdate({ name, status }) {

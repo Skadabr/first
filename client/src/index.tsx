@@ -12,13 +12,19 @@ import "./index.css";
 import setAuthHeader from "./utils/auth-header";
 import * as api from "./api";
 import Socket from "./socket";
+
 import reducer from "./reducer";
 import { userAdd } from "./actions/user";
 import { logout } from "./actions/auth";
 import { statsSetDesktopWidth } from "./actions/stats";
+import battleMidlewareCreator from "./actions/middlewares/battle";
+
 import App from "./App";
 
-const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
+const store = createStore(
+  reducer,
+  composeWithDevTools(applyMiddleware(thunk, battleMidlewareCreator()))
+);
 //const store = createStore(reducer, applyMiddleware(thunk));
 const token = localStorage.user_jwt;
 
@@ -31,12 +37,16 @@ Socket(token, store);
 
 if (token) {
   setAuthHeader(token);
-  api.user.user().then(({ error, data }) => {
+  api.user.user().then(({error, data}) => {
     if (data) {
       store.dispatch(userAdd({ ...data, token }));
       renderApp();
     } else if (error) {
       console.error(error.message);
+      logout()(store.dispatch);
+      renderApp();
+    } else {
+      console.error("Server authentication doesn't work as expected");
       logout()(store.dispatch);
       renderApp();
     }

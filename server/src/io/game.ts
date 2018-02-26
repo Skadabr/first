@@ -11,6 +11,7 @@ export const BATTLE_REQUEST = "BATTLE_REQUEST";
 export const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 export const SEND_MESSAGE = "SEND_MESSAGE";
 export const TURN = "TURN";
+export const SELECT_CARDS_FOR_DECK = "SELECT_CARDS_FOR_DECK";
 export const ADD_UNIT = "ADD_UNIT";
 
 export default function(ws, opts) {
@@ -24,6 +25,7 @@ export default function(ws, opts) {
   ws.on(GET_USERS, userController.getOnlineUsers);
   ws.on(SEND_MESSAGE, chatController.sendMessage);
   ws.on(BATTLE_REQUEST, battleController.tryCreateBattle);
+  ws.on(ADD_UNIT, battleController.addUnit);
 
   //ws.on(ADD_UNIT, battleController.addWarrior);
   //ws.on(TURN, async cb => { });

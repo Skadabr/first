@@ -17,25 +17,28 @@ export enum GameStatus {
   Broken
 }
 
+export enum EffectScope {
+  Global,
+  Local
+}
 
-
+export enum EffectImpact {
+  Positions,
+  State
+}
 
 export const POSITIONS = 13;
-export const MAX_WARRIORS_ON_FIELD = 7;
+export const MAX_UNITS_ON_FIELD = 7;
 export const MIDDLE_POSITION = (POSITIONS / 2) | 0;
+export const DECK_INIT_SIZE = 3;
 
 export const CLEAN_STATE = "CLEAN_STATE";
 
 export const DragTypes = {
-  UNIT: "UNIT"
+  UNIT: "UNIT",
+  CARD: "CARD"
 };
 
 export const CARD_WIDTH = 60;
 export const POSITION_MIN_WIDTH = 40;
 export const CARD_HEIGHT = 120;
-
-export const GAMER_KICKED = "GAMER_KICKED";
-export const WARRIOR_KICKED = "WARRIOR_KICKED";
-export const WARRIOR_REMOVE = "WARRIOR_REMOVE";
-export const FINISH_FIGHT = "FINISH_FIGHT";
-

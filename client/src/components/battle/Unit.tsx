@@ -1,60 +1,36 @@
 import React from "react";
+import { DragSource } from "react-dnd";
 
-import {
-  UnitTypes,
-  CARD_WIDTH,
-  CARD_HEIGHT,
-  POSITION_MIN_WIDTH
-} from "../../constants";
-import { createUnit } from "../../unit/";
+import { DragTypes } from "../../constants";
+import UnitCardView from "./UnitCardView";
 
-const numberStyle = {
-  paddingLeft: "0.2rem",
-  paddingRight: "0.2rem"
-};
-
-export default class Unit extends React.PureComponent<any> {
+class Unit extends React.PureComponent<any> {
   render() {
-    const { type, health } = this.props;
-    const { damage, name, cost } = createUnit(type);
-    return (
-      <div
-        className="Unit"
-        style={{
-          maxWidth: CARD_WIDTH,
-          minWidth: CARD_WIDTH,
-          minHeight: CARD_HEIGHT,
-          maxHeight: CARD_HEIGHT,
-          border: "1px solid gray",
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          cursor: "pointer"
-        }}
-      >
-        <div>
-          <small className="float-left text-muted" style={numberStyle}>
-            {cost}
-          </small>
-        </div>
-        <div
-          style={{
-            paddingTop: "2rem",
-            marginBottom: "auto",
-            textAlign: "center"
-          }}
-        >
-          <strong className="primary-font">{name}</strong>
-        </div>
-        <div>
-          <small className="text-muted" style={numberStyle}>
-            {damage}
-          </small>
-          <small className="text-muted" style={{ numberStyle, float: "right" }}>
-            {health}
-          </small>
-        </div>
+    return this.props.connectDragSource(
+      <div>
+        <UnitCardView {...this.props} />
       </div>
     );
   }
 }
+
+const unitSource = {
+  beginDrag({ type }) {
+    return { type };
+  },
+
+  endDrag(props, monitor) {
+    console.log("Unit->endDrag");
+    const item = monitor.getItem();
+    const dropResult = monitor.getDropResult();
+
+    //if (dropResult) {
+    //  alert(`You dropped ${item.type} into ${JSON.stringify(dropResult, undefined, 3)}!`); // eslint-disable-line no-alert
+    //}
+  }
+};
+
+export default DragSource(DragTypes.UNIT, unitSource, (connect, monitor) => ({
+  connectDragSource: connect.dragSource(),
+  isDragging: monitor.isDragging()
+}))(Unit as any);

@@ -11,7 +11,11 @@ interface PropTypes {
   exact?: boolean;
 }
 
-function User({ isAuthenticated, component: Component, ...rest }: PropTypes) {
+function UserRoute({
+  isAuthenticated,
+  component: Component,
+  ...rest
+}: PropTypes) {
   return (
     <Route
       {...rest}
@@ -29,5 +33,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, undefined, undefined, { pure: false })(
-  User
+  UserRoute
 );

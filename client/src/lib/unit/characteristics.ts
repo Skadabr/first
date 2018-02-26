@@ -1,3 +1,4 @@
+import { toggleActivityEffect } from "./effects";
 import { UnitTypes } from "../../constants";
 
 export default {
@@ -6,14 +7,16 @@ export default {
     name: "Pawn",
     cost: 1,
     health: 6,
-    damage: 1
+    damage: 1,
+    effects: [toggleActivityEffect()]
   },
 
   [UnitTypes.Officer]: {
     type: UnitTypes.Officer,
     name: "Officer",
     cost: 2,
-    init_health: 6,
-    damage: 2
+    health: 6,
+    damage: 2,
+    effects: [toggleActivityEffect()]
   }
 };

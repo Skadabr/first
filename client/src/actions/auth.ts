@@ -12,7 +12,9 @@ export function signup(val) {
 
 export function login(creadentials) {
   return async dispatch => {
-    const { data: token } = await api.auth.login(creadentials);
+    const { error, data: token } = await api.auth.login(creadentials);
+
+    if (error) return { error };
 
     setAuthHeader(token);
     localStorage.user_jwt = token;
@@ -30,7 +32,8 @@ export function login(creadentials) {
 
 export function logout() {
   return dispatch => {
-    IO()();
+    const io = IO();
+    io && io();
     setAuthHeader();
     localStorage.removeItem("user_jwt");
     dispatch({ type: CLEAN_STATE });

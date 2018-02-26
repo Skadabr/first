@@ -7,12 +7,11 @@ export default function jwt(User, logger) {
       secretOrKey: JWT_SECRET,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
     },
-    async (payload, done) => {
-      const { email } = payload;
+    async ({email}, done) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        done();
+        done({status: 401, message: "User with such email is not found"});
       } else {
         logger.debug("user %s is found", user.email);
         done(null, user);

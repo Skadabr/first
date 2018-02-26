@@ -16,12 +16,14 @@ export default function authIOMiddleware({ logger, models }) {
         { socket_id: id },
         { new: true }
       );
-      logger.debug(
-        `io:auth - authenticate new conn(${ws.nsp.name}). User "${
-          user.name
-        }"-"${id} aka ${user.socket_id}" is coming`
-      );
-      ws.user = user;
+      if (user) {
+        logger.debug(
+          `io:auth - authenticate new conn(${ws.nsp.name}). User "${
+            user.name
+          }"-"${id} aka ${user.socket_id}" is coming`
+        );
+        ws.user = user;
+      }
       ws.use(async ([event_name], next) => {
         if (ESCAPE_AUTH.includes(event_name)) return next();
         try {

@@ -10,7 +10,6 @@ import validator, { isEmail, isAlphanumeric } from "validator";
 import { UserStatusType } from "../constants";
 import { log } from "../logger";
 import { createUserLog } from "../logger/models/user";
-import { playerOpponentSelector} from "../selectors";
 
 const { JWT_SECRET } = process.env;
 
@@ -73,14 +72,18 @@ export default function UserModel({ logger }) {
       default: 10,
       required: true,
       min: [0, "Your rate can't be less than 0"]
-    },
+    }
   });
 
   Object.assign(schema.methods, {
     toJSON(): UserJSON {
       const { _id, name, email, status, socket_id, rate } = this;
-      return { _id, name, email, status, socket_id, rate };
+      return { _id: _id.toString(), name, email, status, socket_id, rate };
     },
+
+//  hasId(id) {
+//    return this._id.toString() === id.toString();
+//  },
 
     async setPassword(password) {
       if (password.length < 8) throw new TypeError("Password to short");
@@ -118,7 +121,7 @@ export default function UserModel({ logger }) {
 
     getBattle() {
       return this.model("Battle").findOne({ "players.user._id": this._id });
-    },
+    }
   });
 
   Object.assign(schema.statics, {
@@ -140,7 +143,7 @@ export default function UserModel({ logger }) {
       return this.find({ socket_id: { $ne: null } }).then(users =>
         users.map(({ name, status }) => ({ name, status }))
       );
-    },
+    }
   });
 
   schema.plugin(uniqueValidator);

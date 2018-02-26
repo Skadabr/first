@@ -37,6 +37,7 @@ interface Battle {
     user: User;
     hero: Hero;
     units: Unit[];
+    deck: any[];
     money: number;
     pocket_size: number;
   }[];
@@ -44,6 +45,65 @@ interface Battle {
 
 export default function BattleModel({ logger }) {
   const { Schema } = mongoose;
+
+  const EffectSchema = new Schema(
+    {
+      type: String
+    },
+    {
+      _id: false,
+      strict: false
+    }
+  );
+
+  const UnitSchema = new Schema(
+    {
+      _id: String,
+      owner_id: Schema.ObjectId,
+      type: {
+        type: Number,
+        enum: [UnitTypes.Pawn, UnitTypes.Officer],
+        required: true
+      },
+      health: {
+        type: Number,
+        required: true,
+        validate: {
+          validator: h => h > 0,
+          msg: "Health should be bigger than 0"
+        }
+      },
+      position: {
+        type: Number,
+        validate: {
+          validator: val => val > 0 && val < POSITIONS,
+          msg: "Position is out of range"
+        }
+      },
+      effects: [EffectSchema]
+    },
+    {
+      _id: false,
+      strict: false
+    }
+  );
+
+  const CardSchema = new Schema(
+    {
+      _id: String,
+      owner_id: Schema.ObjectId,
+      type: {
+        type: Number,
+        enum: [UnitTypes.Pawn, UnitTypes.Officer],
+        required: true
+      },
+      effects: [EffectSchema],
+      unit: UnitSchema
+    },
+    {
+      _id: false
+    }
+  );
 
   const PlayerSchema = new Schema(
     {
@@ -68,31 +128,7 @@ export default function BattleModel({ logger }) {
           }
         }
       },
-      units: [
-        {
-          type: {
-            type: Number,
-            enum: [UnitTypes.Pawn, UnitTypes.Officer],
-            required: true
-          },
-          health: {
-            type: Number,
-            required: true,
-            validate: {
-              validator: h => h > 0,
-              msg: "Health should be bigger than 0"
-            }
-          },
-          position: {
-            type: Number,
-            required: true,
-            validate: {
-              validator: val => val > 0 && val < POSITIONS,
-              msg: "Position is out of range"
-            }
-          }
-        }
-      ],
+      units: [UnitSchema],
       hero: {
         health: {
           type: Number,
@@ -116,7 +152,8 @@ export default function BattleModel({ logger }) {
           validator: h => h >= 0,
           msg: "Current money should be bigger than 0"
         }
-      }
+      },
+      deck: [CardSchema]
     },
     { _id: false }
   );
@@ -131,12 +168,15 @@ export default function BattleModel({ logger }) {
 
   Object.assign(BattleSchema.methods, {
     toJSON() {
-      const { turnOwner, players } = this;
+      let { turnOwner, players } = this;
+      players = JSON.parse(JSON.stringify(players));
       return { turnOwner, players };
     },
 
-    getOpponentOf(user_id) {
-      const user = this.players.find(p => p.user._id === user_id);
+    getOpponentByUserId(user_id) {
+      const user = this.players.find(
+        p => p.user._id.toString() === user_id.toString()
+      );
       if (!user)
         throw new Error(
           `User with id: ${user_id} doens't participate in this battle`
@@ -147,11 +187,16 @@ export default function BattleModel({ logger }) {
     nextTurnOwner() {
       const { turnOwner } = this;
       return this.players.find(p => p.user._id !== turnOwner)._id;
+    },
+
+    async updateState(battle) {
+      Object.assign(this, battle);
+      await this.save();
     }
   });
 
   Object.assign(BattleSchema.statics, {
-    createBattle(user, opponent) {
+    newBattle(user, opponent) {
       const turnOwner = user._id;
       const players = [
         {
@@ -181,7 +226,11 @@ export default function BattleModel({ logger }) {
           pocket_size: INIT_MONEY
         }
       ];
-      return this.create({ turnOwner, players });
+      return new this({ turnOwner, players });
+    },
+
+    createBattle(user, opponent) {
+      return this.newBattle(user, opponent).save();
     }
   });
 

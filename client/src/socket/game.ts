@@ -5,7 +5,7 @@ import {
   usersUpsert,
   usersRemove
 } from "../actions/users";
-import { createBattle } from "../actions/battle";
+import { createBattle } from "../actions/battle_process";
 import { UnitTypes } from "../constants";
 
 const USER_GOES = "USER_GOES";
@@ -17,7 +17,7 @@ const SEND_MESSAGE = "SEND_MESSAGE";
 const TURN = "TURN";
 const ADD_UNIT = "ADD_UNIT";
 
-export default function Game(ws, store) {
+export default function Game(ws, store, router) {
   ws.on("error", console.error);
 
   ws.on("connect", () => {
@@ -32,7 +32,7 @@ export default function Game(ws, store) {
   ws.on(SEND_MESSAGE, ({ msg, name, date }) => {
     store.dispatch(chatAddMessage(msg, name, new Date(parseInt(date))));
   });
-  ws.on(BATTLE_REQUEST, val => createBattle(val)(store.dispatch));
+  ws.on(BATTLE_REQUEST, val => createBattle(val, router)(store.dispatch));
   //ws.on(UPDATE_WARRIOR, val => updateWarriors(val)(store.dispatch));
   //ws.on(KICK_OPPONENTS, val =>
   //  updateOnKick(val, store.getState().game.my_name)(store.dispatch)
@@ -51,9 +51,9 @@ export default function Game(ws, store) {
       ws.emit(SEND_MESSAGE, { msg, name, date });
     },
 
-    //  addUnit(type: UnitTypes, position, cb) {
-    //    ws.emit(ADD_UNIT, { kind, position }, cb);
-    //  },
+    addUnit(card_id: string, position, cb) {
+      ws.emit(ADD_UNIT, { card_id, position }, cb);
+    },
 
     //  act(_id: string, cb) {
     //    ws.emit(KICK_OPPONENTS, { _id }, cb);

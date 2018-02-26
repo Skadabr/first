@@ -1,39 +1,38 @@
 import IO from "../socket";
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
 import {
-  UserStatusType,
-  UnitTypes,
-  GAMER_KICKED,
-  WARRIOR_KICKED,
-  WARRIOR_REMOVE,
-  FINISH_FIGHT
-} from "../constants";
+  playerAddCards,
+  playerAddUnit,
+  playerRemoveCard,
+  playerDecreseMoney,
+} from "./battle/player";
+import { battleUpdate } from "./battle";
+
+import { UserStatusType, UnitTypes } from "../constants";
 
 //
 // ============ Actions ============
 //
-
-export function battleUpdate(battle: BattleState) {
-  return {
-    type: BATTLEFIELD_UPDATE,
-    payload: battle
-  }
-}
-
-export function createBattle(val) {
+export function createBattle(val, router) {
   return dispatch => {
+    const { data, error } = val;
+    // if (error) ????;
+
     dispatch(userUpdateStatus(UserStatusType.Fight));
-    dispatch(battleUpdate(val));
+    dispatch(battleUpdate(data));
+    router.history.push("/user/battle");
   };
 }
 
-
-export function addUnit(type: UnitTypes, position: number) {
+export function addUnit(card: any, position: number, player: any) {
   return dispatch => {
     const io = IO().gameIO;
-    io.addUnit(type, position, val => {
-      dispatch(battleUpdate(val));
-    });
+
+    dispatch(playerRemoveCard(card));
+    dispatch(playerDecreseMoney(player, card.unit.cost));
+    dispatch(playerAddUnit(card.unit, position, card.effects));
+
+    io.addUnit(card._id, position, val => dispatch(battleUpdate(val)));
   };
 }
 
