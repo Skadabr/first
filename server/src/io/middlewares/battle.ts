@@ -27,7 +27,7 @@ export default function battleIOMiddleware({ logger, models }) {
     async function getAndSendBattle() {
       if (!ws.user || ws.user.status !== UserStatusType.Fight) return;
 
-      ws.battle = await ws.user.getBattle();
+      ws.battle = await Battle.findBattleByUserId(ws.user._id);
       if (!ws.battle) return;
 
       ws.opponent = ws.battle.getOpponentByUserId(ws.user._id);

@@ -7,27 +7,25 @@ import { unitAvailable } from "../../actions/battle/unit";
 import { PLAYER_ADD_UNIT } from "../../actions/battle/player";
 
 //
-//          [ ]     action     [ ]
+//                  action     [ ]
 //                    |
-//           v      \ v /       v
+//                  \ v /       v
 //                   |e|
-//    pre: [a,a]     |f|      [a,a] :post
+//                   |f|      [a,a] :post
 //                   |f|
-//           v       |e|        v
+//                   |e|        v
 //                   |c|
-//    pre: [a,a,a,a] |t|      [a,a,a] :post
+//                   |t|      [a,a,a] :post
 //                   |s|
-//           v        |         v
+//                    |         v
 //                    v
-// [ ...preactions, action, ...postactions]
+// [                action, ...postactions]
 //
 
 export function applyEffects(effects, action) {
-  const [preActions, newAction, postActions] = effects.reduce(
-    (allActions, eff) => applyEffect(eff, allActions),
-    [[], action, []]
-  );
-  return [...preActions, newAction, ...postActions];
+  return effects.reduce((allActions, eff) => applyEffect(eff, allActions), [
+    action
+  ]);
 }
 
 const MAKE_UNIT_AVAILABLE = "MAKE_UNIT_AVAILABLE";
@@ -44,14 +42,14 @@ export function applyEffect(effect, allActions) {
 }
 
 function makeUnitAvailable(effect, allActions) {
-  let [preActions, action, postActions] = allActions;
+  let [action, ...postActions] = allActions;
   const { type, payload } = action;
 
-  if (action.type !== PLAYER_ADD_UNIT) return;
+  if (action.type !== PLAYER_ADD_UNIT) {
+    postActions.push(unitAvailable(payload.unit));
+  }
 
-  postActions = [...postActions, unitAvailable(payload.unit)];
-
-  return [preActions, action, postActions];
+  return [action, ...postActions];
 }
 
 //

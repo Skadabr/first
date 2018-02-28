@@ -37,7 +37,7 @@ interface Battle {
     user: User;
     hero: Hero;
     units: Unit[];
-    deck: any[];
+    hand: any[];
     money: number;
     pocket_size: number;
   }[];
@@ -153,7 +153,7 @@ export default function BattleModel({ logger }) {
           msg: "Current money should be bigger than 0"
         }
       },
-      deck: [CardSchema]
+      hand: [CardSchema]
     },
     { _id: false }
   );
@@ -231,6 +231,10 @@ export default function BattleModel({ logger }) {
 
     createBattle(user, opponent) {
       return this.newBattle(user, opponent).save();
+    },
+
+    findBattleByUserId(user_id) {
+      return this.findOne({ "players.user._id": user_id });
     }
   });
 

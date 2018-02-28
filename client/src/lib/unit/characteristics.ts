@@ -8,7 +8,8 @@ export default {
     cost: 1,
     health: 6,
     damage: 1,
-    effects: [toggleActivityEffect()]
+    effects: [
+    ],
   },
 
   [UnitTypes.Officer]: {
@@ -17,6 +18,7 @@ export default {
     cost: 2,
     health: 6,
     damage: 2,
-    effects: [toggleActivityEffect()]
+    effects: [
+    ],
   }
 };

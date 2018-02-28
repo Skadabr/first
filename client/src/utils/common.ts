@@ -4,3 +4,6 @@ export function createNumberSequence(n) {
   return res;
 }
 
+export function generateID() {
+  return Math.random().toString();
+}

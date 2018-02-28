@@ -23,7 +23,7 @@ export enum EffectScope {
 }
 
 export enum EffectImpact {
-  Positions,
+  Targets,
   State
 }
 

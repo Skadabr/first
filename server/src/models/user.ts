@@ -119,9 +119,6 @@ export default function UserModel({ logger }) {
       return this.updateStatus(UserStatusType.Peace);
     },
 
-    getBattle() {
-      return this.model("Battle").findOne({ "players.user._id": this._id });
-    }
   });
 
   Object.assign(schema.statics, {

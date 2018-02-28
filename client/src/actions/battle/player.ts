@@ -39,7 +39,7 @@ export default function playerReducer(state = EMPTY as any, action) {
       );
       return {
         ...state,
-        deck: [...state.deck, ...cards]
+        hand: [...state.hand, ...cards]
       };
     }
 
@@ -47,7 +47,7 @@ export default function playerReducer(state = EMPTY as any, action) {
       const { card } = action.payload;
       return {
         ...state,
-        deck: state.deck.filter(c => c._id !== card._id)
+        hand: state.hand.filter(c => c._id !== card._id)
       };
     }
 

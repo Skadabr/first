@@ -36,7 +36,8 @@ export function addUnit(card: any, position: number, player: any) {
   };
 }
 
-export function onTurn() {}
+export function onTurn() {
+}
 // export function onTurn(my_name: string, my_warriors: Warrior[]) {
 //   return async dispatch => {
 //     const io = IO().gameIO;
