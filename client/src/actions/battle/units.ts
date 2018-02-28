@@ -1,4 +1,4 @@
-import unitReducer from "./unit";
+import unitReducer, {unitDecreaseAvailability} from "./unit";
 
 const EMPTY = {};
 
@@ -7,5 +7,14 @@ const EMPTY = {};
 //
 
 export default function unitsReducer(state, action) {
-  return state.map(unit => unitReducer(unit, action));
+  switch (action.type) {
+
+    default:
+      return state.map(unit => unitReducer(unit, action));
+  }
 }
+
+//
+// ============ Actions ============
+//
+

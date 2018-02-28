@@ -2,7 +2,6 @@ import React from "react";
 import { DragSource } from "react-dnd";
 
 import { DragTypes } from "../../constants";
-import { applyEffects } from "../../lib/cards/effects";
 import UnitCardView from "./UnitCardView";
 
 const numberStyle = {
@@ -38,8 +37,6 @@ const unitSource = {
       );
     }
 
-    //const { _id, unit, effects, position } = props;
-    //applyEffects(effects, { type: ADD_UNIT, position });
   }
 };
 

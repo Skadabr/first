@@ -97,7 +97,6 @@ export default function BattleModel({ logger }) {
         enum: [UnitTypes.Pawn, UnitTypes.Officer],
         required: true
       },
-      effects: [EffectSchema],
       unit: UnitSchema
     },
     {

@@ -1,90 +1,69 @@
-import { createSelector } from "reselect";
-import { Impact } from "../../constants";
+export const getBattle = state => state.battle;
+export const getPlayers = state => state.battle.players;
 
-export const battleSelector = state => state.battle;
-export const playersSelector = state => state.battle.players;
-
-export const isBattleStartedSelector = state => {
-  battleSelector(state).players.length > 0;
-};
+export const isBattleStarted = state => getBattle(state).players.length > 0;
 
 //
 // ============ player ============
 
-export const playerSelector = state => {
-  const players = playerSelector(state);
-  const _id = state.user._id;
-  return players.find(p => p.user_id === _id);
-};
+export const getPlayerByUserId = (state, user_id) =>
+  getPlayers(state).find(p => p.user._id === user_id);
 
-export const playerOpponentSelector = state => {
-  const players = playerSelector(state);
-  const _id = state.user._id;
-  return players.find(p => p.user_id !== _id);
-};
+export const getPlayer = state => getPlayerByUserId(state, state.user._id);
+
+export const getOpponent = state =>
+  getPlayers(state).find(p => p.user._id !== state.user._id);
 
 //
 // ============ turn ============
 
-export const isTurnOwnerSelector = state => {
-  const battle = battleSelector(state);
+export const isTurnOwner = state => {
+  const battle = getBattle(state);
   const _id = state.user._id;
   return battle.turnOwner === _id;
 };
 
-export const nextTurnOwnerPlayerSelector = state => {
-  const battle = battleSelector(state);
+export const getNextTurnOwnerPlayer = state => {
+  const battle = getBattle(state);
   return battle.players.find(p => p.user._id !== battle.turnOwner);
 };
 
 //
 // ============ hero ============
 
-export const playerHeroSelector = state => playerSelector(state).hero;
+export const getPlayerHero = state => getPlayer(state).hero;
 
-export const playerOpponentHeroSelector = state =>
-  playerOpponentSelector(state).hero;
+export const getOpponentHero = state => getOpponent(state).hero;
 
 //
 // ============ hand/card ============
 
-export const playerHandSelector = state => playerSelector(state).hand;
+export const getPlayerHand = state => getPlayer(state).hand;
 
-export const playerOpponentHandSelector = state =>
-  playerOpponentSelector(state).hand;
+export const getOpponentHand = state => getOpponent(state).hand;
 
-export const cardsSelector = state =>
-  playersSelector(state).reduce((sum, p) => [...p.hand, ...sum], []);
+export const getCards = state =>
+  getPlayers(state).reduce((sum, p) => [...p.hand, ...sum], []);
 
-export const cardSelector = (state, id) =>
-  cardsSelector(state).find(c => c._id === id);
+export const getCard = (state, id) => getCards(state).find(c => c._id === id);
 
 //
 // ============ units ============
 
-export const unitsSelector = state =>
-  playersSelector(state).reduce((units, p) => [...units, ...p.units]);
+export const getUnits = state =>
+  getPlayers(state).reduce((units, p) => [...units, ...p.units]);
 
-export const unitSelector = (state, id) =>
-{
-  const unit = unitsSelector(state).find(unit => unit._id === id);
-}
+export const getUnitsByUserId = (state, user_id) =>
+  getPlayerByUserId(state, user_id).units;
 
-//
-// ============ effects ============
+export const getPlayerUnits = state => getPlayer(state).units;
 
-export const effectsSelector = state =>
-  unitsSelector(state).map(u => u.effects);
+export const getOpponentUnits = state => getOpponent(state).units;
 
-export const featuresSelector = state =>
-  unitsSelector(state).map(u => u.features);
+export const getUnit = (state, id) =>
+  getUnits(state).find(unit => unit._id === id);
 
-//
-// ============ positions ============
-//
-
-export const targetsSelector = (state, unit, targetUnit) => {
-  const features = featuresSelector(state);
-
-  applyFeatures(features, unit, target);
+export const getUnitFriends = (state, unit_id) => {
+  const unitOwnerId = getUnit(state, unit_id).owner_id;
+  return getUnitsByUserId(state, unitOwnerId);
 };

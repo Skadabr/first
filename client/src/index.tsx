@@ -23,7 +23,9 @@ import App from "./App";
 
 const store = createStore(
   reducer,
-  composeWithDevTools(applyMiddleware(thunk, battleMidlewareCreator()))
+  composeWithDevTools({ maxAge: 20 })(
+    applyMiddleware(thunk, battleMidlewareCreator())
+  )
 );
 //const store = createStore(reducer, applyMiddleware(thunk));
 const token = localStorage.user_jwt;
@@ -37,7 +39,7 @@ Socket(token, store);
 
 if (token) {
   setAuthHeader(token);
-  api.user.user().then(({error, data}) => {
+  api.user.user().then(({ error, data }) => {
     if (data) {
       store.dispatch(userAdd({ ...data, token }));
       renderApp();

@@ -1,14 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { UserStatusType } from "../../constants";
+
 import StatusBadge from "./StatusBadge";
 import OpponentsList from "./OpponentsList";
 import UserInfo from "./UserInfo";
 
 import { readyToFight } from "../../actions/dashboard";
-import { otherUsersSelector } from "../../selectors/users";
-import { userInfoSelector } from "../../selectors/user";
-import { UserStatusType } from "../../constants";
+
+import { getOtherUsers } from "../../selectors/users";
+import { getUserInfo } from "../../selectors/user";
 
 interface PropTypes {
   user: {
@@ -57,8 +59,8 @@ export class Dashboard extends React.Component<PropTypes> {
 
 function mapStateToProps(state) {
   return {
-    user: userInfoSelector(state),
-    opponents: otherUsersSelector(state)
+    user: getUserInfo(state),
+    opponents: getOtherUsers(state)
   };
 }
 

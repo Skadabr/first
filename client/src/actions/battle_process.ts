@@ -1,14 +1,20 @@
+import { UserStatusType, UnitTypes } from "../constants";
 import IO from "../socket";
+// actions
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
 import {
   playerAddCards,
   playerAddUnit,
   playerRemoveCard,
-  playerDecreseMoney,
+  playerDecreseMoney
 } from "./battle/player";
+import { unitActivate } from "./battle/unit";
 import { battleUpdate } from "./battle";
-
-import { UserStatusType, UnitTypes } from "../constants";
+// selectors
+import {
+  getTargetEffects,
+  getGlobalTargetEffects
+} from "../selectors/battle/effects";
 
 //
 // ============ Actions ============
@@ -30,14 +36,25 @@ export function addUnit(card: any, position: number, player: any) {
 
     dispatch(playerRemoveCard(card));
     dispatch(playerDecreseMoney(player, card.unit.cost));
-    dispatch(playerAddUnit(card.unit, position, card.effects));
+    dispatch(playerAddUnit(card.unit, position, card.unit.effects));
 
     io.addUnit(card._id, position, val => dispatch(battleUpdate(val)));
   };
 }
 
-export function onTurn() {
+export function pickUnit(unit_id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const effects = [
+      ...getGlobalTargetEffects(state),
+      ...getTargetEffects(state, unit_id)
+    ];
+
+    dispatch(unitActivate(unit_id, effects));
+  };
 }
+
+export function onTurn() {}
 // export function onTurn(my_name: string, my_warriors: Warrior[]) {
 //   return async dispatch => {
 //     const io = IO().gameIO;

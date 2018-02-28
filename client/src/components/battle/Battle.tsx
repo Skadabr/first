@@ -19,26 +19,26 @@ import UnitCardView from "./UnitCardView";
 
 import { onTurn, addUnit } from "../../actions/battle_process";
 
-import {validateAddUnitParams} from "../../validators/battle";
+import { validateAddUnitParams } from "../../validators/battle";
 
 import {
-  playerSelector,
-  playerOpponentSelector,
-  isTurnOwnerSelector,
-  isBattleStartedSelector,
-  playerDeckSelector,
-  opponentDeckSelector,
-  playerUnitsSelector,
-  opponentUnitsSelector,
-  playerHeroSelector,
-  opponentHeroSelector
+  isTurnOwner,
+  isBattleStarted,
+  getPlayer,
+  getOpponent,
+  getPlayerHand,
+  getOpponentHand,
+  getPlayerUnits,
+  getOpponentUnits,
+  getPlayerHero,
+  getOpponentHero
 } from "../../selectors/battle";
 
 interface BattlePropTypes {
   player: any;
   opponent: any;
-  playerDeck: any;
-  opponentDeck: any;
+  playerHand: any;
+  opponentHand: any;
   playerUnits: any;
   opponentUnits: any;
   playerHero: any;
@@ -54,7 +54,7 @@ export class Battle extends React.Component<BattlePropTypes> {
   addUnit = ({ position, card }) => {
     const player = this.props.player;
 
-    const {error} = validateAddUnitParams(card, player, position);
+    const { error } = validateAddUnitParams(card, player, position);
 
     if (error) {
       //.......
@@ -86,8 +86,8 @@ export class Battle extends React.Component<BattlePropTypes> {
       isBattleStarted,
       player,
       opponent,
-      playerDeck,
-      opponentDeck,
+      playerHand,
+      opponentHand,
       playerUnits,
       opponentUnits,
       playerHero,
@@ -98,7 +98,7 @@ export class Battle extends React.Component<BattlePropTypes> {
       <DragDropContextProvider backend={HTML5Backend}>
         <div className="card Board">
           <div className="card-body">
-            <Deck deck={opponentDeck} box={UnitCardView} />
+            <Deck deck={opponentHand} box={UnitCardView} />
           </div>
 
           <div className="card-header">
@@ -140,7 +140,7 @@ export class Battle extends React.Component<BattlePropTypes> {
             onDragStart={stopPropagationIfTurnedOff}
             onClick={stopPropagationIfTurnedOff}
           >
-            <Deck deck={playerDeck} box={Card} />
+            <Deck deck={playerHand} box={Card} />
           </div>
         </div>
       </DragDropContextProvider>
@@ -153,29 +153,26 @@ export class Battle extends React.Component<BattlePropTypes> {
 }
 
 function mapStateToProps(state) {
-  const isBattleStarted = isBattleStartedSelector(state);
-  const isTurnOwner = isTurnOwnerSelector(state);
+  const player = getPlayer(state);
+  const opponent = getOpponent(state);
 
-  const player = playerSelector(state);
-  const opponent = playerOpponentSelector(state);
+  const playerHand = getPlayerHand(state);
+  const opponentHand = getOpponentHand(state);
 
-  const playerDeck = playerDeckSelector(state);
-  const opponentDeck = opponentDeckSelector(state);
+  const playerUnits = getPlayerUnits(state);
+  const opponentUnits = getOpponentUnits(state);
 
-  const playerUnits = playerUnitsSelector(state);
-  const opponentUnits = opponentUnitsSelector(state);
-
-  const playerHero = playerHeroSelector(state);
-  const opponentHero = opponentHeroSelector(state);
+  const playerHero = getPlayerHero(state);
+  const opponentHero = getOpponentHero(state);
 
   return {
-    isBattleStarted,
-    isTurnOwner,
+    isBattleStarted: isBattleStarted(state),
+    isTurnOwner: isTurnOwner(state),
 
     player,
     opponent,
-    playerDeck,
-    opponentDeck,
+    playerHand,
+    opponentHand,
     playerUnits,
     opponentUnits,
     playerHero,

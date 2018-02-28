@@ -26,9 +26,7 @@ import {
   playerRemoveCard,
   playerDecreseMoney
 } from "../../actions/battle/player";
-import { cardSelector, playerSelector } from "../../selectors/battle";
-
-import { applyEffects as applyCardEffects } from "../../lib/cards/effects";
+import { getCard, getPlayer } from "../../selectors/battle/index";
 
 export default class BattleController {
   private ws: any;
@@ -66,17 +64,21 @@ export default class BattleController {
     const userJSON = ws.user.toJSON();
     const store = createStore(battleJSON, userJSON);
 
-    const card = cardSelector(store.getState(), card_id);
-    const player = playerSelector(store.getState());
+    const card = getCard(store.getState(), card_id);
+    const player = getPlayer(store.getState());
 
     const { error } = validateAddUnitParams(card, player, position);
     if (error) return cb({ error });
 
     store.dispatch(playerRemoveCard(card));
     store.dispatch(playerDecreseMoney(player, card.unit.cost));
-    store.dispatch(playerAddUnit(card.unit, position, card.effects));
+    store.dispatch(playerAddUnit(card.unit, position, card.unit.effects));
 
     ws.battle.updateState(store.getState().battle);
+
+    console.log("\n\n ----");
+    console.log(JSON.stringify(store.getState().battle, undefined, 3));
+    console.log("\n\n ----");
 
     this._send(BATTLE_REQUEST, ws.opponent.socket_id, {
       data: ws.battle.toJSON()

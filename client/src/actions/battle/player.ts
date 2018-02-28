@@ -6,11 +6,13 @@ import heroReducer from "./hero";
 
 const EMPTY = {};
 
-export const PLAYER_ADD_UNIT = "PLAYER_ADD_UNIT";
-export const PLAYER_REMOVE_UNIT = "PLAYER_REMOVE_UNIT";
-export const PLAYER_ADD_CARDS = "PLAYER_ADD_CARDS";
-export const PLAYER_REMOVE_CARD = "PLAYER_REMOVE_CARD";
-export const PLAYER_DECREASE_MONEY = "PLAYER_DECREASE_MONEY";
+import {
+  PLAYER_ADD_UNIT,
+  PLAYER_REMOVE_UNIT,
+  PLAYER_ADD_CARDS,
+  PLAYER_REMOVE_CARD,
+  PLAYER_DECREASE_MONEY
+} from ".";
 
 //
 // ============ reducer ============
@@ -78,11 +80,11 @@ export function playerRemoveCard(card) {
   return { type: PLAYER_REMOVE_CARD, payload: { card } };
 }
 
-export function playerAddUnit(unit, position, cardEffects) {
+export function playerAddUnit(unit, position, effects) {
   return {
     type: PLAYER_ADD_UNIT,
     payload: { unit, position },
-    cardEffects
+    effects
   };
 }
 

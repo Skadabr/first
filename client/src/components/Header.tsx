@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import { toggleBattleChat } from "../actions/ui";
 
-import { isAuthenticatedSelector, userInfoSelector } from "../selectors/user";
-import { isBattleStartedSelector } from "../selectors/battle";
-import { isDesktopSelector } from "../selectors/ui";
+import { isAuthenticated, getUserInfo } from "../selectors/user";
+import { isBattleStarted } from "../selectors/battle";
+import { isDesktop } from "../selectors/ui";
 
 interface HeaderPropTypes {
   logout: Function;
@@ -83,10 +83,10 @@ export class Header extends React.Component<HeaderPropTypes> {
 
 function mapStateToProps(state) {
   return {
-    isBattleStarted: isBattleStartedSelector(state),
-    isDesktop: isDesktopSelector(state),
-    isAuthenticated: isAuthenticatedSelector(state),
-    name: userInfoSelector(state).name
+    isBattleStarted: isBattleStarted(state),
+    isDesktop: isDesktop(state),
+    isAuthenticated: isAuthenticated(state),
+    name: getUserInfo(state).name
   };
 }
 

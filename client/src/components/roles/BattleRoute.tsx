@@ -2,44 +2,48 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { isBattleStartedSelector } from "../../selectors/battle";
-import { isAuthenticatedSelector } from "../../selectors/user";
+import { isBattleStarted } from "../../selectors/battle";
+import { isAuthenticated } from "../../selectors/user";
 
-interface PropTypes {
-  isBattleStarted: boolean;
-  isAuthenticated: boolean;
-  component: any;
-  path: string;
-  exact?: boolean;
-}
+// interface BattleRoutePropTypes {
+//   isBattleStarted: boolean;
+//   isAuthenticated: boolean;
+//   component: any;
+//   path: string;
+//   exact?: boolean;
+// }
 
-function BattleRoute({
-  isBattleStarted,
-  isAuthenticated,
-  component: Component,
-  ...rest
-}: PropTypes) {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isAuthenticatedSelector && isBattleStarted ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/user" />
-        )
-      }
-    />
-  );
+class BattleRoute extends React.Component<any> {
+  render() {
+    const {
+      isBattleStarted,
+      isAuthenticated,
+      component: Component,
+      ...rest
+    } = this.props;
+
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          isAuthenticated && isBattleStarted ? (
+            <Component {...props} />
+          ) : (
+            <Redirect to="/user" />
+          )
+        }
+      />
+    );
+  }
 }
 
 function mapStateToProps(state) {
   return {
-    isBattleStarted: isBattleStartedSelector(state),
-    isAuthenticated: isAuthenticatedSelector(state)
+    isBattleStarted: isBattleStarted(state),
+    isAuthenticated: isAuthenticated(state)
   };
 }
 
 export default connect(mapStateToProps, undefined, undefined, { pure: false })(
-  BattleRoute
+  BattleRoute as any
 );
