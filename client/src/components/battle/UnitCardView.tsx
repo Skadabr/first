@@ -13,7 +13,7 @@ const numberStyle = {
   paddingRight: "0.2rem"
 };
 
-export default class Unit extends React.PureComponent<any> {
+export default class UnitCardView extends React.PureComponent<any> {
   render() {
     const { type, health, owner_id } = this.props;
     const { damage, name, cost } = createUnit(type, { owner_id });

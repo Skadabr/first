@@ -23,6 +23,9 @@ export const isTurnOwner = state => {
   return battle.turnOwner === _id;
 };
 
+export const getTurnOwner = state =>
+  getBattle(state).turnOwner
+
 export const getNextTurnOwnerPlayer = state => {
   const battle = getBattle(state);
   return battle.players.find(p => p.user._id !== battle.turnOwner);

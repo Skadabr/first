@@ -8,7 +8,8 @@ import { UnitTypes } from "../../constants";
 
 import Deck from "./Deck";
 import TurnButton from "./TurnButton";
-import Positions from "./Positions";
+import OpponentPositions from "./OpponentPositions";
+import PlayerPositions from "./PlayerPositions";
 import Position from "./Position";
 import DropPosition from "./DropPosition";
 import Pocket from "./Pocket";
@@ -66,11 +67,9 @@ export class Battle extends React.Component<BattlePropTypes> {
   };
 
   onTurn = () => {
-    const { isTurnOwner, player, opponent } = this.props;
+    const { isTurnOwner, onTurn } = this.props;
 
-    if (!isTurnOwner) return;
-
-    //this.props.onTurn(my_gamer.name, my_warriors);
+    if (isTurnOwner) onTurn();
   };
 
   //componentWillReceiveProps(nextProps) {
@@ -110,20 +109,17 @@ export class Battle extends React.Component<BattlePropTypes> {
           </div>
 
           <div className="card-body">
-            <Positions
+            <OpponentPositions
               owner_name={opponent.user.name}
               units={opponentUnits}
-              onAddUnit={noop}
-              boxComponent={Position}
             />
 
             <div style={{ minHeight: 10, backgroundColor: "#eef" }} />
 
-            <Positions
+            <PlayerPositions
               owner_name={player.user.name}
               units={playerUnits}
               onAddUnit={this.addUnit}
-              boxComponent={DropPosition}
             />
           </div>
 

@@ -11,7 +11,8 @@ import {
   PLAYER_REMOVE_UNIT,
   PLAYER_ADD_CARDS,
   PLAYER_REMOVE_CARD,
-  PLAYER_DECREASE_MONEY
+  PLAYER_DECREASE_MONEY,
+  PLAYER_ADJUST_MONEY
 } from ".";
 
 //
@@ -54,12 +55,24 @@ export default function playerReducer(state = EMPTY as any, action) {
     }
 
     case PLAYER_DECREASE_MONEY: {
-      const { player, cost } = action.payload;
+      const { player_user_id, cost } = action.payload;
 
-      if (state.user._id !== player.user._id) return state;
+      if (state.user._id !== player_user_id) return state;
       if (state.money < cost) return state;
 
       return { ...state, money: state.money - cost };
+    }
+
+    case PLAYER_ADJUST_MONEY: {
+      const { player_user_id } = action.payload;
+
+      if (state.user._id !== player_user_id) return state;
+
+      const pocket_size =
+        state.pocket_size < 10 ? state.pocket_size + 1 : state.pocket_size;
+      const money = pocket_size;
+
+      return { ...state, money, pocket_size };
     }
 
     default:
@@ -88,10 +101,17 @@ export function playerAddUnit(unit, position, effects) {
   };
 }
 
-export function playerDecreseMoney(player, cost) {
+export function playerDecreseMoney(player_user_id, cost) {
   return {
     type: PLAYER_DECREASE_MONEY,
-    payload: { player, cost }
+    payload: { player_user_id, cost }
+  };
+}
+
+export function playerAdjustMoney(player_user_id) {
+  return {
+    type: PLAYER_ADJUST_MONEY,
+    payload: { player_user_id }
   };
 }
 

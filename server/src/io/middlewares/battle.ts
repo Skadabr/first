@@ -1,6 +1,7 @@
 import { getErrorMessage } from "../../utils";
 import { BATTLE_REQUEST } from "../game";
 import { UserStatusType } from "../../constants";
+import * as reducer from "../../reducer";
 
 export default function battleIOMiddleware({ logger, models }) {
   const Battle = models.model("Battle");
@@ -9,12 +10,14 @@ export default function battleIOMiddleware({ logger, models }) {
     try {
       await getBattle();
       getBattleOpponent();
+      createStore();
       await sendBattle();
 
       ws.use(async ([event_name], next) => {
         try {
           await getBattle();
           getBattleOpponent();
+          createStore();
           next();
         } catch (err) {
           logger.error(getErrorMessage(err));
@@ -27,7 +30,6 @@ export default function battleIOMiddleware({ logger, models }) {
       logger.error(getErrorMessage(err));
     }
 
-
     async function getBattle() {
       if (!ws.user || ws.user.status !== UserStatusType.Fight) return;
 
@@ -37,6 +39,13 @@ export default function battleIOMiddleware({ logger, models }) {
     function getBattleOpponent() {
       if (!ws.battle) return;
       ws.opponent = ws.battle.getOpponentByUserId(ws.user._id);
+    }
+
+    function createStore() {
+      if (!ws.battle) return;
+      const battleJSON = ws.battle.toJSON();
+      const userJSON = ws.user.toJSON();
+      ws.store = reducer.createStore(battleJSON, userJSON);
     }
 
     async function sendBattle() {

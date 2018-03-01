@@ -20,13 +20,26 @@ import {
 import { validateAddUnitParams } from "../../validators/battle";
 
 import { createStore } from "../../reducer";
+//
+// ============ actions ============
+import { battleNextTurn } from "../../actions/battle/index";
 import {
   playerAddCards,
   playerAddUnit,
   playerRemoveCard,
-  playerDecreseMoney
+  playerDecreseMoney,
+  playerAdjustMoney
 } from "../../actions/battle/player";
-import { getCard, getPlayer } from "../../selectors/battle/index";
+import { unitSetMoves, unitSetAvailability } from "../../actions/battle/unit";
+//
+// ============ selectors ============
+import {
+  getCard,
+  getPlayer,
+  getTurnOwner,
+  getNextTurnOwnerPlayer,
+  getUnitsByUserId
+} from "../../selectors/battle/index";
 
 export default class BattleController {
   private ws: any;
@@ -38,6 +51,10 @@ export default class BattleController {
     this.Battle = models.model("Battle");
     this.User = models.model("User");
   }
+
+  //
+  // ============ tryCreateBattle ============
+  //
 
   @bind
   public async tryCreateBattle() {
@@ -58,11 +75,12 @@ export default class BattleController {
     });
   }
 
+  //
+  // ============ addUnit ============
+  //
+
   public addUnit = async ({ card_id, position }, cb) => {
-    const { ws } = this;
-    const battleJSON = ws.battle.toJSON();
-    const userJSON = ws.user.toJSON();
-    const store = createStore(battleJSON, userJSON);
+    const { store, battle, opponent } = this.ws;
 
     const card = getCard(store.getState(), card_id);
     const player = getPlayer(store.getState());
@@ -71,22 +89,44 @@ export default class BattleController {
     if (error) return cb({ error });
 
     store.dispatch(playerRemoveCard(card));
-    store.dispatch(playerDecreseMoney(player, card.unit.cost));
+    store.dispatch(playerDecreseMoney(player.user._id, card.unit.cost));
     store.dispatch(playerAddUnit(card.unit, position, card.unit.effects));
 
-    ws.battle.updateState(store.getState().battle);
+    battle.updateState(store.getState().battle);
 
-    console.log("\n\n ----");
-    console.log(JSON.stringify(store.getState().battle, undefined, 3));
-    console.log("\n\n ----");
-
-    this._send(BATTLE_REQUEST, ws.opponent.socket_id, {
-      data: ws.battle.toJSON()
-    });
+    this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
   };
 
   //
+  // ============ passTheTurn ============
+  //
+
+  public passTheTurn = async () => {
+    const { store, battle, opponent } = this.ws;
+
+    const turnOwner = getTurnOwner(store.getState());
+    const nextTurnOwner = getNextTurnOwnerPlayer(store.getState()).user._id;
+
+    getUnitsByUserId(store.getState(), turnOwner).forEach(unit => {
+      store.dispatch(unitSetMoves(0, unit._id));
+      store.dispatch(unitSetAvailability(1, unit._id));
+    });
+    getUnitsByUserId(store.getState(), nextTurnOwner).forEach(unit => {
+      store.dispatch(unitSetMoves(1, unit._id));
+      store.dispatch(unitSetAvailability(0, unit._id));
+    });
+    store.dispatch(playerAdjustMoney(turnOwner));
+    store.dispatch(battleNextTurn());
+
+    battle.updateState(store.getState().battle);
+
+    this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
+  };
+
+  //
+  //
   // ============ private ============
+  //
   //
 
   @log(_setUserReadyLog)
@@ -131,6 +171,7 @@ export default class BattleController {
   }
 
   private _send(event, opponent_sid, ...args) {
+    console.log("OP SID: ", opponent_sid);
     this.ws.emit(event, ...args);
     this.ws.to(opponent_sid).emit(event, ...args);
   }

@@ -169,7 +169,7 @@ export default function BattleModel({ logger }) {
     toJSON() {
       let { turnOwner, players } = this;
       players = JSON.parse(JSON.stringify(players));
-      return { turnOwner, players };
+      return { turnOwner: turnOwner.toString(), players };
     },
 
     getOpponentByUserId(user_id) {
@@ -180,7 +180,9 @@ export default function BattleModel({ logger }) {
         throw new Error(
           `User with id: ${user_id} doens't participate in this battle`
         );
-      return this.players.find(p => p.user._id !== user_id);
+      return this.players.find(
+        p => p.user._id.toString() !== user_id.toString()
+      ).user;
     },
 
     nextTurnOwner() {

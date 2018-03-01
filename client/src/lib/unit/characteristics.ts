@@ -1,4 +1,4 @@
-import { increaseMoves } from "./effects";
+import { increaseMoves, taunt } from "./effects";
 import { UnitTypes } from "../../constants";
 
 export default {
@@ -9,6 +9,7 @@ export default {
     health: 6,
     damage: 1,
     moves: 0,
+    available: 1,
     effects: [increaseMoves(1)]
   },
 
@@ -19,6 +20,7 @@ export default {
     health: 6,
     damage: 2,
     moves: 0,
-    effects: []
+    available: 1,
+    effects: [taunt()]
   }
 };

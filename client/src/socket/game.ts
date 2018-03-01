@@ -1,10 +1,6 @@
 import { userUpdateStatus } from "../actions/user";
 import { chatAddMessage } from "../actions/chat";
-import {
-  loadUsers,
-  usersUpsert,
-  usersRemove
-} from "../actions/users";
+import { loadUsers, usersUpsert, usersRemove } from "../actions/users";
 import { createBattle } from "../actions/battle_process";
 import { UnitTypes } from "../constants";
 
@@ -33,11 +29,6 @@ export default function Game(ws, store, router) {
     store.dispatch(chatAddMessage(msg, name, new Date(parseInt(date))));
   });
   ws.on(BATTLE_REQUEST, val => createBattle(val, router)(store.dispatch));
-  //ws.on(UPDATE_WARRIOR, val => updateWarriors(val)(store.dispatch));
-  //ws.on(KICK_OPPONENTS, val =>
-  //  updateOnKick(val, store.getState().game.my_name)(store.dispatch)
-  //);
-  //ws.on(TURN, val => acquireTurn(val)(store.dispatch));
 
   return {
     ws,
@@ -55,12 +46,8 @@ export default function Game(ws, store, router) {
       ws.emit(ADD_UNIT, { card_id, position }, cb);
     },
 
-    //  act(_id: string, cb) {
-    //    ws.emit(KICK_OPPONENTS, { _id }, cb);
-    //  },
-
-    //  passTheTurn(cb) {
-    //    ws.emit(TURN, cb);
-    //  }
+    passTheTurn(cb) {
+      ws.emit(TURN);
+    }
   };
 }

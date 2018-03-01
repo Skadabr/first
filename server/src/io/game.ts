@@ -24,19 +24,17 @@ export default function(ws, opts) {
 
   ws.on(GET_USERS, userController.getOnlineUsers);
   ws.on(SEND_MESSAGE, chatController.sendMessage);
+
   ws.on(BATTLE_REQUEST, battleController.tryCreateBattle);
   ws.on(ADD_UNIT, battleController.addUnit);
+  ws.on(TURN, battleController.passTheTurn);
 
-  //ws.on(ADD_UNIT, battleController.addWarrior);
-  //ws.on(TURN, async cb => { });
 
   async function onDisconnect() {
     const { user } = ws;
     if (!user) return;
     await user.onDisconnect();
     ws.broadcast.emit(USER_GOES, user.name);
-    logger.debug(
-      `io:game - disconnect - ${user.name} goes`
-    );
+    logger.debug(`io:game - disconnect - ${user.name} goes`);
   }
 }

@@ -67,6 +67,8 @@ export function applyEffect(effect, actions, state) {
 // ============ Effects ============
 //
 
+// ============ increseAttackHandler ============
+
 function increseAttackHandler(effect, actions) {
   const action = getMainAction(actions);
   const postActions = getPostActions(actions);
@@ -78,6 +80,8 @@ function increseAttackHandler(effect, actions) {
   return combineActions({ action, postActions });
 }
 
+// ============ tauntHandler ============
+
 function tauntHandler(effect, actions, state) {
   const action = getMainAction(actions);
   let postActions = getPostActions(actions);
@@ -86,19 +90,21 @@ function tauntHandler(effect, actions, state) {
     postActions = postActions.concat(
       getUnitFriends(state, effect.unit_id)
         .map(unit => unit._id)
-        .map(id => unitDecreaseAvailability(id, 1))
+        .map(id => unitDecreaseAvailability(1, id))
     );
   }
 
   return combineActions({ action, postActions });
 }
 
+// ============ increaseMovesHandler ============
+
 function increaseMovesHandler(effect, actions, state) {
   const action = getMainAction(actions);
   let postActions = getPostActions(actions);
 
   if (action.type === PLAYER_ADD_UNIT) {
-    postActions = postActions.concat(unitIncreaseMoves(effect.unit_id, 1));
+    postActions = postActions.concat(unitIncreaseMoves(1, effect.unit_id));
   }
 
   return combineActions({ action, postActions });

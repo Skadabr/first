@@ -1,8 +1,10 @@
 import {
   UNIT_ACTIVATE,
   UNIT_DISACTIVATE,
+  UNIT_SET_AVAILABILITY,
   UNIT_DECREASE_AVAILABILITY,
   UNIT_INCREASE_AVAILABILITY,
+  UNIT_SET_MOVES,
   UNIT_DECREASE_MOVES,
   UNIT_INCREASE_MOVES,
   ATTACK
@@ -33,6 +35,12 @@ export default function unitReducer(state, { type, payload }) {
       return { ...state, active: false };
     }
 
+    case UNIT_SET_AVAILABILITY: {
+      const { availability, unit_id } = payload;
+      if (unit_id !== state._id) return state;
+      return { ...state, availability };
+    }
+
     case UNIT_INCREASE_AVAILABILITY: {
       const { amount, unit_id } = payload;
       if (unit_id !== state._id) return state;
@@ -43,6 +51,12 @@ export default function unitReducer(state, { type, payload }) {
       const { amount, unit_id } = payload;
       if (unit_id !== state._id) return state;
       return { ...state, availability: state.availability - amount };
+    }
+
+    case UNIT_SET_MOVES: {
+      const { moves, unit_id } = payload;
+      if (unit_id !== state._id) return state;
+      return { ...state, moves };
     }
 
     case UNIT_INCREASE_MOVES: {
@@ -90,42 +104,44 @@ export function unitAttacked(payload, effects: any[]) {
   };
 }
 
-export function unitDecreaseAvailability(unit_id, amount) {
+export function unitDecreaseAvailability(amount, unit_id) {
   return {
     type: UNIT_DECREASE_AVAILABILITY,
-    payload: {
-      amount,
-      unit_id
-    }
+    payload: { amount, unit_id }
   };
 }
 
-export function unitIncreaseAvailability(unit_id, amount) {
+export function unitIncreaseAvailability(amount, unit_id) {
   return {
     type: UNIT_INCREASE_AVAILABILITY,
-    payload: {
-      amount,
-      unit_id
-    }
+    payload: { amount, unit_id }
   };
 }
 
-export function unitDecreaseMoves(unit_id, amount) {
+export function unitDecreaseMoves(amount, unit_id) {
   return {
     type: UNIT_DECREASE_MOVES,
-    payload: {
-      amount,
-      unit_id
-    }
+    payload: { amount, unit_id }
   };
 }
 
-export function unitIncreaseMoves(unit_id, amount) {
+export function unitIncreaseMoves(amount, unit_id) {
   return {
     type: UNIT_INCREASE_MOVES,
-    payload: {
-      amount,
-      unit_id
-    }
+    payload: { amount, unit_id }
+  };
+}
+
+export function unitSetMoves(moves, unit_id) {
+  return {
+    type: UNIT_SET_MOVES,
+    payload: { moves, unit_id }
+  };
+}
+
+export function unitSetAvailability(availability, unit_id) {
+  return {
+    type: UNIT_SET_AVAILABILITY,
+    payload: { availability, unit_id }
   };
 }

@@ -35,7 +35,7 @@ export function addUnit(card: any, position: number, player: any) {
     const io = IO().gameIO;
 
     dispatch(playerRemoveCard(card));
-    dispatch(playerDecreseMoney(player, card.unit.cost));
+    dispatch(playerDecreseMoney(player.user._id, card.unit.cost));
     dispatch(playerAddUnit(card.unit, position, card.unit.effects));
 
     io.addUnit(card._id, position, val => dispatch(battleUpdate(val)));
@@ -54,7 +54,16 @@ export function pickUnit(unit_id) {
   };
 }
 
-export function onTurn() {}
+export function onTurn() {
+  return dispatch => {
+    const io = IO().gameIO;
+
+    io.passTheTurn(() => {
+      /** .......... */
+    });
+  };
+}
+
 // export function onTurn(my_name: string, my_warriors: Warrior[]) {
 //   return async dispatch => {
 //     const io = IO().gameIO;

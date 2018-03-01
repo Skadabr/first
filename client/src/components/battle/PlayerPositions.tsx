@@ -2,14 +2,15 @@ import React from "react";
 import { POSITIONS, UnitTypes } from "../../constants";
 import { createNumberSequence } from "../../utils/common";
 
+import DropPosition from "./DropPosition";
 import Unit from "./Unit";
 import UnitCardView from "./UnitCardView";
 
 const positions = createNumberSequence(POSITIONS);
 
-export default class Positions extends React.PureComponent<any> {
+export default class PlayerPositions extends React.PureComponent<any> {
   render() {
-    const { owner_name, units, onAddUnit, boxComponent: Position } = this.props;
+    const { owner_name, units, onAddUnit } = this.props;
 
     const width = (100 / POSITIONS) | 0;
 
@@ -23,20 +24,20 @@ export default class Positions extends React.PureComponent<any> {
           let child;
           if (!unit) {
             child = null;
-          } else if (unit.available) {
+          } else if (unit.moves > 0) {
             child = <Unit {...unit} />;
           } else {
             child = <UnitCardView {...unit} />;
           }
 
           return (
-            <Position
+            <DropPosition
               key={position}
               width={width}
               onDrop={({ card }) => onAddUnit({ card, position })}
             >
               {child}
-            </Position>
+            </DropPosition>
           );
         })}
       </div>
