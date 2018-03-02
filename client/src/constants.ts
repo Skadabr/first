@@ -6,7 +6,8 @@ export enum UserStatusType {
 
 export enum UnitTypes {
   Pawn,
-  Officer
+  Officer,
+  Horse
 }
 
 export enum GameStatus {

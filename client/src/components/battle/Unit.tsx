@@ -6,23 +6,29 @@ import UnitCardView from "./UnitCardView";
 
 class Unit extends React.PureComponent<any> {
   render() {
-    return this.props.connectDragSource(
+    const { unit, connectDragSource } = this.props;
+
+    return connectDragSource(
       <div>
-        <UnitCardView {...this.props} />
+        <UnitCardView {...unit} />
       </div>
     );
   }
 }
 
 const unitSource = {
-  beginDrag({ type }) {
-    return { type };
+  beginDrag({ onBeginDrag, unit }) {
+    console.log("Unit->beginDrag");
+    onBeginDrag(unit._id);
+    return { unit_id: unit._id };
   },
 
-  endDrag(props, monitor) {
+  endDrag({ onEndDrag, unit }, monitor) {
     console.log("Unit->endDrag");
-    const item = monitor.getItem();
-    const dropResult = monitor.getDropResult();
+    onEndDrag(unit._id, monitor.didDrop());
+
+    //  const item = monitor.getItem();
+    //  const dropResult = monitor.getDropResult();
 
     //if (dropResult) {
     //  alert(`You dropped ${item.type} into ${JSON.stringify(dropResult, undefined, 3)}!`); // eslint-disable-line no-alert

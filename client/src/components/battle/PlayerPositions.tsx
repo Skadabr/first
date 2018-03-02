@@ -10,7 +10,13 @@ const positions = createNumberSequence(POSITIONS);
 
 export default class PlayerPositions extends React.PureComponent<any> {
   render() {
-    const { owner_name, units, onAddUnit } = this.props;
+    const {
+      owner_name,
+      units,
+      onActivate,
+      onAddUnit,
+      onDisActivate
+    } = this.props;
 
     const width = (100 / POSITIONS) | 0;
 
@@ -25,7 +31,13 @@ export default class PlayerPositions extends React.PureComponent<any> {
           if (!unit) {
             child = null;
           } else if (unit.moves > 0) {
-            child = <Unit {...unit} />;
+            child = (
+              <Unit
+                unit={unit}
+                onBeginDrag={onActivate}
+                onEndDrag={onDisActivate}
+              />
+            );
           } else {
             child = <UnitCardView {...unit} />;
           }

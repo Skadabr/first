@@ -17,8 +17,8 @@ import {
 export default function unitReducer(state, { type, payload }) {
   switch (type) {
     case ATTACK: {
-      const { target, damage } = payload;
-      if (target._id !== state._id) return state;
+      const { target_id, damage } = payload;
+      if (target_id !== state._id) return state;
 
       return { ...state, health: state.health - damage };
     }
@@ -96,11 +96,11 @@ export function unitDisActivate(unit_id, effects) {
   };
 }
 
-export function unitAttacked(payload, effects: any[]) {
+export function unitAttack(unit_id, target_id, damage, effects: any[]) {
   return {
     type: ATTACK,
     effects,
-    payload
+    payload: { unit_id, target_id, damage }
   };
 }
 

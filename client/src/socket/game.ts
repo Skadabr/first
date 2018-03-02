@@ -12,6 +12,7 @@ const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 const SEND_MESSAGE = "SEND_MESSAGE";
 const TURN = "TURN";
 const ADD_UNIT = "ADD_UNIT";
+const ATTACK = "ATTACK";
 
 export default function Game(ws, store, router) {
   ws.on("error", console.error);
@@ -48,6 +49,10 @@ export default function Game(ws, store, router) {
 
     passTheTurn(cb) {
       ws.emit(TURN);
+    },
+
+    attack(data) {
+      ws.emit(ATTACK, data);
     }
   };
 }

@@ -15,6 +15,7 @@ services:
       - "./client/src/actions/user.ts:/app/server/src/actions/user.ts"
       - "./client/src/actions/middlewares:/app/server/src/actions/middlewares"
       - "./client/src/selectors/battle:/app/server/src/selectors/battle"
+      - "./client/src/selectors/user.ts:/app/server/src/selectors/user.ts"
       - "./client/src/lib:/app/server/src/lib"
       - "./client/src/utils/common.ts:/app/server/src/utils/common.ts"
       - "./client/src/constants.ts:/app/server/src/constants.ts"

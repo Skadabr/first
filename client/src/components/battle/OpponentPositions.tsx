@@ -10,7 +10,7 @@ const positions = createNumberSequence(POSITIONS);
 
 export default class OpponentPositions extends React.PureComponent<any> {
   render() {
-    const { owner_name, units, onAddUnit } = this.props;
+    const { owner_name, units, onAttack } = this.props;
 
     const width = (100 / POSITIONS) | 0;
 
@@ -25,7 +25,7 @@ export default class OpponentPositions extends React.PureComponent<any> {
           if (!unit) {
             child = null;
           } else if (unit.available > 0) {
-            child = <UnitTarget {...unit} />;
+            child = <UnitTarget unit={unit} onDrop={onAttack} />;
           } else {
             child = <UnitCardView {...unit} />;
           }

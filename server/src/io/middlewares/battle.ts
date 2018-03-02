@@ -9,14 +9,14 @@ export default function battleIOMiddleware({ logger, models }) {
   return async (ws, next) => {
     try {
       await getBattle();
-      getBattleOpponent();
+      await getBattleOpponent();
       createStore();
       await sendBattle();
 
       ws.use(async ([event_name], next) => {
         try {
           await getBattle();
-          getBattleOpponent();
+          await getBattleOpponent();
           createStore();
           next();
         } catch (err) {
@@ -36,9 +36,9 @@ export default function battleIOMiddleware({ logger, models }) {
       ws.battle = await Battle.findBattleByUserId(ws.user._id);
     }
 
-    function getBattleOpponent() {
+    async function getBattleOpponent() {
       if (!ws.battle) return;
-      ws.opponent = ws.battle.getOpponentByUserId(ws.user._id);
+      ws.opponent = await ws.battle.findOpponentByUserId(ws.user._id);
     }
 
     function createStore() {
@@ -54,7 +54,6 @@ export default function battleIOMiddleware({ logger, models }) {
       _send(BATTLE_REQUEST, ws.opponent.socket_id, {
         data: ws.battle.toJSON()
       });
-
       logger.debug(`get battle object for ${ws.user.name}`);
     }
 

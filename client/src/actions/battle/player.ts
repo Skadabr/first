@@ -37,6 +37,7 @@ export default function playerReducer(state = EMPTY as any, action) {
     }
 
     case PLAYER_ADD_CARDS: {
+      console.log(action.payload);
       const cards = action.payload.filter(
         ({ owner_id }) => owner_id === state.user._id
       );
@@ -124,10 +125,10 @@ function adjustUnits(units, unit, position) {
     return [{ ...unit, position: MIDDLE_POSITION }];
   }
 
-  if (position > maxPosition(units))
+  if (position >= maxPosition(units))
     return adjust(shiftUnitsToLeft, units => maxPosition(units) + 2);
 
-  if (position < minPosition(units))
+  if (position <= minPosition(units))
     return adjust(shiftUnitsToRight, units => minPosition(units) - 2);
 
   return adjust(w => separateUnits(w, position), () => position);

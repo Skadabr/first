@@ -23,7 +23,7 @@ import App from "./App";
 
 const store = createStore(
   reducer,
-  composeWithDevTools({ maxAge: 20 })(
+  composeWithDevTools({ maxAge: 25 })(
     applyMiddleware(thunk, battleMidlewareCreator())
   )
 );

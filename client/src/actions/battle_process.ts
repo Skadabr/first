@@ -1,20 +1,25 @@
-import { UserStatusType, UnitTypes } from "../constants";
+import {
+  UserStatusType,
+  UnitTypes,
+  EffectScope,
+  EffectImpact
+} from "../constants";
 import IO from "../socket";
 // actions
 import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
+import { unitAttack } from "./battle/unit";
 import {
   playerAddCards,
   playerAddUnit,
   playerRemoveCard,
   playerDecreseMoney
 } from "./battle/player";
-import { unitActivate } from "./battle/unit";
+import { unitActivate, unitDisActivate } from "./battle/unit";
 import { battleUpdate } from "./battle";
 // selectors
-import {
-  getTargetEffects,
-  getGlobalTargetEffects
-} from "../selectors/battle/effects";
+import { getEffects, getFilteredEffects } from "../selectors/battle/effects";
+import { getUnit } from "../selectors/battle/index";
+import { getNextTurnOwnerPlayer } from "../selectors/battle/index";
 
 //
 // ============ Actions ============
@@ -42,25 +47,92 @@ export function addUnit(card: any, position: number, player: any) {
   };
 }
 
-export function pickUnit(unit_id) {
+export function onTurn() {
+  return dispatch => {
+    IO().gameIO.passTheTurn();
+  };
+}
+
+export function activateUnit(unit_id) {
   return (dispatch, getState) => {
     const state = getState();
+    const nextTurnOwnerId = getNextTurnOwnerPlayer(state).user._id;
     const effects = [
-      ...getGlobalTargetEffects(state),
-      ...getTargetEffects(state, unit_id)
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Global,
+        impact: EffectImpact.Target
+      }),
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Local,
+        impact: EffectImpact.Target,
+        unit_id
+      }),
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Local,
+        impact: EffectImpact.Target,
+        owner_id: nextTurnOwnerId
+      })
     ];
 
     dispatch(unitActivate(unit_id, effects));
   };
 }
 
-export function onTurn() {
-  return dispatch => {
-    const io = IO().gameIO;
+export function attack(data: { unit_id: string; target_id: string }) {
+  return (dispatch, getState) => {
+    const { target_id, unit_id } = data;
+    const state = getState();
 
-    io.passTheTurn(() => {
-      /** .......... */
-    });
+    const unit = getUnit(state, unit_id);
+    const target = getUnit(state, target_id);
+
+    console.error("attack--");
+
+    const effects = [
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Global,
+        impact: EffectImpact.State
+      }),
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Local,
+        impact: EffectImpact.State,
+        unit_id
+      }),
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Local,
+        impact: EffectImpact.State,
+        unit_id: target_id
+      })
+    ];
+
+    dispatch(unitAttack(unit_id, target_id, unit.damage, effects));
+
+    IO().gameIO.attack(data);
+  };
+}
+
+export function disActivateUnit(unit_id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const nextTurnOwnerId = getNextTurnOwnerPlayer(state).user._id;
+    const effects = [
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Global,
+        impact: EffectImpact.Target
+      }),
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Local,
+        impact: EffectImpact.Target,
+        unit_id
+      }),
+      ...getFilteredEffects(state, {
+        scope: EffectScope.Local,
+        impact: EffectImpact.Target,
+        owner_id: nextTurnOwnerId
+      })
+    ];
+
+    dispatch(unitDisActivate(unit_id, effects));
   };
 }
 

@@ -1,38 +1,34 @@
-import {EffectScope, EffectImpact} from "../../constants";
+import { EffectScope, EffectImpact } from "../../constants";
 import { getUnit, getUnits, getPlayerUnits, getOpponentUnits } from ".";
 
 //
 // ============ general effects selectors ============
 //
 
-export const getAllEffects = state =>
-  getUnits(state).reduce((effects, unit) => [...effects, ...unit.effects], []);
-
-export const getPlayerUnitsEffects = state =>
-  getPlayerUnits(state).reduce(
-    (effects, unit) => [...effects, ...unit.effects],
-    []
-  );
-
-export const getOpponentUnitsEffects = state =>
-  getOpponentUnits(state).reduce(
-    (effects, unit) => [...effects, ...unit.effects],
-    []
-  );
+export const getAllEffects = (state, owner_id) =>
+  getUnits(state)
+    .filter(unit => owner_id === undefined || unit.owner_id === owner_id)
+    .reduce((effects, unit) => [...effects, ...unit.effects], []);
 
 export const getEffects = (state, unit_id) => getUnit(state, unit_id).effects;
 
-//
-// ============
-//
 
-export const getGlobalEffects = state =>
-  getAllEffects(state).filter(eff => eff.scope === EffectScope.Global);
+export const getFilteredEffects = (
+  state,
+  {
+    scope,
+    impact,
+    unit_id,
+    owner_id
+  }: { scope?: number; impact?: number; unit_id?: string; owner_id?: string }
+) => {
+  const effects = unit_id
+    ? getEffects(state, unit_id)
+    : getAllEffects(state, owner_id);
 
-export const getGlobalTargetEffects = state =>
-  getGlobalTargetEffects(state).filter(eff => eff.impact === EffectImpact.Target);
-
-export const getTargetEffects = (state, unit_id) =>
-  getEffects(state, unit_id).filter(
-    eff => eff.impact === EffectImpact.Target && eff.scope === EffectScope.Local
+  return effects.filter(
+    eff =>
+      (scope === undefined || eff.scope === scope) &&
+      (impact === undefined || eff.impact === impact)
   );
+};

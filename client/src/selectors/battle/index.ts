@@ -23,8 +23,7 @@ export const isTurnOwner = state => {
   return battle.turnOwner === _id;
 };
 
-export const getTurnOwner = state =>
-  getBattle(state).turnOwner
+export const getTurnOwner = state => getBattle(state).turnOwner;
 
 export const getNextTurnOwnerPlayer = state => {
   const battle = getBattle(state);
@@ -54,19 +53,27 @@ export const getCard = (state, id) => getCards(state).find(c => c._id === id);
 // ============ units ============
 
 export const getUnits = state =>
-  getPlayers(state).reduce((units, p) => [...units, ...p.units]);
+  getPlayers(state).reduce((units, p) => [...units, ...p.units], []);
+export const getUnit = (state, id) =>
+  getUnits(state).find(unit => unit._id === id);
 
 export const getUnitsByUserId = (state, user_id) =>
   getPlayerByUserId(state, user_id).units;
 
 export const getPlayerUnits = state => getPlayer(state).units;
+export const getPlayerUnitIds = state =>
+  getPlayerUnits(state).map(unit => unit._id);
 
 export const getOpponentUnits = state => getOpponent(state).units;
+export const getOpponentUnitIds = state =>
+  getOpponentUnits(state).map(unit => unit._id);
 
-export const getUnit = (state, id) =>
-  getUnits(state).find(unit => unit._id === id);
 
 export const getUnitFriends = (state, unit_id) => {
   const unitOwnerId = getUnit(state, unit_id).owner_id;
-  return getUnitsByUserId(state, unitOwnerId);
+  return getUnitsByUserId(state, unitOwnerId).filter(
+    unit => unit._id !== unit_id
+  );
 };
+export const getUnitFriendIds = (state, unit_id) =>
+  getUnitFriends(state, unit_id).map(unit => unit._id);

@@ -13,6 +13,7 @@ export const SEND_MESSAGE = "SEND_MESSAGE";
 export const TURN = "TURN";
 export const SELECT_CARDS_FOR_DECK = "SELECT_CARDS_FOR_DECK";
 export const ADD_UNIT = "ADD_UNIT";
+export const ATTACK = "ATTACK";
 
 export default function(ws, opts) {
   const { logger } = opts;
@@ -28,6 +29,7 @@ export default function(ws, opts) {
   ws.on(BATTLE_REQUEST, battleController.tryCreateBattle);
   ws.on(ADD_UNIT, battleController.addUnit);
   ws.on(TURN, battleController.passTheTurn);
+  ws.on(ATTACK, battleController.attack);
 
 
   async function onDisconnect() {

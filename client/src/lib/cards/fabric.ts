@@ -21,5 +21,13 @@ export default function createCard(type: UnitTypes, owner_id) {
         _id: generateID(),
         unit: createUnit(type, owner_id)
       };
+
+    case UnitTypes.Horse:
+      return {
+        type,
+        owner_id,
+        _id: generateID(),
+        unit: createUnit(type, owner_id)
+      };
   }
 }

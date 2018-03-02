@@ -18,7 +18,13 @@ import Unit from "./Unit";
 import Card from "./Card";
 import UnitCardView from "./UnitCardView";
 
-import { onTurn, addUnit } from "../../actions/battle_process";
+import {
+  onTurn,
+  addUnit,
+  attack,
+  activateUnit,
+  disActivateUnit
+} from "../../actions/battle_process";
 
 import { validateAddUnitParams } from "../../validators/battle";
 
@@ -49,6 +55,9 @@ interface BattlePropTypes {
 
   onTurn: Function;
   addUnit: Function;
+  attack: Function;
+  activateUnit: Function;
+  disActivateUnit: Function;
 }
 
 export class Battle extends React.Component<BattlePropTypes> {
@@ -70,6 +79,19 @@ export class Battle extends React.Component<BattlePropTypes> {
     const { isTurnOwner, onTurn } = this.props;
 
     if (isTurnOwner) onTurn();
+  };
+
+  onActivate = unit_id => {
+    this.props.activateUnit(unit_id);
+  };
+
+  onAttack = data => {
+    console.error("onAttack");
+    attack(data);
+  };
+
+  onDisActivate = (unit_id, isAttacking) => {
+    this.props.disActivateUnit(unit_id);
   };
 
   //componentWillReceiveProps(nextProps) {
@@ -112,6 +134,7 @@ export class Battle extends React.Component<BattlePropTypes> {
             <OpponentPositions
               owner_name={opponent.user.name}
               units={opponentUnits}
+              onAttack={this.onAttack}
             />
 
             <div style={{ minHeight: 10, backgroundColor: "#eef" }} />
@@ -120,6 +143,8 @@ export class Battle extends React.Component<BattlePropTypes> {
               owner_name={player.user.name}
               units={playerUnits}
               onAddUnit={this.addUnit}
+              onActivate={this.onActivate}
+              onDisActivate={this.onDisActivate}
             />
           </div>
 
@@ -180,5 +205,8 @@ function noop() {}
 
 export default connect(mapStateToProps, {
   onTurn,
-  addUnit
+  addUnit,
+  attack,
+  activateUnit,
+  disActivateUnit
 })(Battle as any);

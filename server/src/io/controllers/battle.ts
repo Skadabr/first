@@ -36,10 +36,13 @@ import { unitSetMoves, unitSetAvailability } from "../../actions/battle/unit";
 import {
   getCard,
   getPlayer,
+  getPlayerUnits,
+  getOpponentUnits,
   getTurnOwner,
   getNextTurnOwnerPlayer,
   getUnitsByUserId
 } from "../../selectors/battle/index";
+import { getUserInfo } from "../../selectors/user";
 
 export default class BattleController {
   private ws: any;
@@ -105,13 +108,17 @@ export default class BattleController {
     const { store, battle, opponent } = this.ws;
 
     const turnOwner = getTurnOwner(store.getState());
+    const userId = getUserInfo(store.getState())._id;
+
+    if (turnOwner !== userId) return;
+
     const nextTurnOwner = getNextTurnOwnerPlayer(store.getState()).user._id;
 
-    getUnitsByUserId(store.getState(), turnOwner).forEach(unit => {
+    getPlayerUnits(store.getState()).forEach(unit => {
       store.dispatch(unitSetMoves(0, unit._id));
       store.dispatch(unitSetAvailability(1, unit._id));
     });
-    getUnitsByUserId(store.getState(), nextTurnOwner).forEach(unit => {
+    getOpponentUnits(store.getState()).forEach(unit => {
       store.dispatch(unitSetMoves(1, unit._id));
       store.dispatch(unitSetAvailability(0, unit._id));
     });
@@ -119,8 +126,19 @@ export default class BattleController {
     store.dispatch(battleNextTurn());
 
     battle.updateState(store.getState().battle);
-
     this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
+  };
+
+  //
+  // ============ attack ============
+  //
+
+  public attack = async ({ unit_id, target_id }) => {
+    const { store, battle, opponent } = this.ws;
+
+
+//  battle.updateState(store.getState().battle);
+//  this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
   };
 
   //
@@ -171,7 +189,6 @@ export default class BattleController {
   }
 
   private _send(event, opponent_sid, ...args) {
-    console.log("OP SID: ", opponent_sid);
     this.ws.emit(event, ...args);
     this.ws.to(opponent_sid).emit(event, ...args);
   }

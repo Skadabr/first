@@ -1,13 +1,24 @@
 import { generateID } from "../../utils/common";
 import { EffectScope, EffectImpact } from "../../constants";
-import { PLAYER_ADD_UNIT, UNIT_ACTIVATE, ATTACK } from "../../actions/battle";
+import {
+  PLAYER_ADD_UNIT,
+  UNIT_ACTIVATE,
+  UNIT_DISACTIVATE,
+  ATTACK
+} from "../../actions/battle";
 import {
   unitActivate,
   unitDisActivate,
   unitDecreaseAvailability,
-  unitIncreaseMoves,
+  unitIncreaseAvailability,
+  unitIncreaseMoves
 } from "../../actions/battle/unit";
-import { getUnitFriends } from "../../selectors/battle";
+import {
+  getUnitFriendIds,
+  getOpponentUnits,
+  getPlayerUnitIds,
+  getPlayerUnits
+} from "../../selectors/battle";
 
 ///
 ///                  action     [ ]
@@ -44,6 +55,7 @@ const combineActions = ({ action, postActions = [] }) => [
 ];
 
 const TAUNT = "TAUNT";
+const TAUNT_DISABLER = "TAUNT_DISABLER";
 const INCREASE_MOVES = "INCREASE_MOVES";
 const INCREASE_ATTACK_TO_FRIENDS = "INCREASE_ATTACK_TO_FRIENDS";
 const INCREASE_HEALTH_TO_FRIENDS = "INCREASE_HEALTH_TO_FRIENDS";
@@ -56,10 +68,12 @@ export function applyEffect(effect, actions, state) {
   switch (effect.type) {
     case TAUNT:
       return tauntHandler(effect, actions, state);
+    case TAUNT_DISABLER:
+      return tauntDisablerHandler(effect, actions, state);
     case INCREASE_MOVES:
       return increaseMovesHandler(effect, actions, state);
     default:
-      return actions
+      return actions;
   }
 }
 
@@ -86,12 +100,80 @@ function tauntHandler(effect, actions, state) {
   const action = getMainAction(actions);
   let postActions = getPostActions(actions);
 
-  if (action.type === UNIT_ACTIVATE) {
-    postActions = postActions.concat(
-      getUnitFriends(state, effect.unit_id)
-        .map(unit => unit._id)
-        .map(id => unitDecreaseAvailability(1, id))
-    );
+  const amount = getTauntOpponentUnitIds().length;
+
+  if (action.type === UNIT_ACTIVATE && !activatedIsTauntFriend()) {
+    postActions = [
+      ...postActions,
+      ...getNotTauntOpponentUnitIds().map(id => unitDecreaseAvailability(1, id))
+    ];
+  } else if (action.type === UNIT_DISACTIVATE && !activatedIsTauntFriend()) {
+    postActions = [
+      ...postActions,
+      ...getNotTauntOpponentUnitIds().map(id =>
+        unitIncreaseAvailability(1, id)
+      )
+    ];
+  }
+
+  return combineActions({ action, postActions });
+
+  function activatedIsTauntFriend() {
+    return getPlayerUnitIds(state).includes(effect.unit_id);
+  }
+
+  function getNotTauntOpponentUnitIds() {
+    return getOpponentUnits(state)
+      .filter(unit => !unit.effects.map(eff => eff.type).includes(TAUNT))
+      .map(unit => unit._id);
+  }
+
+  function getTauntOpponentUnitIds() {
+    return getOpponentUnits(state)
+      .filter(unit => unit.effects.map(eff => eff.type).includes(TAUNT))
+      .map(unit => unit._id);
+  }
+}
+
+function tauntDisablerHandler(effect, actions, state) {
+  const action = getMainAction(actions);
+  let postActions = getPostActions(actions);
+
+  const amount = getTauntOpponentUnitIds().length;
+
+  if (action.type === UNIT_ACTIVATE && activatedIsTauntDisablerFriend()) {
+    postActions = [
+      ...postActions,
+      ...getNotTauntOpponentUnitIds().map(id =>
+        unitIncreaseAvailability(amount, id)
+      )
+    ];
+  } else if (
+    action.type === UNIT_DISACTIVATE &&
+    activatedIsTauntDisablerFriend()
+  ) {
+    postActions = [
+      ...postActions,
+      ...getNotTauntOpponentUnitIds().map(id =>
+        unitDecreaseAvailability(amount, id)
+      )
+    ];
+  }
+
+  function activatedIsTauntDisablerFriend() {
+    return getPlayerUnitIds(state).includes(effect.unit_id);
+  }
+
+  function getNotTauntOpponentUnitIds() {
+    return getOpponentUnits(state)
+      .filter(unit => !unit.effects.map(eff => eff.type).includes(TAUNT))
+      .map(unit => unit._id);
+  }
+
+  function getTauntOpponentUnitIds() {
+    return getOpponentUnits(state)
+      .filter(unit => unit.effects.map(eff => eff.type).includes(TAUNT))
+      .map(unit => unit._id);
   }
 
   return combineActions({ action, postActions });
@@ -117,6 +199,13 @@ function increaseMovesHandler(effect, actions, state) {
 export const taunt = () => ({
   _id: generateID(),
   type: TAUNT,
+  scope: EffectScope.Global,
+  impact: EffectImpact.Target
+});
+
+export const tauntDisabler = () => ({
+  _id: generateID(),
+  type: TAUNT_DISABLER,
   scope: EffectScope.Global,
   impact: EffectImpact.Target
 });

@@ -1,4 +1,4 @@
-import { increaseMoves, taunt } from "./effects";
+import { increaseMoves, taunt, tauntDisabler } from "./effects";
 import { UnitTypes } from "../../constants";
 
 export default {
@@ -9,7 +9,7 @@ export default {
     health: 6,
     damage: 1,
     moves: 0,
-    available: 1,
+    availability: 0,
     effects: [increaseMoves(1)]
   },
 
@@ -20,7 +20,18 @@ export default {
     health: 6,
     damage: 2,
     moves: 0,
-    available: 1,
+    availability: 0,
     effects: [taunt()]
+  },
+
+  [UnitTypes.Horse]: {
+    type: UnitTypes.Horse,
+    name: "Horse",
+    cost: 3,
+    health: 5,
+    damage: 3,
+    moves: 0,
+    availability: 0,
+    effects: [tauntDisabler()]
   }
 };
