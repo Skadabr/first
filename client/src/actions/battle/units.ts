@@ -1,4 +1,5 @@
-import unitReducer, {unitDecreaseAvailability} from "./unit";
+import unitReducer, { unitDecreaseAvailability } from "./unit";
+import { UNITS_REMOVE } from ".";
 
 const EMPTY = {};
 
@@ -8,6 +9,9 @@ const EMPTY = {};
 
 export default function unitsReducer(state, action) {
   switch (action.type) {
+    case UNITS_REMOVE: {
+      return state.filter(unit => unit._id !== action.payload);
+    }
 
     default:
       return state.map(unit => unitReducer(unit, action));

@@ -80,66 +80,56 @@ export default function unitReducer(state, { type, payload }) {
 // ============ Actions ============
 //
 
-export function unitActivate(unit_id, effects) {
+export function unitActivate(unit_id) {
   return {
     type: UNIT_ACTIVATE,
-    effects,
     payload: { unit_id }
   };
 }
 
-export function unitDisActivate(unit_id, effects) {
+export function unitDisActivate(unit_id) {
   return {
     type: UNIT_DISACTIVATE,
-    effects,
     payload: { unit_id }
   };
 }
 
-export function unitAttack(unit_id, target_id, damage, effects: any[]) {
+export function unitAttack(target_id, damage) {
   return {
     type: ATTACK,
-    effects,
-    payload: { unit_id, target_id, damage }
+    payload: { target_id, damage }
   };
 }
 
-export function unitDecreaseAvailability(amount, unit_id) {
+export function unitDecreaseAvailability(unit_id, amount) {
   return {
     type: UNIT_DECREASE_AVAILABILITY,
     payload: { amount, unit_id }
   };
 }
 
-export function unitIncreaseAvailability(amount, unit_id) {
-  return {
-    type: UNIT_INCREASE_AVAILABILITY,
-    payload: { amount, unit_id }
-  };
-}
-
-export function unitDecreaseMoves(amount, unit_id) {
+export function unitDecreaseMoves(unit_id, amount) {
   return {
     type: UNIT_DECREASE_MOVES,
     payload: { amount, unit_id }
   };
 }
 
-export function unitIncreaseMoves(amount, unit_id) {
+export function unitIncreaseMoves(unit_id, amount) {
   return {
     type: UNIT_INCREASE_MOVES,
     payload: { amount, unit_id }
   };
 }
 
-export function unitSetMoves(moves, unit_id) {
+export function unitSetMoves(unit_id, moves) {
   return {
     type: UNIT_SET_MOVES,
     payload: { moves, unit_id }
   };
 }
 
-export function unitSetAvailability(availability, unit_id) {
+export function unitSetAvailability(unit_id, availability) {
   return {
     type: UNIT_SET_AVAILABILITY,
     payload: { availability, unit_id }

@@ -24,8 +24,11 @@ export enum EffectScope {
 }
 
 export enum EffectImpact {
-  Target,
-  State
+  Availability,
+  Attack,
+  Defend,
+  Move,
+  Selection
 }
 
 export const POSITIONS = 13;

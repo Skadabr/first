@@ -27,17 +27,23 @@ export default function playerReducer(state = EMPTY as any, action) {
       if (unit.owner_id !== state.user._id) return state;
 
       //const units = [...state.units, unit];
-      const units = adjustUnits(state.units, unit, position);
+      const units = adjustUnitsOnAdd(state.units, unit, position);
       return { ...state, units };
     }
 
     case PLAYER_REMOVE_UNIT: {
-      const units = state.units.filter(u => u._id !== action.payload._id);
-      return { ...state, units };
+      const {unit_id, owner_id} = action.payload;
+
+      if (owner_id !== state.user._id) return state;
+
+      const pivot = state.units.find(u => u._id === unit_id).position;
+      const units = state.units.filter(u => u._id !== unit_id);
+      const adjustedUnits = adjustUnitsOnRemove(units, pivot);
+
+      return { ...state, units: adjustedUnits };
     }
 
     case PLAYER_ADD_CARDS: {
-      console.log(action.payload);
       const cards = action.payload.filter(
         ({ owner_id }) => owner_id === state.user._id
       );
@@ -94,11 +100,17 @@ export function playerRemoveCard(card) {
   return { type: PLAYER_REMOVE_CARD, payload: { card } };
 }
 
-export function playerAddUnit(unit, position, effects) {
+export function playerAddUnit(unit, position) {
   return {
     type: PLAYER_ADD_UNIT,
     payload: { unit, position },
-    effects
+  };
+}
+
+export function playerRemoveUnit(unit_id, owner_id) {
+  return {
+    type: PLAYER_REMOVE_UNIT,
+    payload: { unit_id, owner_id },
   };
 }
 
@@ -120,7 +132,7 @@ export function playerAdjustMoney(player_user_id) {
 // ============ helpers ============
 //
 
-function adjustUnits(units, unit, position) {
+function adjustUnitsOnAdd(units, unit, position) {
   if (units.length === 0) {
     return [{ ...unit, position: MIDDLE_POSITION }];
   }
@@ -141,6 +153,20 @@ function adjustUnits(units, unit, position) {
   }
 }
 
+function adjustUnitsOnRemove(units, position) {
+  if (units.length === 0) return [];
+
+  if (position >= maxPosition(units)) return adjust(shiftUnitsToRight);
+
+  if (position <= minPosition(units)) return adjust(shiftUnitsToLeft);
+
+  return adjust(w => convergeUnits(w, position));
+
+  function adjust(move) {
+    return units.map(move);
+  }
+}
+
 function maxPosition(units) {
   return Math.max(...units.map(w => w.position));
 }
@@ -157,8 +183,14 @@ function shiftUnitsToRight(w) {
   return { ...w, position: w.position + 1 };
 }
 
-function separateUnits(w, pivot) {
-  return w.position < pivot
-    ? { ...w, position: w.position - 1 }
-    : { ...w, position: w.position + 1 };
+function separateUnits(u, pivot) {
+  return u.position < pivot
+    ? { ...u, position: u.position - 1 }
+    : { ...u, position: u.position + 1 };
+}
+
+function convergeUnits(u, pivot) {
+  return u.position < pivot
+    ? { ...u, position: u.position + 1 }
+    : { ...u, position: u.position - 1 };
 }

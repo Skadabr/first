@@ -28,6 +28,8 @@ import {
 
 import { validateAddUnitParams } from "../../validators/battle";
 
+//
+// selectors
 import {
   isTurnOwner,
   isBattleStarted,
@@ -40,6 +42,7 @@ import {
   getPlayerHero,
   getOpponentHero
 } from "../../selectors/battle";
+import { getAvailableTargets } from "../../selectors/targets";
 
 interface BattlePropTypes {
   player: any;
@@ -52,6 +55,7 @@ interface BattlePropTypes {
   opponentHero: any;
   isTurnOwner: boolean;
   isBattleStarted: boolean;
+  availableTargets: boolean;
 
   onTurn: Function;
   addUnit: Function;
@@ -86,8 +90,7 @@ export class Battle extends React.Component<BattlePropTypes> {
   };
 
   onAttack = data => {
-    console.error("onAttack");
-    attack(data);
+    this.props.attack(data);
   };
 
   onDisActivate = (unit_id, isAttacking) => {
@@ -112,7 +115,8 @@ export class Battle extends React.Component<BattlePropTypes> {
       playerUnits,
       opponentUnits,
       playerHero,
-      opponentHero
+      opponentHero,
+      availableTargets
     } = this.props;
 
     return (
@@ -126,7 +130,7 @@ export class Battle extends React.Component<BattlePropTypes> {
             <Hero hero={opponentHero} />
             <Pocket money={opponent.money} />
             <div style={{ float: "right" }}>
-              <TurnButton onTurn={this.onTurn} turn={!isTurnOwner} />
+              <TurnButton onTurn={noop} turn={!isTurnOwner} />
             </div>
           </div>
 
@@ -134,6 +138,7 @@ export class Battle extends React.Component<BattlePropTypes> {
             <OpponentPositions
               owner_name={opponent.user.name}
               units={opponentUnits}
+              availableTargets={availableTargets}
               onAttack={this.onAttack}
             />
 
@@ -186,6 +191,8 @@ function mapStateToProps(state) {
   const playerHero = getPlayerHero(state);
   const opponentHero = getOpponentHero(state);
 
+  const availableTargets = getAvailableTargets(state);
+
   return {
     isBattleStarted: isBattleStarted(state),
     isTurnOwner: isTurnOwner(state),
@@ -197,7 +204,8 @@ function mapStateToProps(state) {
     playerUnits,
     opponentUnits,
     playerHero,
-    opponentHero
+    opponentHero,
+    availableTargets,
   };
 }
 
@@ -208,5 +216,5 @@ export default connect(mapStateToProps, {
   addUnit,
   attack,
   activateUnit,
-  disActivateUnit
+  disActivateUnit,
 })(Battle as any);

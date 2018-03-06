@@ -20,9 +20,10 @@ export default function reducer(state = EMPTY as any, action) {
 export function createStore(battle, user) {
   const store = redux.createStore(
     reducer,
-    redux.applyMiddleware(battleMiddleware())
+    //redux.applyMiddleware(battleMiddleware())
+    { battle, user }
   );
-  store.dispatch(battleUpdate(battle));
-  store.dispatch(userAdd(user));
+  //store.dispatch(battleUpdate(battle));
+  //store.dispatch(userAdd(user));
   return store;
 }

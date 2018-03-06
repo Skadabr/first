@@ -15,12 +15,12 @@ const numberStyle = {
 
 export default class UnitCardView extends React.PureComponent<any> {
   render() {
-    const { type, health, owner_id, availability, active, moves } = this.props;
+    const { type, health, owner_id, available, active, moves } = this.props;
     const { damage, name, cost } = createUnit(type, { owner_id });
 
     let border = "1px solid gray";
     if (moves > 0) border = "1px solid yellow";
-    if (availability > 0) border = "1px solid blue";
+    if (available) border = "1px solid blue";
     if (active) border = "1px solid red";
 
     return (

@@ -6,11 +6,11 @@ import UnitCardView from "./UnitCardView";
 
 export class UnitTarget extends React.PureComponent<any> {
   render() {
-    const {unit, onDrop, connectDropTarget} = this.props;
+    const { unit, onDrop, connectDropTarget } = this.props;
     //const isActive = canDrop && isOver;
     return connectDropTarget(
       <div>
-        <UnitCardView {...unit} />
+        <UnitCardView {...unit} available={true} />
       </div>
     );
   }
@@ -19,8 +19,8 @@ export class UnitTarget extends React.PureComponent<any> {
 const dropTarget = {
   drop({ onDrop, unit }, monitor) {
     console.log("UnitTarget->drop");
-    onDrop({unit_id: monitor.getItem(), target_id: unit._id});
-  }
+    onDrop({ unit_id: monitor.getItem().unit_id, target_id: unit._id });
+  },
 
   hover() {
     console.log("UnitTarget->hover");

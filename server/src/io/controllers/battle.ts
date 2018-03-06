@@ -22,6 +22,7 @@ import { validateAddUnitParams } from "../../validators/battle";
 import { createStore } from "../../reducer";
 //
 // ============ actions ============
+//
 import { battleNextTurn } from "../../actions/battle/index";
 import {
   playerAddCards,
@@ -30,19 +31,34 @@ import {
   playerDecreseMoney,
   playerAdjustMoney
 } from "../../actions/battle/player";
-import { unitSetMoves, unitSetAvailability } from "../../actions/battle/unit";
+import {
+  unitSetMoves,
+  unitSetAvailability,
+  unitDecreaseMoves,
+  unitAttack
+} from "../../actions/battle/unit";
+import { playerRemoveUnit } from "../../actions/battle/player";
 //
 // ============ selectors ============
+//
 import {
+  isTurnOwner,
+  getTurnOwner,
   getCard,
   getPlayer,
-  getPlayerUnits,
-  getOpponentUnits,
-  getTurnOwner,
+  getPlayerUnitIds,
+  getOpponentUnitIds,
   getNextTurnOwnerPlayer,
-  getUnitsByUserId
+  getUnitsByUserId,
+  getAllAvailableTargetIds,
+  getRawUnitSource,
+  getDeadOpponentUnits
 } from "../../selectors/battle/index";
 import { getUserInfo } from "../../selectors/user";
+
+//
+// ============ controller ============
+//
 
 export default class BattleController {
   private ws: any;
@@ -93,7 +109,7 @@ export default class BattleController {
 
     store.dispatch(playerRemoveCard(card));
     store.dispatch(playerDecreseMoney(player.user._id, card.unit.cost));
-    store.dispatch(playerAddUnit(card.unit, position, card.unit.effects));
+    store.dispatch(playerAddUnit(card.unit, position));
 
     battle.updateState(store.getState().battle);
 
@@ -106,21 +122,19 @@ export default class BattleController {
 
   public passTheTurn = async () => {
     const { store, battle, opponent } = this.ws;
+    let state = store.getState();
 
-    const turnOwner = getTurnOwner(store.getState());
-    const userId = getUserInfo(store.getState())._id;
+    const turnOwner = getTurnOwner(state);
 
-    if (turnOwner !== userId) return;
+    if (!isTurnOwner(state)) return;
 
-    const nextTurnOwner = getNextTurnOwnerPlayer(store.getState()).user._id;
-
-    getPlayerUnits(store.getState()).forEach(unit => {
-      store.dispatch(unitSetMoves(0, unit._id));
-      store.dispatch(unitSetAvailability(1, unit._id));
+    getPlayerUnitIds(store.getState()).forEach(unit_id => {
+      store.dispatch(unitSetMoves(unit_id, 0));
+      store.dispatch(unitSetAvailability(unit_id, 1));
     });
-    getOpponentUnits(store.getState()).forEach(unit => {
-      store.dispatch(unitSetMoves(1, unit._id));
-      store.dispatch(unitSetAvailability(0, unit._id));
+    getOpponentUnitIds(store.getState()).forEach(unit_id => {
+      store.dispatch(unitSetMoves(unit_id, 1));
+      store.dispatch(unitSetAvailability(unit_id, 0));
     });
     store.dispatch(playerAdjustMoney(turnOwner));
     store.dispatch(battleNextTurn());
@@ -135,10 +149,29 @@ export default class BattleController {
 
   public attack = async ({ unit_id, target_id }) => {
     const { store, battle, opponent } = this.ws;
+    const { dispatch, getState } = store;
+    const state = getState();
 
+    const turnOwner = getTurnOwner(state);
+    if (!isTurnOwner(state)) return;
 
-//  battle.updateState(store.getState().battle);
-//  this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
+    const targetIds = getAllAvailableTargetIds(unit_id, state);
+
+    if (!targetIds.includes(target_id)) return;
+
+    const rawUnit = getRawUnitSource(unit_id, target_id, state);
+
+    dispatch(unitAttack(target_id, rawUnit.damage));
+    dispatch(unitDecreaseMoves(unit_id, 1));
+
+    const deadUnits = getDeadOpponentUnits(getState());
+
+    deadUnits.forEach(unit => {
+      dispatch(playerRemoveUnit(unit._id, unit.owner_id));
+    });
+
+    battle.updateState(getState().battle);
+    this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
   };
 
   //
@@ -204,227 +237,3 @@ export default class BattleController {
     this.ws.broadcast.emit(event, ...args);
   }
 }
-
-//    addWarrior({type, position}, cb) {
-//      logger.debug("io:game ----  ADD_WARRIOR ----");
-//      if (typeof kind !== "number" || kind < 0)
-//        throw TypeError("Kind has wrong type");
-//      if (typeof position !== "number" || position < 0)
-//        throw TypeError("Position has wrong type");
-//
-//      try {
-//        const user = ws.user;
-//        const opponent = await User.opponent(ws.user);
-//
-//        const warriorSample = Warrior.getSample(kind);
-//        logger.debug(
-//          `${user.name} is going to add ${
-//            warriorSample.name
-//          } on pos:(${position}) to ${opponent.name}`
-//        );
-//
-//        const price = warriorSample.price;
-//        const current_money = user.gamer.current_money;
-//
-//        if (price > current_money) {
-//          return cb({
-//            error: {
-//              reason: "lack of money",
-//              msg: "You don't have enough money to buy this warrior"
-//            }
-//          });
-//        }
-//
-//        const warriors = await Warrior.addWarrior(user._id, kind, position);
-//
-//        if (warriors === null) cb();
-//
-//        user.gamer.current_money = current_money - price;
-//        await user.save();
-//
-//        cb({
-//          data: {
-//            owner_name: user.name,
-//            warriors,
-//            money: user.gamer.current_money
-//          }
-//        });
-//        ws.to(opponent.socket_id).emit(UPDATE_WARRIOR, {
-//          data: {
-//            owner_name: user.name,
-//            warriors,
-//            money: user.gamer.current_money
-//          }
-//        });
-//      } catch (err) {
-//        if (err.reason) {
-//          cb({
-//            error: {
-//              reason: err.reason,
-//              msg: err.message
-//            }
-//          });
-//        } else {
-//          logger.error(err.message);
-//          logger.debug(err.stack);
-//        }
-//      }
-//    }
-
-//  ws.on(KICK_OPPONENTS, async ({ _id }, cb) => {
-//    logger.debug("io:game ----  KICK_OPPONENTS ----");
-//    try {
-//      const warrior = await Warrior.findOne({ _id });
-//
-//      if (!warrior) {
-//        logger.debug(
-//          "io:game - (kick_opponents) - there is no warrior with such id"
-//        );
-//        return cb({
-//          error: {
-//            reason: "warrior doesn't exist",
-//            msg: "There is no warrior with such id"
-//          }
-//        });
-//      }
-//
-//      const user = ws.user;
-//      const opponent = await User.opponent(ws.user);
-//
-//      const opponent_warriors = await Warrior.of(opponent._id);
-//
-//      const { position } = warrior;
-//      const { damage } = Warrior.getSample(warrior.kind);
-//
-//      if (opponent_warriors.length === 0) {
-//        logger.debug("io:game - (kick_opponents) - no warriors, kick gamer");
-//        return kickGamer(user, opponent, damage, ws, cb);
-//      }
-//
-//      let opWarrior = opponent_warriors.find(w => w.position === position);
-//
-//      if (opWarrior) {
-//        logger.debug(
-//          "io:game - (kick_opponents) - kick warrior in front of you"
-//        );
-//        return kickWarrior([opWarrior], opponent, damage, ws, cb);
-//      }
-//
-//      const opWarriors = opponent_warriors.filter(
-//        w => w.position === position - 1 || w.position === position + 1
-//      );
-//
-//      if (opWarriors.length === 0) {
-//        logger.debug(
-//          "io:game - (kick_opponents) - warrior exist, but kick gamer"
-//        );
-//        return kickGamer(user, opponent, damage, ws, cb);
-//      } else {
-//        logger.debug(
-//          "io:game - (kick_opponents) - kick warriors left/right from you"
-//        );
-//        await kickWarrior(opWarriors, opponent, damage, ws, cb);
-//      }
-//
-//      return;
-//    } catch (err) {
-//      logger.error(err.message);
-//      logger.debug(err.stack);
-//      cb({
-//        error: {
-//          msg: err.message
-//        }
-//      });
-//    }
-//    cb({
-//      error: {
-//        msg: "I'm a tippot, miss some important code-path"
-//      }
-//    });
-//  });
-
-//  ws.on(TURN, async cb => {
-//    const user = ws.user;
-//    const opponent = await User.opponent(user);
-//
-//    await user.increaseMoney();
-//
-//    cb({
-//      data: {
-//        name: user.name,
-//        money: user.gamer.current_money
-//      }
-//    });
-//    ws.to(opponent.socket_id).emit(TURN, {
-//      data: {
-//        name: user.name,
-//        money: user.gamer.current_money
-//      }
-//    });
-//    logger.debug(
-//      `io:gamer - pass the turn from ${ws.user.name} to ${opponent.name}`
-//    );
-//  });
-
-//
-// ============ helpers ============
-//
-
-//async function kickGamer(user, opponent, damage, ws, cb) {
-//  const health = (opponent.gamer.health = opponent.gamer.health - damage);
-//  const data = [];
-
-//  await opponent.save();
-
-//  data.push({
-//    type: GAMER_KICKED,
-//    data: {
-//      name: opponent.name,
-//      health
-//    }
-//  });
-
-//  if (health <= 0) {
-//    await user.winFight();
-//    await opponent.loseFight();
-
-//    informAboutStatusUpdate(ws, user, opponent);
-
-//    data.push({
-//      type: FINISH_FIGHT,
-//      data: {
-//        winner_name: user.name
-//      }
-//    });
-//  }
-
-//  ws.to(opponent.socket_id).emit(KICK_OPPONENTS, { data });
-//  cb({ data });
-//}
-
-//async function kickWarrior(opWarriors, opponent, damage, ws, cb) {
-//  const data = [];
-//  for (const w of opWarriors) {
-//    const dead = await Warrior.kickWarrior(opponent._id, w, damage);
-//    if (dead) {
-//      data.push({
-//        type: WARRIOR_REMOVE,
-//        data: {
-//          owner_name: opponent.name,
-//          _id: w._id
-//        }
-//      });
-//    } else {
-//      data.push({
-//        type: WARRIOR_KICKED,
-//        data: {
-//          owner_name: opponent.name,
-//          _id: w._id,
-//          health: w.health
-//        }
-//      });
-//    }
-//  }
-//  ws.to(opponent.socket_id).emit(KICK_OPPONENTS, { data });
-//  cb({ data });
-//}

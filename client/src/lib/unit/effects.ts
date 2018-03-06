@@ -1,5 +1,8 @@
 import { generateID } from "../../utils/common";
 import { EffectScope, EffectImpact } from "../../constants";
+//
+// actions
+//
 import {
   PLAYER_ADD_UNIT,
   UNIT_ACTIVATE,
@@ -10,15 +13,20 @@ import {
   unitActivate,
   unitDisActivate,
   unitDecreaseAvailability,
-  unitIncreaseAvailability,
   unitIncreaseMoves
 } from "../../actions/battle/unit";
+//
+// selectors
+//
 import {
   getUnitFriendIds,
   getOpponentUnits,
   getPlayerUnitIds,
-  getPlayerUnits
-} from "../../selectors/battle";
+  getPlayerUnits,
+  isUnitFriend,
+  isUnitHasEffect
+} from "../../selectors/battle/index";
+//import { } from "../../selectors/battle/effects";
 
 ///
 ///                  action     [ ]
@@ -39,20 +47,9 @@ import {
 /// - every effect has `unit_id` parameter, which is set in "unit/fabric".
 ///
 
-export function applyEffects(effects, actions, state) {
-  return effects.reduce(
-    (actions, eff) => applyEffect(eff, actions, state),
-    actions,
-    state
-  );
+export function applyEffects(effects, target, state) {
+  return effects.reduce(applyEffect.bind(state), target);
 }
-
-const getMainAction = ([action, ...postActions]) => action;
-const getPostActions = ([action, ...postActions]) => postActions;
-const combineActions = ({ action, postActions = [] }) => [
-  action,
-  ...postActions
-];
 
 const TAUNT = "TAUNT";
 const TAUNT_DISABLER = "TAUNT_DISABLER";
@@ -64,17 +61,23 @@ const INCREASE_HEALTH_TO_FRIENDS = "INCREASE_HEALTH_TO_FRIENDS";
 // ============ reducer ============
 //
 
-export function applyEffect(effect, actions, state) {
+export function applyEffect(target, effect) {
+  const state = effect.scope === EffectScope.Global ? this : undefined;
+
   switch (effect.type) {
     case TAUNT:
-      return tauntHandler(effect, actions, state);
+      return tauntHandler(effect, target, state);
     case TAUNT_DISABLER:
-      return tauntDisablerHandler(effect, actions, state);
+      return tauntDisablerHandler(effect, target, state);
     case INCREASE_MOVES:
-      return increaseMovesHandler(effect, actions, state);
+      return increaseMovesHandler(effect, target, state);
     default:
-      return actions;
+      return target;
   }
+}
+
+export function sortEffectsByPriority(effects) {
+  return effects.sort((a, b) => a.priority - b.priority);
 }
 
 //
@@ -83,114 +86,39 @@ export function applyEffect(effect, actions, state) {
 
 // ============ increseAttackHandler ============
 
-function increseAttackHandler(effect, actions) {
-  const action = getMainAction(actions);
-  const postActions = getPostActions(actions);
-
-  if (action.type === ATTACK) {
-    action.payload.damage += effect.payload.damage;
-  }
-
-  return combineActions({ action, postActions });
+function increseAttackHandler(effect, target) {
+  //if (action.type === ATTACK) {
+  //  action.payload.damage += effect.payload.damage;
+  //}
 }
 
 // ============ tauntHandler ============
 
-function tauntHandler(effect, actions, state) {
-  const action = getMainAction(actions);
-  let postActions = getPostActions(actions);
-
-  const amount = getTauntOpponentUnitIds().length;
-
-  if (action.type === UNIT_ACTIVATE && !activatedIsTauntFriend()) {
-    postActions = [
-      ...postActions,
-      ...getNotTauntOpponentUnitIds().map(id => unitDecreaseAvailability(1, id))
-    ];
-  } else if (action.type === UNIT_DISACTIVATE && !activatedIsTauntFriend()) {
-    postActions = [
-      ...postActions,
-      ...getNotTauntOpponentUnitIds().map(id =>
-        unitIncreaseAvailability(1, id)
-      )
-    ];
+function tauntHandler(effect, target, state) {
+  if (effect.unit_id === target._id) {
+    return { ...target, availability: 1 };
   }
-
-  return combineActions({ action, postActions });
-
-  function activatedIsTauntFriend() {
-    return getPlayerUnitIds(state).includes(effect.unit_id);
+  if (
+    isUnitFriend(state, { unit_id: effect.unit_id, target_id: target._id }) &&
+    !isUnitHasEffect(state, target._id, effect.type)
+  ) {
+    return { ...target, availability: 0 };
   }
-
-  function getNotTauntOpponentUnitIds() {
-    return getOpponentUnits(state)
-      .filter(unit => !unit.effects.map(eff => eff.type).includes(TAUNT))
-      .map(unit => unit._id);
-  }
-
-  function getTauntOpponentUnitIds() {
-    return getOpponentUnits(state)
-      .filter(unit => unit.effects.map(eff => eff.type).includes(TAUNT))
-      .map(unit => unit._id);
-  }
+  return target;
 }
 
-function tauntDisablerHandler(effect, actions, state) {
-  const action = getMainAction(actions);
-  let postActions = getPostActions(actions);
-
-  const amount = getTauntOpponentUnitIds().length;
-
-  if (action.type === UNIT_ACTIVATE && activatedIsTauntDisablerFriend()) {
-    postActions = [
-      ...postActions,
-      ...getNotTauntOpponentUnitIds().map(id =>
-        unitIncreaseAvailability(amount, id)
-      )
-    ];
-  } else if (
-    action.type === UNIT_DISACTIVATE &&
-    activatedIsTauntDisablerFriend()
+function tauntDisablerHandler(effect, target, state) {
+  if (
+    !isUnitFriend(state, { unit_id: effect.unit_id, target_id: target._id })
   ) {
-    postActions = [
-      ...postActions,
-      ...getNotTauntOpponentUnitIds().map(id =>
-        unitDecreaseAvailability(amount, id)
-      )
-    ];
+    return { ...target, availability: 1 };
   }
-
-  function activatedIsTauntDisablerFriend() {
-    return getPlayerUnitIds(state).includes(effect.unit_id);
-  }
-
-  function getNotTauntOpponentUnitIds() {
-    return getOpponentUnits(state)
-      .filter(unit => !unit.effects.map(eff => eff.type).includes(TAUNT))
-      .map(unit => unit._id);
-  }
-
-  function getTauntOpponentUnitIds() {
-    return getOpponentUnits(state)
-      .filter(unit => unit.effects.map(eff => eff.type).includes(TAUNT))
-      .map(unit => unit._id);
-  }
-
-  return combineActions({ action, postActions });
+  return target;
 }
 
 // ============ increaseMovesHandler ============
 
-function increaseMovesHandler(effect, actions, state) {
-  const action = getMainAction(actions);
-  let postActions = getPostActions(actions);
-
-  if (action.type === PLAYER_ADD_UNIT) {
-    postActions = postActions.concat(unitIncreaseMoves(1, effect.unit_id));
-  }
-
-  return combineActions({ action, postActions });
-}
+function increaseMovesHandler(effect, actions, state) {}
 
 //
 // ============ Effects creators ============
@@ -200,39 +128,40 @@ export const taunt = () => ({
   _id: generateID(),
   type: TAUNT,
   scope: EffectScope.Global,
-  impact: EffectImpact.Target
+  impact: EffectImpact.Availability,
+  priority: 5
 });
 
 export const tauntDisabler = () => ({
   _id: generateID(),
   type: TAUNT_DISABLER,
   scope: EffectScope.Global,
-  impact: EffectImpact.Target
+  impact: EffectImpact.Availability,
+  priority: 6
 });
 
 export const increaseMoves = amount => ({
   _id: generateID(),
   type: INCREASE_MOVES,
   scope: EffectScope.Local,
-  impact: EffectImpact.State
+  impact: EffectImpact.Move,
+  priority: 5
 });
 
 export const increaseAttackToFrieands = damage => ({
   _id: generateID(),
   type: INCREASE_ATTACK_TO_FRIENDS,
   scope: EffectScope.Global,
-  impact: EffectImpact.State,
-  payload: {
-    damage
-  }
+  impact: EffectImpact.Attack,
+  priority: 5,
+  payload: { damage }
 });
 
 export const increaseHealthToFriends = health => ({
   _id: generateID(),
   type: INCREASE_HEALTH_TO_FRIENDS,
   scope: EffectScope.Global,
-  impact: EffectImpact.State,
-  payload: {
-    health
-  }
+  impact: EffectImpact.Attack,
+  priority: 5,
+  payload: { health }
 });

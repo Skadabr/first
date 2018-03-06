@@ -31,7 +31,6 @@ export default function(ws, opts) {
   ws.on(TURN, battleController.passTheTurn);
   ws.on(ATTACK, battleController.attack);
 
-
   async function onDisconnect() {
     const { user } = ws;
     if (!user) return;
