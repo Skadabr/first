@@ -7,8 +7,8 @@ import * as uniqueValidator from "mongoose-unique-validator";
 import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-import { UserStatusType } from "../constants";
-import { log } from "../logger";
+import { UserStatusType } from "../../../client/src/constants";
+import { log } from "../logger/index";
 import { createUserLog } from "../logger/models/user";
 
 const { JWT_SECRET } = process.env;
@@ -80,10 +80,6 @@ export default function UserModel({ logger }) {
       const { _id, name, email, status, socket_id, rate } = this;
       return { _id: _id.toString(), name, email, status, socket_id, rate };
     },
-
-//  hasId(id) {
-//    return this._id.toString() === id.toString();
-//  },
 
     async setPassword(password) {
       if (password.length < 8) throw new TypeError("Password to short");

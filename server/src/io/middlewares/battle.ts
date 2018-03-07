@@ -1,6 +1,6 @@
 import { getErrorMessage } from "../../utils/index";
 import { BATTLE_REQUEST } from "../game";
-import { UserStatusType } from "../../client/src/constants";
+import { UserStatusType } from "../../../../client/src/constants";
 import * as reducer from "../../reducer";
 
 export default function battleIOMiddleware({ logger, models }) {

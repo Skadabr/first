@@ -7,7 +7,7 @@ import * as uniqueValidator from "mongoose-unique-validator";
 import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-import { UnitTypes, UserStatusType, POSITIONS } from "../../client/src/constants";
+import { UnitTypes, UserStatusType, POSITIONS } from "../../../client/src/constants";
 
 const { JWT_SECRET } = process.env;
 
@@ -178,7 +178,7 @@ export default function BattleModel({ logger }) {
       );
       if (!user)
         throw new Error(
-          `User with id: ${user_id} doens't participate in this battle`
+          `User with id: ${user_id} doesn't participate in this battle`
         );
       const opponentPlayer =  this.players.find(
         p => p.user._id.toString() !== user_id.toString()
