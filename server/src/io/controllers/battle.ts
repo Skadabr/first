@@ -42,7 +42,7 @@ import { playerRemoveUnit } from "../../client/src/actions/battle/player";
 // ============ selectors ============
 //
 import {
-  isTurnOwner,
+  isCurrentUserTurnOwner,
   getTurnOwner,
   getCard,
   getPlayer,
@@ -126,7 +126,7 @@ export default class BattleController {
 
     const turnOwner = getTurnOwner(state);
 
-    if (!isTurnOwner(state)) return;
+    if (!isCurrentUserTurnOwner(state)) return;
 
     getPlayerUnitIds(store.getState()).forEach(unit_id => {
       store.dispatch(unitSetMoves(unit_id, 0));
@@ -153,7 +153,7 @@ export default class BattleController {
     const state = getState();
 
     const turnOwner = getTurnOwner(state);
-    if (!isTurnOwner(state)) return;
+    if (!isCurrentUserTurnOwner(state)) return;
 
     const targetIds = getAllAvailableTargetIds(unit_id, state);
 

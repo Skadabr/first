@@ -27,7 +27,7 @@ export const getOpponent = state =>
 
 export const getTurnOwner = state => getBattle(state).turnOwner;
 
-export const isTurnOwner = state => {
+export const isCurrentUserTurnOwner = state => {
   const turnOwner = getTurnOwner(state);
   const _id = getUserInfo(state)._id;
   return turnOwner === _id;
