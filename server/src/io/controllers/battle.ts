@@ -1,7 +1,7 @@
 import bind from "bind-decorator";
 
-import { createRandomCards } from "../../lib/cards";
-import { UserStatusType, DECK_INIT_SIZE } from "../../constants";
+import { createRandomCards } from "../../client/src/lib/cards/index";
+import { UserStatusType, DECK_INIT_SIZE } from "../../client/src/constants";
 
 import { log } from "../../logger";
 import {
@@ -17,27 +17,27 @@ import {
   SELECT_CARDS_FOR_DECK
 } from "../game";
 
-import { validateAddUnitParams } from "../../validators/battle";
+import { validateAddUnitParams } from "../../client/src/validators/battle/index";
 
 import { createStore } from "../../reducer";
 //
 // ============ actions ============
 //
-import { battleNextTurn } from "../../actions/battle/index";
+import { battleNextTurn } from "../../client/src/actions/battle/index";
 import {
   playerAddCards,
   playerAddUnit,
   playerRemoveCard,
   playerDecreseMoney,
   playerAdjustMoney
-} from "../../actions/battle/player";
+} from "../../client/src/actions/battle/player";
 import {
   unitSetMoves,
   unitSetAvailability,
   unitDecreaseMoves,
   unitAttack
-} from "../../actions/battle/unit";
-import { playerRemoveUnit } from "../../actions/battle/player";
+} from "../../client/src/actions/battle/unit";
+import { playerRemoveUnit } from "../../client/src/actions/battle/player";
 //
 // ============ selectors ============
 //
@@ -53,8 +53,8 @@ import {
   getAllAvailableTargetIds,
   getRawUnitSource,
   getDeadOpponentUnits
-} from "../../selectors/battle/index";
-import { getUserInfo } from "../../selectors/user";
+} from "../../client/src/selectors/battle/index";
+import { getUserInfo } from "../../client/src/selectors/user";
 
 //
 // ============ controller ============

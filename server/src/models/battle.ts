@@ -7,7 +7,7 @@ import * as uniqueValidator from "mongoose-unique-validator";
 import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-import { UnitTypes, UserStatusType, POSITIONS } from "../constants";
+import { UnitTypes, UserStatusType, POSITIONS } from "../../client/src/constants";
 
 const { JWT_SECRET } = process.env;
 

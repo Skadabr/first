@@ -1,5 +1,5 @@
 import { logger } from "../index";
-import { getErrorMessage } from "../../utils";
+import { getErrorMessage } from "../../utils/index";
 
 export function getOnlineUsersLog(res) {
   if (res instanceof Error) return logger.error(getErrorMessage(res));

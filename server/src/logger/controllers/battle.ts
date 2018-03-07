@@ -1,5 +1,5 @@
 import { logger } from "../index";
-import { getErrorMessage } from "../../utils";
+import { getErrorMessage } from "../../utils/index";
 
 export function _newBattleLog(err, res, user, opponent) {
   if (err) return logger.error(getErrorMessage(err));
