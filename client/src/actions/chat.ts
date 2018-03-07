@@ -1,5 +1,6 @@
 import IO from "../socket";
-import { CLEAN_STATE } from "../constants";
+
+const { CLEAN_STATE } =  core.constants;
 
 const CHAT_ADD_MESSAGE = "CHAT_ADD_MESSAGE";
 const CHAT_CLEAN_MESSAGES = "CHACHAT_CLEAN_MESSAGES";

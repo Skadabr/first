@@ -1,8 +1,6 @@
-import flatMap from "lodash.flatmap";
-
 import { UnitTypes } from "../../constants";
-import { generateID } from "../../utils/common";
-import { createUnit } from "../unit";
+import { generateID } from "../../utils";
+import { createUnit } from "../unit/index";
 
 export default function createCard(type: UnitTypes, owner_id) {
   switch (type) {

@@ -1,4 +1,4 @@
-import { increaseMoves, taunt, tauntDisabler } from "./effects";
+import { increaseMoves, taunt, tauntDisabler } from "./effects/fabric";
 import { UnitTypes } from "../../constants";
 
 export default {

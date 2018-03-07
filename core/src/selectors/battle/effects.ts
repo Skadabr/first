@@ -1,5 +1,5 @@
 import { EffectScope, EffectImpact } from "../../constants";
-import { getUnit, getUnits, getPlayerUnits, getOpponentUnits } from ".";
+import { getUnit, getUnits, getPlayerUnits, getOpponentUnits } from "./index";
 
 //
 // ============ general effects selectors ============

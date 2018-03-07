@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "CommonJS",
+    "target": "es6",
+    "lib": ["es2017"],
+    "moduleResolution": "Node",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "experimentalDecorators": true
+  },
+  "exclude": ["node_modules"]
+}

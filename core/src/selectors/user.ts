@@ -1,5 +1,5 @@
 import { UserStatusType } from "../constants";
-import { UserState } from "../actions/user";
+import { UserState } from "../state/user";
 
 export const getUserInfo = state => {
   const { _id, name, status, email, rate } = state.user;

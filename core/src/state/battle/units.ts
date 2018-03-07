@@ -9,10 +9,6 @@ const EMPTY = {};
 
 export default function unitsReducer(state, action) {
   switch (action.type) {
-    case UNITS_REMOVE: {
-      return state.filter(unit => unit._id !== action.payload);
-    }
-
     default:
       return state.map(unit => unitReducer(unit, action));
   }

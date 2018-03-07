@@ -1,6 +1,4 @@
-import { createNumberSequence } from "../../utils/common";
-
-import { default as createCard } from "./fabric";
+import createCard from "./fabric";
 
 //export function createRandomCards(n, owner_id) {
 //  return createNumberSequence(n).map(() => createRandomCard(owner_id));
@@ -18,14 +16,14 @@ export function createRandomCards(n, owner_id) {
     return [
       createCard(1, owner_id),
       createCard(1, owner_id),
-      createCard(0, owner_id),
-    ]
+      createCard(0, owner_id)
+    ];
   } else {
     turn = true;
     return [
       createCard(0, owner_id),
       createCard(2, owner_id),
-      createCard(0, owner_id),
-    ]
+      createCard(0, owner_id)
+    ];
   }
 }

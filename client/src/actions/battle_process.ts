@@ -1,45 +1,48 @@
-import {
+import IO from "../socket";
+
+import * as core from "core";
+
+const  {
   UserStatusType,
   UnitTypes,
   EffectScope,
   EffectImpact
-} from "../constants";
-import IO from "../socket";
+} = core.constants;
 //
 // actions
 //
-import { userIncreaseRate, userDecreaseRate, userUpdateStatus } from "./user";
-import { availableTargetsUpdate } from "./targets";
-import { unitAttack } from "./battle/unit";
-import {
+const {
+  userIncreaseRate,
+  userDecreaseRate,
+  userUpdateStatus,
+  availableTargetsUpdate,
+  unitAttack,
   playerAddCards,
   playerAddUnit,
   playerRemoveCard,
-  playerDecreseMoney
-} from "./battle/player";
-import {
+  playerDecreseMoney,
   unitActivate,
   unitDisActivate,
-  unitDecreaseMoves
-} from "./battle/unit";
-import { playerRemoveUnit } from "./battle/player";
-import { battleUpdate } from "./battle";
+  unitDecreaseMoves,
+  playerRemoveUnit,
+  battleUpdate
+} = core.state;
 //
 // selectors
 //
-import { getEffects } from "../selectors/battle/effects";
-import {
+const {
+  getEffects
   getUnit,
   getOpponentUnits,
   getNextTurnOwnerPlayer,
   getAllAvailableTargetIds,
   getDeadOpponentUnits,
   getRawUnitSource
-} from "../selectors/battle/index";
+} = core.selectors;
 //
 // lib
 //
-import { applyEffects } from "../lib/unit/effects";
+const { applyEffects } = core.unit.effects;
 
 //
 // ============ Actions ============

@@ -1,0 +1,25 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --lib es2017 --target es5 --noEmit --pretty",
+    "build": "tsc --pretty --lib es2017 --target es5 --sourceMap --outDir dist src/*.ts src/**/*.ts",
+    "build:dev": "tsc --pretty --lib es2017 --target es5 --sourceMap  --experimentalDecorators --outDir dist -w src/*.ts src/**/*.ts",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "typescript": "^2.7.2"
+  }
+}

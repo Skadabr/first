@@ -1,4 +1,4 @@
-import { applyEffects } from "../../lib/unit/effects";
+import { applyEffects } from "../../lib/unit/index";
 import { getUserInfo } from "../user";
 import {
   getAllAvailabilityEffects,
