@@ -9,16 +9,16 @@ services:
     volumes:
       - "./server/src:/app/server/src"
       - "./server/typecheck.log:/app/server/typecheck.log"
-      - "./client/build:/app/server/public"
-      - "./client/src/validators:/app/server/src/validators"
-      - "./client/src/actions/battle:/app/server/src/actions/battle"
-      - "./client/src/actions/user.ts:/app/server/src/actions/user.ts"
-      - "./client/src/actions/middlewares:/app/server/src/actions/middlewares"
-      - "./client/src/selectors/battle:/app/server/src/selectors/battle"
-      - "./client/src/selectors/user.ts:/app/server/src/selectors/user.ts"
-      - "./client/src/lib:/app/server/src/lib"
-      - "./client/src/utils/common.ts:/app/server/src/utils/common.ts"
-      - "./client/src/constants.ts:/app/server/src/constants.ts"
+      - "./client/build:/app/client/public"
+      - "./client/src/validators:/app/client/src/validators"
+      - "./client/src/actions/battle:/app/client/src/actions/battle"
+      - "./client/src/actions/user.ts:/app/client/src/actions/user.ts"
+      - "./client/src/actions/middlewares:/app/client/src/actions/middlewares"
+      - "./client/src/selectors/battle:/app/client/src/selectors/battle"
+      - "./client/src/selectors/user.ts:/app/client/src/selectors/user.ts"
+      - "./client/src/lib:/app/client/src/lib"
+      - "./client/src/utils/common.ts:/app/client/src/utils/common.ts"
+      - "./client/src/constants.ts:/app/client/src/constants.ts"
     env_file: ./server/env
     restart: on-failure
     ports:
