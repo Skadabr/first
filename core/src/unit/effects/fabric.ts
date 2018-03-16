@@ -6,8 +6,8 @@ import {
   INCREASE_HEALTH_TO_FRIENDS
 } from "./index";
 
-import { generateID } from "../../../utils";
-import { EffectScope, EffectImpact } from "../../../constants";
+import { generateID } from "../../utils";
+import { EffectScope, EffectImpact } from "../../index";
 
 export const taunt = () => ({
   _id: generateID(),

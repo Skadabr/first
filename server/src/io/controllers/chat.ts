@@ -1,6 +1,6 @@
 import bind from "bind-decorator";
 
-import { UserStatusType } from "../../constants";
+import {UserStatusType} from "core";
 import { log } from "../../logger";
 import {
   sendMessageLog

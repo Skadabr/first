@@ -8,17 +8,8 @@ services:
     command: ["yarn", "start:dev"]
     volumes:
       - "./server/src:/app/server/src"
-      - "./server/typecheck.log:/app/server/typecheck.log"
       - "./client/build:/app/client/public"
-      - "./client/src/validators:/app/client/src/validators"
-      - "./client/src/actions/battle:/app/client/src/actions/battle"
-      - "./client/src/actions/user.ts:/app/client/src/actions/user.ts"
-      - "./client/src/actions/middlewares:/app/client/src/actions/middlewares"
-      - "./client/src/selectors/battle:/app/client/src/selectors/battle"
-      - "./client/src/selectors/user.ts:/app/client/src/selectors/user.ts"
-      - "./client/src/lib:/app/client/src/lib"
-      - "./client/src/utils/common.ts:/app/client/src/utils/common.ts"
-      - "./client/src/constants.ts:/app/client/src/constants.ts"
+      - "./core/:/app/server/node_modules/core"
     env_file: ./server/env
     restart: on-failure
     ports:
@@ -27,7 +18,6 @@ services:
       - mongodb
     depends_on:
       - mongodb
-
 
   mongodb:
     image: mongo:latest

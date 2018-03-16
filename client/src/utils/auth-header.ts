@@ -1,4 +1,4 @@
-import * as axios from "axios";
+import axios from "axios";
 
 export default function setAuthHeader(token?: string) {
   if (token) {

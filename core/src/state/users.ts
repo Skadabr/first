@@ -1,4 +1,4 @@
-import { CLEAN_STATE, UserStatusType } from "../constants";
+import { CLEAN_STATE, UserStatusType } from "../index";
 
 const USERS_UPSERT = "USERS_UPSERT";
 const USERS_REMOVE = "USERS_REMOVE";
@@ -10,12 +10,10 @@ const EMPTY = [];
 // ============ Reducer ============
 //
 
-interface OtherUser {
+export type UsersState = {
   name: string;
   status: UserStatusType;
-}
-
-export type UsersState = OtherUser[];
+}[];
 
 export default function usersReducer(
   state: UsersState = EMPTY,
@@ -56,7 +54,7 @@ export function loadUsers(val) {
   };
 }
 
-export function usersUpsert(opponent: OtherUser) {
+export function usersUpsert(opponent) {
   return {
     type: USERS_UPSERT,
     payload: opponent

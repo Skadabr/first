@@ -1,12 +1,13 @@
 import React from "react";
 
 import {
+  unit,
   UnitTypes,
   CARD_WIDTH,
   CARD_HEIGHT,
-  POSITION_MIN_WIDTH
-} from "../../constants";
-import { createUnit } from "../../lib/unit/";
+  POSITION_MIN_WIDTH,
+} from "core";
+const { createUnit } = unit;
 
 const numberStyle = {
   paddingLeft: "0.2rem",

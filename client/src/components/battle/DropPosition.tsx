@@ -1,10 +1,11 @@
 import React from "react";
 import { DropTarget } from "react-dnd";
 
-import { DragTypes, POSITION_MIN_WIDTH, CARD_HEIGHT } from "../../constants";
+import { DragTypes } from "../../constants";
+import { DragTypes, POSITION_MIN_WIDTH, CARD_HEIGHT } from "core";
 import Position from "./Position";
 
-interface PropTypes {
+interface DropPositionPT {
   connectDropTarget: Function; // somehow tsc can't check it correctly
   isOver: boolean;
   canDrop: boolean;
@@ -14,15 +15,9 @@ interface PropTypes {
   onDrop: Function;
 }
 
-export class DropPosition extends React.PureComponent<PropTypes> {
+export class DropPosition extends React.PureComponent<DropPositionPT> {
   render() {
-    const {
-      children,
-      canDrop,
-      isOver,
-      connectDropTarget,
-      width
-    }: PropTypes = this.props;
+    const { children, canDrop, isOver, connectDropTarget, width } = this.props;
     //const isActive = canDrop && isOver;
 
     return connectDropTarget(

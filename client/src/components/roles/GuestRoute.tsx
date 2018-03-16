@@ -1,25 +1,31 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
+import { Component, connect } from "react-redux";
 
-import { isAuthenticated } from "../../selectors/user";
+import { selectors } from "core";
 
-interface PropTypes {
+const { isAuthenticated } = selectors;
+
+interface GuestRoutePT {
   isAuthenticated: boolean;
   component: any;
   path: string;
   exact?: boolean;
 }
 
-function Guest({ isAuthenticated, component: Component, ...rest }: PropTypes) {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        !isAuthenticated ? <Component {...props} /> : <Redirect to="/user" />
-      }
-    />
-  );
+class GuestRoute extends React.Component<GuestRoutePT> {
+  render() {
+    const { isAuthenticated, component: Component, ...rest } = this.props;
+
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          !isAuthenticated ? <Component {...props} /> : <Redirect to="/user" />
+        }
+      />
+    );
+  }
 }
 
 function mapStateToProps(state) {
@@ -29,5 +35,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, undefined, undefined, { pure: false })(
-  Guest
+  GuestRoute
 );

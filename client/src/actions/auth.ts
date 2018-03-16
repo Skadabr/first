@@ -1,10 +1,10 @@
 import setAuthHeader from "../utils/auth-header";
 import IO from "../socket";
 import * as api from "../api";
-import * as core from "core";
+import { state } from "core";
+import {CLEAN_STATE } from "../constants"
 
-const { userAdd } = core.state;
-const { CLEAN_STATE } = core.constants;
+const { userAdd } = state;
 
 export function signup(val) {
   return () => {

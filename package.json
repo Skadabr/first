@@ -15,10 +15,12 @@
   },
   "devDependencies": {
     "bind-decorator": "^1.0.11",
+    "prettier": "^1.11.1",
     "source-map-support": "^0.5.3"
   },
   "dependencies": {
     "lodash.flatmap": "^4.5.0",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "yarn": "^1.5.1"
   }
 }

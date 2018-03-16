@@ -1,7 +1,6 @@
 import React from "react";
 
 import Card from "./Card";
-import { UnitCharacteristic } from "../../lib/unit";
 
 export default class Deck extends React.PureComponent<any> {
   render() {

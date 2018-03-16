@@ -1,25 +1,23 @@
 {
   "name": "core",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/index.js",
   "license": "MIT",
+  "typings": "./lib/index.d.ts",
   "scripts": {
-    "typecheck": "tsc --lib es2017 --target es5 --noEmit --pretty",
-    "build": "tsc --pretty --lib es2017 --target es5 --sourceMap --outDir dist src/*.ts src/**/*.ts",
-    "build:dev": "tsc --pretty --lib es2017 --target es5 --sourceMap  --experimentalDecorators --outDir dist -w src/*.ts src/**/*.ts",
+    "typecheck": "rm -rf lib; tsc --pretty --noEmit",
+    "build": "rm -rf lib; tsc --pretty -d",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.js": ["prettier --write", "git add"]
   },
   "dependencies": {
     "redux": "^3.7.2"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
+    "prettier": "^1.11.1",
     "typescript": "^2.7.2"
   }
 }

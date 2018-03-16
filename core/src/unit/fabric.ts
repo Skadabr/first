@@ -1,5 +1,5 @@
-import { generateID } from "../../utils";
-import { UnitTypes } from "../../constants";
+import { generateID } from "../utils";
+import { UnitTypes } from "../index";
 import { characteristics } from "./index";
 
 export default function createUnit(type: UnitTypes, owner_id) {

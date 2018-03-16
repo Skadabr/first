@@ -1,7 +1,7 @@
 import React from "react";
 import { DropTarget } from "react-dnd";
-
-import { DragTypes, POSITION_MIN_WIDTH, CARD_HEIGHT } from "../../constants";
+import { DragTypes } from "../../constants";
+import { POSITION_MIN_WIDTH, CARD_HEIGHT } from "core";
 import UnitCardView from "./UnitCardView";
 
 export class UnitTarget extends React.PureComponent<any> {

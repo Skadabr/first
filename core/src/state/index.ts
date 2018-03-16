@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { CLEAN_STATE } from "../index";
 
 export {
   playerAddCards,
@@ -44,3 +45,9 @@ export {
   availableTargetsUpdate,
   default as availableTargetsReducer
 } from "./targets";
+
+export function cleanState() {
+  return {
+    type: CLEAN_STATE
+  };
+}

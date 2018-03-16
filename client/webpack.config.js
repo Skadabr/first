@@ -1,5 +1,6 @@
 module.exports = {
   name: "client",
+  mode: "development",
   entry: __dirname + "/src/index.tsx",
   output: {
     path: __dirname + "/build",

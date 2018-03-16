@@ -26,4 +26,5 @@ npm-debug.log
 
 public/
 data/
+dist/
 .env*

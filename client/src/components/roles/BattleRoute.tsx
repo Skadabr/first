@@ -2,8 +2,9 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { isBattleStarted } from "../../selectors/battle";
-import { isAuthenticated } from "../../selectors/user";
+import { selectors } from "core";
+
+const { isAuthenticated, isBattleStarted } = selectors;
 
 // interface BattleRoutePropTypes {
 //   isBattleStarted: boolean;

@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+
+    "experimentalDecorators": true,
     "noImplicitAny": false,
+
+    "sourceMap": true,
     "module": "CommonJS",
     "target": "es6",
     "lib": ["es2017"],
     "moduleResolution": "Node",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
 
-    "experimentalDecorators": true
+    "allowJs": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules"]
 }

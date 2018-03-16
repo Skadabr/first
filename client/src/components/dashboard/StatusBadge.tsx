@@ -1,6 +1,6 @@
 import React from "react";
 
-import { UserStatusType } from "../../constants";
+import { UserStatusType } from "core";
 
 const colors = {
   [UserStatusType.Peace]: "badge badge-success",

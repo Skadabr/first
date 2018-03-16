@@ -4,17 +4,14 @@ import { Redirect } from "react-router-dom";
 import { DragDropContextProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
-import { UnitTypes } from "../../constants";
+import { UnitTypes, validators, state, selectors } from "core";
 
 import Deck from "./Deck";
 import TurnButton from "./TurnButton";
 import OpponentPositions from "./OpponentPositions";
 import PlayerPositions from "./PlayerPositions";
-import Position from "./Position";
-import DropPosition from "./DropPosition";
 import Pocket from "./Pocket";
 import Hero from "./Hero";
-import Unit from "./Unit";
 import Card from "./Card";
 import UnitCardView from "./UnitCardView";
 
@@ -25,13 +22,15 @@ import {
   activateUnit,
   disActivateUnit
 } from "../../actions/battle_process";
-
-import { validateAddUnitParams } from "../../validators/battle";
-
+//
+// validators
+//
+const { validateAddUnitParams } = validators;
 //
 // selectors
-import {
-  isTurnOwner,
+//
+const {
+  isCurrentUserTurnOwner,
   isBattleStarted,
   getPlayer,
   getOpponent,
@@ -40,9 +39,9 @@ import {
   getPlayerUnits,
   getOpponentUnits,
   getPlayerHero,
-  getOpponentHero
-} from "../../selectors/battle";
-import { getAvailableTargets } from "../../selectors/targets";
+  getOpponentHero,
+  getAvailableTargets
+} = selectors;
 
 interface BattlePropTypes {
   player: any;
@@ -195,7 +194,7 @@ function mapStateToProps(state) {
 
   return {
     isBattleStarted: isBattleStarted(state),
-    isTurnOwner: isTurnOwner(state),
+    isTurnOwner: isCurrentUserTurnOwner(state),
 
     player,
     opponent,
@@ -205,7 +204,7 @@ function mapStateToProps(state) {
     opponentUnits,
     playerHero,
     opponentHero,
-    availableTargets,
+    availableTargets
   };
 }
 
@@ -216,5 +215,5 @@ export default connect(mapStateToProps, {
   addUnit,
   attack,
   activateUnit,
-  disActivateUnit,
+  disActivateUnit
 })(Battle as any);

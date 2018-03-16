@@ -1,5 +1,5 @@
 import React from "react";
-import { POSITIONS, UnitTypes } from "../../constants";
+import { POSITIONS, UnitTypes } from "core";
 import { createNumberSequence } from "../../utils/common";
 
 import DropPosition from "./DropPosition";

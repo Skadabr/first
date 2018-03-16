@@ -1,12 +1,20 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+
+    "experimentalDecorators": true,
     "noImplicitAny": false,
-    "module": "es6",
+
+    "sourceMap": true,
+    "module": "CommonJS",
     "target": "es6",
     "lib": ["es2017", "dom"],
+    "moduleResolution": "Node",
+
     "jsx": "react",
-    "allowJs": true,
+
+    "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },

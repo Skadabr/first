@@ -10,12 +10,11 @@ export default function Mongo(opts) {
 
   mongoose.Promise = Promise;
   mongoose.connect(MONGO_URL, {
-    useMongoClient: true,
     autoIndex: NODE_ENV !== "production"
   });
 
-  user(opts);
-  battle(opts);
+  user({ ...opts, mongoose });
+  battle({ ...opts, mongoose });
 
   return mongoose;
 }

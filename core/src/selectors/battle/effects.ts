@@ -1,4 +1,4 @@
-import { EffectScope, EffectImpact } from "../../constants";
+import { EffectScope, EffectImpact } from "../../index";
 import { getUnit, getUnits, getPlayerUnits, getOpponentUnits } from "./index";
 
 //

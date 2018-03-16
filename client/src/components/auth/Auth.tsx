@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 import { signup, login } from "../../actions/auth";
@@ -6,7 +6,7 @@ import { signup, login } from "../../actions/auth";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
-class Auth extends Component<any, any> {
+class Auth extends React.Component<any, any> {
   render() {
     return (
       <div>

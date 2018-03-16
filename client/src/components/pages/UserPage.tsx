@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 
+import { GameStatus } from "core";
 import { getShowBattleChat, isDesktop } from "../../selectors/ui";
-import { GameStatus } from "../../constants";
 
 import BattleRoute from "../roles/BattleRoute";
 import Dashboard from "../dashboard/Dashboard";

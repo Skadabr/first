@@ -1,8 +1,8 @@
-import { UnitTypes } from "../../constants";
-import { generateID } from "../../utils";
+import { UnitTypes } from "../index";
+import { generateID } from "../utils";
 import { createUnit } from "../unit/index";
 
-export default function createCard(type: UnitTypes, owner_id) {
+export function createCard(type: UnitTypes, owner_id) {
   switch (type) {
     case UnitTypes.Pawn:
       return {

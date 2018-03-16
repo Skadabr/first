@@ -1,4 +1,4 @@
-import { MIDDLE_POSITION } from "../../constants";
+import { MIDDLE_POSITION } from "../../index";
 
 import unitsReducer from "./units";
 import userReducer from "./user";

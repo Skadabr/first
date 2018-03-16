@@ -1,4 +1,4 @@
-import { MAX_UNITS_ON_FIELD, POSITIONS } from "../../constants";
+import { MAX_UNITS_ON_FIELD, POSITIONS } from "../../index";
 
 export function validateAddUnitParams(card, player, position) {
   if (player.money < card.unit.cost) {

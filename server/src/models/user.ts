@@ -1,13 +1,12 @@
 "use strict";
 
-import * as mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 import * as bcrypt from "bcryptjs";
-import * as uniqueValidator from "mongoose-unique-validator";
+import uniqueValidator from "mongoose-unique-validator";
 import * as jwt from "jsonwebtoken";
 import validator, { isEmail, isAlphanumeric } from "validator";
 
-import { UserStatusType } from "../../../client/src/constants";
+import { UserStatusType } from "core";
 import { log } from "../logger/index";
 import { createUserLog } from "../logger/models/user";
 
@@ -34,7 +33,7 @@ interface Gamer {
   health: number;
 }
 
-export default function UserModel({ logger }) {
+export default function UserModel({ logger, mongoose }) {
   const { Schema } = mongoose;
 
   const schema = new Schema({
@@ -73,7 +72,7 @@ export default function UserModel({ logger }) {
       required: true,
       min: [0, "Your rate can't be less than 0"]
     }
-  });
+  } as any);
 
   Object.assign(schema.methods, {
     toJSON(): UserJSON {
@@ -113,8 +112,7 @@ export default function UserModel({ logger }) {
     async loseFight() {
       this.rate = this.rate - 1;
       return this.updateStatus(UserStatusType.Peace);
-    },
-
+    }
   });
 
   Object.assign(schema.statics, {

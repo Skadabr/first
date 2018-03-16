@@ -13,19 +13,18 @@ import setAuthHeader from "./utils/auth-header";
 import * as api from "./api";
 import Socket from "./socket";
 
+import { state } from "core";
 import reducer from "./reducer";
-import { userAdd } from "./actions/user";
 import { logout } from "./actions/auth";
 import { statsSetDesktopWidth } from "./actions/stats";
-import battleMidlewareCreator from "./actions/middlewares/battle";
 
 import App from "./App";
 
+const { userAdd } = state;
+
 const store = createStore(
   reducer,
-  composeWithDevTools({ maxAge: 20 })(
-    applyMiddleware(thunk)
-  )
+  composeWithDevTools({ maxAge: 20 })(applyMiddleware(thunk))
 );
 //const store = createStore(reducer, applyMiddleware(thunk));
 const token = localStorage.user_jwt;

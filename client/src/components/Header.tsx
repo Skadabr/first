@@ -2,14 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
+import { selectors } from "core";
+
 import { logout } from "../actions/auth";
 import { toggleBattleChat } from "../actions/ui";
 
-import { isAuthenticated, getUserInfo } from "../selectors/user";
-import { isBattleStarted } from "../selectors/battle";
 import { isDesktop } from "../selectors/ui";
+const { isAuthenticated, getUserInfo, isBattleStarted } = selectors;
 
-interface HeaderPropTypes {
+interface HeaderPT {
   logout: Function;
   toggleBattleChat: Function;
   isBattleStarted: boolean;
@@ -18,7 +19,7 @@ interface HeaderPropTypes {
   name: string;
 }
 
-export class Header extends React.Component<HeaderPropTypes> {
+export class Header extends React.Component<HeaderPT> {
   exit = e => {
     e.preventDefault();
     this.props.logout(this.props.name);

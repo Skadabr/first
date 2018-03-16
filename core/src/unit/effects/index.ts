@@ -1,5 +1,5 @@
-import { generateID } from "../../../utils";
-import { EffectScope, EffectImpact } from "../../../constants";
+import { generateID } from "../../utils";
+import { EffectScope, EffectImpact } from "../../index";
 //
 // actions
 //
@@ -8,7 +8,7 @@ import {
   unitDisActivate,
   unitDecreaseAvailability,
   unitIncreaseMoves
-} from "../../../state/battle/unit";
+} from "../../state/battle/unit";
 //
 // selectors
 //
@@ -19,10 +19,10 @@ import {
   getPlayerUnits,
   isUnitFriend,
   isUnitHasEffect
-} from "../../../selectors/battle/index";
+} from "../../selectors/battle/index";
 //import { } from "../../selectors/battle/effects";
 
-export default function applyEffects(effects, target, state) {
+export function applyEffects(effects, target, state) {
   return effects.reduce(applyEffect.bind(state), target);
 }
 

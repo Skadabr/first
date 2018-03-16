@@ -1,8 +1,9 @@
 import * as redux from "redux";
 
-import battleMiddleware from "./actions/middlewares/battle";
-import battleReducer, { battleUpdate } from "./actions/battle";
-import userReducer, { userAdd } from "./actions/user";
+import { state } from "core";
+// import battleMiddleware from "./actions/middlewares/battle";
+
+const { battleReducer, battleUpdate, userReducer, userAdd } = state;
 
 const EMPTY = {};
 

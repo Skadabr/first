@@ -1,13 +1,11 @@
 "use strict";
 
-import * as mongoose from "mongoose";
 import { ObjectId } from "mongodb";
-import * as bcrypt from "bcryptjs";
-import * as uniqueValidator from "mongoose-unique-validator";
-import * as jwt from "jsonwebtoken";
-import validator, { isEmail, isAlphanumeric } from "validator";
+import uniqueValidator from "mongoose-unique-validator";
+import { isEmail, isAlphanumeric } from "validator";
 
-import { UnitTypes, UserStatusType, POSITIONS } from "../../../client/src/constants";
+import { UnitTypes, POSITIONS } from "core";
+
 
 const { JWT_SECRET } = process.env;
 
@@ -43,8 +41,8 @@ interface Battle {
   }[];
 }
 
-export default function BattleModel({ logger }) {
-  const { Schema } = mongoose;
+export default function BattleModel({ logger, mongoose }) {
+  const Schema = mongoose.Schema;
 
   const EffectSchema = new Schema(
     {

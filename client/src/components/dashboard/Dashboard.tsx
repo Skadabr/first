@@ -1,16 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { UserStatusType } from "../../constants";
+import { UserStatusType, selectors } from "core";
+import { readyToFight } from "../../actions/dashboard";
 
 import StatusBadge from "./StatusBadge";
 import OpponentsList from "./OpponentsList";
 import UserInfo from "./UserInfo";
 
-import { readyToFight } from "../../actions/dashboard";
-
-import { getOtherUsers } from "../../selectors/users";
-import { getUserInfo } from "../../selectors/user";
+const { getOtherUsers, getUserInfo } = selectors;
 
 interface PropTypes {
   user: {
@@ -35,7 +33,7 @@ export class Dashboard extends React.Component<PropTypes> {
   };
 
   render() {
-    const { opponents, readyToFight, user } = this.props;
+    const { opponents, user } = this.props;
 
     return (
       <div className="card">
@@ -64,6 +62,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-  readyToFight
-})(Dashboard as any);
+export default connect(mapStateToProps, { readyToFight })(Dashboard as any);

@@ -1,5 +1,6 @@
 import { increaseMoves, taunt, tauntDisabler } from "./effects/fabric";
-import { UnitTypes } from "../../constants";
+import { EffectImpact, EffectScope } from "../index";
+import { UnitTypes } from "../index";
 
 export default {
   [UnitTypes.Pawn]: {

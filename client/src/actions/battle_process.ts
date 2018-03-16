@@ -1,13 +1,15 @@
 import IO from "../socket";
 
-import * as core from "core";
-
-const  {
+import {
+  state,
+  selectors,
+  unit,
   UserStatusType,
   UnitTypes,
   EffectScope,
   EffectImpact
-} = core.constants;
+} from "core";
+
 //
 // actions
 //
@@ -26,23 +28,23 @@ const {
   unitDecreaseMoves,
   playerRemoveUnit,
   battleUpdate
-} = core.state;
+} = state;
 //
 // selectors
 //
 const {
-  getEffects
+  getEffects,
   getUnit,
   getOpponentUnits,
   getNextTurnOwnerPlayer,
   getAllAvailableTargetIds,
   getDeadOpponentUnits,
   getRawUnitSource
-} = core.selectors;
+} = selectors;
 //
 // lib
 //
-const { applyEffects } = core.unit.effects;
+const { applyEffects } = unit;
 
 //
 // ============ Actions ============

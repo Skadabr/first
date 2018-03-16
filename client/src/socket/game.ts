@@ -1,8 +1,8 @@
-import { userUpdateStatus } from "../actions/user";
+import { UnitTypes, state } from "core";
 import { chatAddMessage } from "../actions/chat";
-import { loadUsers, usersUpsert, usersRemove } from "../actions/users";
 import { createBattle } from "../actions/battle_process";
-import { UnitTypes } from "../constants";
+
+const { loadUsers, usersUpsert, usersRemove, userUpdateStatus } = state;
 
 const USER_GOES = "USER_GOES";
 const GET_USERS = "GET_USERS";

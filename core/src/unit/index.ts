@@ -1,5 +1,5 @@
-import applyEffects from "./effects/index";
-import {
+export { applyEffects } from "./effects/index";
+export {
   taunt,
   tauntDisabler,
   increaseMoves,
@@ -9,12 +9,3 @@ import {
 
 export { default as characteristics } from "./characteristics";
 export { default as createUnit } from "./fabric";
-
-export const effects = {
-  applyEffects,
-  taunt,
-  tauntDisabler,
-  increaseMoves,
-  increaseAttackToFrieands,
-  increaseHealthToFriends
-};

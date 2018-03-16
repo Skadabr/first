@@ -1,4 +1,4 @@
-import { UserStatusType } from "../constants";
+import { UserStatusType } from "../index";
 import { UserState } from "../state/user";
 
 export const getUserInfo = state => {

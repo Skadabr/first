@@ -1,4 +1,4 @@
-import { UserStatusType, CLEAN_STATE } from "../constants";
+import { UserStatusType, CLEAN_STATE } from "../index";
 
 const USER_ADD = "USER_ADD";
 const USER_REMOVE = "USER_REMOVE";
