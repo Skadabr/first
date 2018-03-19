@@ -54,10 +54,10 @@ export default function playerReducer(state = EMPTY as any, action) {
     }
 
     case PLAYER_REMOVE_CARD: {
-      const { card } = action.payload;
+      const { card_id } = action.payload;
       return {
         ...state,
-        hand: state.hand.filter(c => c._id !== card._id)
+        hand: state.hand.filter(c => c._id !== card_id)
       };
     }
 
@@ -96,8 +96,8 @@ export function playerAddCards(user_id, cards) {
   return { type: PLAYER_ADD_CARDS, payload: cards };
 }
 
-export function playerRemoveCard(card) {
-  return { type: PLAYER_REMOVE_CARD, payload: { card } };
+export function playerRemoveCard(card_id) {
+  return { type: PLAYER_REMOVE_CARD, payload: { card_id } };
 }
 
 export function playerAddUnit(unit, position) {

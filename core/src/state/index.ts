@@ -1,5 +1,8 @@
-import { combineReducers } from "redux";
 import { CLEAN_STATE } from "../index";
+import battleReducer from "./battle";
+import availableTargetsReducer from "./targets";
+
+const EMPTY = {};
 
 export {
   playerAddCards,
@@ -31,7 +34,7 @@ export {
   userIncreaseRate,
   userUpdateStatus,
   default as userReducer
-} from "./user";
+} from "../../../client/src/actions/user";
 
 export {
   loadUsers,
@@ -39,15 +42,17 @@ export {
   usersLoad,
   usersRemove,
   default as usersReducer
-} from "./users";
+} from "../../../client/src/actions/users";
 
 export {
   availableTargetsUpdate,
   default as availableTargetsReducer
 } from "./targets";
 
-export function cleanState() {
+export function reducer(state = EMPTY as any, action) {
   return {
-    type: CLEAN_STATE
+    battle: battleReducer(state.battle, action),
+    availableTargets: availableTargetsReducer(state.availableTargets, action),
+    user: state.user
   };
 }

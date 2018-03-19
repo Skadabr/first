@@ -33,12 +33,13 @@ export {
   getUnitFriendIds,
   isUnitFriend,
   isUnitHasEffect,
-  getAllAvailableTargetIds,
+  getAllAvailableForAttackTargetIds,
+  isTargetAvailableForAttack,
   getRawUnitSource,
   getDeadOpponentUnits
 } from "./battle/index";
 
-export { getUserInfo, isAuthenticated } from "./user";
-export { getOtherUsers } from "./users";
+export { getUserInfo, isAuthenticated } from "../../../client/src/selectors/user";
+export { getOtherUsers } from "../../../client/src/selectors/users";
 
 export { getAvailableTargets } from "./targets";

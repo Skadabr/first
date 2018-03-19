@@ -1,5 +1,5 @@
 import { applyEffects } from "../../unit/index";
-import { getUserInfo } from "../user";
+import { getUserInfo } from "../../../../client/src/selectors/user";
 import {
   getAllAvailabilityEffects,
   getAllAttackingEffects,
@@ -13,6 +13,7 @@ export const isBattleStarted = state => getBattle(state).players.length > 0;
 
 //
 // ============ player ============
+//
 
 export const getPlayerByUserId = (state, user_id) =>
   getPlayers(state).find(p => p.user._id === user_id);
@@ -24,6 +25,7 @@ export const getOpponent = state =>
 
 //
 // ============ turn ============
+//
 
 export const getTurnOwner = state => getBattle(state).turnOwner;
 
@@ -99,20 +101,22 @@ export const isUnitHasEffect = (state, unit_id, effect_type) =>
 // ============
 //
 
-export function getAllAvailableTargetIds(source_id, state) {
+export function getAllAvailableForAttackTargetIds(state, source_id) {
   const targetIds = getOpponentUnitIds(state);
 
-  return targetIds.filter(target_id => isTargetAvailable(source_id, target_id));
-
-  function isTargetAvailable(source_id, target_id) {
-    const target = getUnit(state, target_id);
-    const effects = getAllAvailabilityEffects(state, source_id, target_id);
-    const rawTarget = applyEffects(effects, target, state);
-    return isUnitAvailable(rawTarget);
-  }
+  return targetIds.filter(target_id =>
+    isTargetAvailableForAttack(state, source_id, target_id)
+  );
 }
 
-export function getRawUnitSource(source_id, target_id, state) {
+export function isTargetAvailableForAttack(state, source_id, target_id) {
+  const target = getUnit(state, target_id);
+  const effects = getAllAvailabilityEffects(state, source_id, target_id);
+  const rawTarget = applyEffects(effects, target, state);
+  return isUnitAvailable(rawTarget);
+}
+
+export function getRawUnitSource(state, source_id, target_id) {
   const source = getUnit(state, source_id);
 
   const effects = getAllAttackingEffects(state, source_id, target_id);

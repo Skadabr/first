@@ -38,6 +38,7 @@ export const getFilteredEffects = (
 
 //
 // ============
+//
 
 export const getAllAvailabilityEffects = (state, source_id, target_id) => {
   const global = getFilteredEffects(state, {
