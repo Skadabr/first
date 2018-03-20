@@ -1,6 +1,6 @@
 import { UnitTypes, state } from "core";
 import { chatAddMessage } from "../actions/chat";
-import { createBattle } from "../actions/battle_process";
+import { createBattle } from "../actions/battleProcess";
 
 const { loadUsers, usersUpsert, usersRemove, userUpdateStatus } = state;
 
@@ -43,8 +43,8 @@ export default function Game(ws, store, router) {
       ws.emit(SEND_MESSAGE, { msg, name, date });
     },
 
-    addUnit(card_id: string, position, cb) {
-      ws.emit(ADD_UNIT, { card_id, position }, cb);
+    addUnit(cardId: string, position, cb) {
+      ws.emit(ADD_UNIT, { cardId, position }, cb);
     },
 
     passTheTurn(cb) {

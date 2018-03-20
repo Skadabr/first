@@ -50,59 +50,59 @@ export default function unitReducer(state, { type, payload }) {
 // ============ Actions ============
 //
 
-export function unitActivate(unit_id) {
+export function unitActivate(unitId) {
   return {
     type: UNIT_ACTIVATE,
-    payload: { unit_id }
+    payload: { unitId }
   };
 }
 
-export function unitDisActivate(unit_id) {
+export function unitDisActivate(unitId) {
   return {
     type: UNIT_DISACTIVATE,
-    payload: { unit_id }
+    payload: { unitId }
   };
 }
 
-export function unitDecreaseHealth(target_id, amount) {
+export function unitDecreaseHealth(targetId, amount) {
   return {
     type: UNIT_DECREASE_HEALTH,
-    payload: { target_id, amount }
+    payload: { targetId, amount }
   };
 }
 
-export function unitDecreaseAvailability(unit_id, amount) {
+export function unitDecreaseAvailability(unitId, amount) {
   return {
     type: UNIT_DECREASE_AVAILABILITY,
-    payload: { amount, unit_id }
+    payload: { amount, unitId }
   };
 }
 
-export function unitDecreaseMoves(unit_id, amount) {
+export function unitDecreaseMoves(unitId, amount) {
   return {
     type: UNIT_DECREASE_MOVES,
-    payload: { amount, unit_id }
+    payload: { amount, unitId }
   };
 }
 
-export function unitIncreaseMoves(unit_id, amount) {
+export function unitIncreaseMoves(unitId, amount) {
   return {
     type: UNIT_INCREASE_MOVES,
-    payload: { amount, unit_id }
+    payload: { amount, unitId }
   };
 }
 
-export function unitSetMoves(unit_id, moves) {
+export function unitSetMoves(unitId, moves) {
   return {
     type: UNIT_SET_MOVES,
-    payload: { moves, unit_id }
+    payload: { moves, unitId }
   };
 }
 
-export function unitSetAvailability(unit_id, availability) {
+export function unitSetAvailability(unitId, availability) {
   return {
     type: UNIT_SET_AVAILABILITY,
-    payload: { availability, unit_id }
+    payload: { availability, unitId }
   };
 }
 
@@ -111,18 +111,18 @@ export function unitSetAvailability(unit_id, availability) {
 //
 
 function increase(state, payload, field) {
-  const { amount, unit_id } = payload;
-  if (unit_id !== state._id) return state;
+  const { amount, unitId } = payload;
+  if (unitId !== state._id) return state;
   return { ...state, [field]: [field] + amount };
 }
 
 function decrease(state, payload, field) {
-  const { amount, unit_id } = payload;
-  if (unit_id !== state._id) return state;
+  const { amount, unitId } = payload;
+  if (unitId !== state._id) return state;
   return { ...state, [field]: state[field] - amount };
 }
 
 function update(state, payload, field) {
-  if (payload.unit_id !== state._id) return state;
+  if (payload.unitId !== state._id) return state;
   return { ...state, [field]: payload[field] };
 }

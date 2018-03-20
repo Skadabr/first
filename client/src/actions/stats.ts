@@ -7,7 +7,7 @@ const SET_DESKTOP_WIDTH = "SET_DESKTOP_WIDTH";
 //
 
 export interface StatsState {
-  desktop_width?: number;
+  desktopWidth?: number;
 }
 
 export default function statsReducer(
@@ -16,7 +16,7 @@ export default function statsReducer(
 ): StatsState {
   switch (type) {
     case SET_DESKTOP_WIDTH:
-      return { ...state, desktop_width: payload };
+      return { ...state, desktopWidth: payload };
     default:
       return state;
   }

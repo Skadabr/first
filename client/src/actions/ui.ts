@@ -15,9 +15,9 @@ export default function uiReducer(
 ) {
   switch (type) {
     case SET_DESKTOP_WIDTH:
-      return { ...state, desktop_width: payload };
+      return { ...state, desktopWidth: payload };
     case TOGGLE_BATTLE_CHAT:
-      return { ...state, show_battle_chat: !state.show_battle_chat };
+      return { ...state, showBattleChat: !state.showBattleChat };
     default:
       return state;
   }

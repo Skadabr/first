@@ -1,4 +1,4 @@
-///<reference path="../../node_modules/core/lib/index.d.ts"/>
+///<reference path="../../nodeModules/core/lib/index.d.ts"/>
 "use strict";
 
 import { ObjectId } from "mongodb";
@@ -16,24 +16,24 @@ const MAX_MONEY = 10;
 
 interface User {
   _id: ObjectId;
-  socket_id: string;
+  socketId: string;
   name: string;
 }
 
 interface Unit {
   _id: string;
-  owner_id: string;
+  ownerId: string;
   type: number;
   hero: boolean;
   health: number;
-  buffed_health: number;
-  damage: number;
+  buffedHealth: number;
+  attack: number;
   position: number;
 }
 
 interface Effects {
   _id: string;
-  owner_id: string;
+  ownerId: string;
   type: string;
   payload: any;
 }
@@ -44,7 +44,7 @@ interface Battle {
     user: User;
     hand: any[];
     money: number;
-    pocket_size: number;
+    pocketSize: number;
   }[];
   units: Unit[];
   effects: Effects[];
@@ -56,7 +56,7 @@ export default function BattleModel({ logger, mongoose }) {
   const EffectSchema = new Schema(
     {
       _id: String,
-      owner_id: String,
+      ownerId: String,
       type: String
     },
     {
@@ -68,7 +68,7 @@ export default function BattleModel({ logger, mongoose }) {
   const UnitSchema = new Schema(
     {
       _id: String,
-      owner_id: Schema.ObjectId,
+      ownerId: Schema.ObjectId,
       hero: Boolean,
       type: {
         type: Number,
@@ -83,7 +83,7 @@ export default function BattleModel({ logger, mongoose }) {
           msg: "Health should be bigger than 0"
         }
       },
-      buffed_health: {
+      buffedHealth: {
         type: Number,
         required: true,
         validate: {
@@ -91,7 +91,7 @@ export default function BattleModel({ logger, mongoose }) {
           msg: "Buffered Health should be bigger than 0"
         }
       },
-      damage: {
+      attack: {
         type: Number,
         required: true,
         validate: {
@@ -116,7 +116,7 @@ export default function BattleModel({ logger, mongoose }) {
   const CardSchema = new Schema(
     {
       _id: String,
-      owner_id: Schema.ObjectId,
+      ownerId: Schema.ObjectId,
       type: {
         type: Number,
         enum: [UnitTypes.Pawn, UnitTypes.Officer, UnitTypes.Horse],
@@ -138,7 +138,7 @@ export default function BattleModel({ logger, mongoose }) {
           unique: true,
           required: true
         },
-        socket_id: {
+        socketId: {
           type: String
           //required: true
         },
@@ -159,7 +159,7 @@ export default function BattleModel({ logger, mongoose }) {
           msg: "Money should be bigger than 0"
         }
       },
-      pocket_size: {
+      pocketSize: {
         type: Number,
         validate: {
           validator: h => h >= 0,
@@ -192,16 +192,16 @@ export default function BattleModel({ logger, mongoose }) {
       return { turnOwner: turnOwner.toString(), players };
     },
 
-    findOpponentByUserId(user_id) {
+    findEnemyByUserId(userId) {
       const user = this.players.find(
-        p => p.user._id.toString() === user_id.toString()
+        p => p.user._id.toString() === userId.toString()
       );
       if (!user)
         throw new Error(
-          `User with id: ${user_id} doesn't participate in this battle`
+          `User with id: ${userId} doesn't participate in this battle`
         );
       const opponentPlayer = this.players.find(
-        p => p.user._id.toString() !== user_id.toString()
+        p => p.user._id.toString() !== userId.toString()
       );
       return this.model("User").findOne({ _id: opponentPlayer.user._id });
     },
@@ -228,34 +228,34 @@ export default function BattleModel({ logger, mongoose }) {
         {
           user: {
             _id: user._id,
-            socket_id: user.socket_id,
+            socketId: user.socketId,
             name: user.name
           },
           money: INIT_MONEY,
-          pocket_size: INIT_MONEY
+          pocketSize: INIT_MONEY
         },
         {
           user: {
             _id: opponent._id,
-            socket_id: opponent.socket_id,
+            socketId: opponent.socketId,
             name: opponent.name
           },
           money: INIT_MONEY,
-          pocket_size: INIT_MONEY
+          pocketSize: INIT_MONEY
         }
       ];
       const units = [
         {
           _id: utils.generateID(),
-          owner_id: user._id,
+          ownerId: user._id,
           health: INIT_HEALTH,
-          damage: 1
+          attack: 1
         },
         {
           _id: utils.generateID(),
-          owner_id: opponent._id,
+          ownerId: opponent._id,
           health: INIT_HEALTH,
-          damage: 1
+          attack: 1
         }
       ];
       const effects = [];
@@ -266,8 +266,8 @@ export default function BattleModel({ logger, mongoose }) {
       return this.newBattle(user, opponent).save();
     },
 
-    findBattleByUserId(user_id) {
-      return this.findOne({ "players.user._id": user_id });
+    findBattleByUserId(userId) {
+      return this.findOne({ "players.user._id": userId });
     }
   });
 

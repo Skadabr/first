@@ -1,42 +1,44 @@
 export {
   getAllEffects,
   getEffects,
-  getFilteredEffects,
+  getEffectsFilteredBy,
   getAllAvailabilityEffects,
   getAllAttackingEffects,
   getAllSelectionEffects
 } from "./battle/effects";
+import {
+  getUnits,
+  getUnitById,
+  getUnitsByUserId,
+  getPlayerUnits,
+  getPlayerUnitIds,
+  getEnemyUnits,
+  getEnemyUnitIds,
+  getUnitFriends,
+  getUnitFriendIds,
+  isUnitFriend,
+  isUnitHasEffect
+} from "./battle/units";
 export {
   getBattle,
   getPlayers,
   isBattleStarted,
   getPlayerByUserId,
   getPlayer,
-  getOpponent,
+  getEnemy,
   getTurnOwnerId,
   isPlayerTurnOwner,
   getNextTurnOwnerPlayer,
   getPlayerHero,
-  getOpponentHero,
+  getEnemyHero,
   getPlayerHand,
-  getOpponentHand,
+  getEnemyHand,
   getCards,
   getCard,
-  getUnits,
-  getUnitById,
-  getUnitsByUserId,
-  getPlayerUnits,
-  getPlayerUnitIds,
-  getOpponentUnits,
-  getOpponentUnitIds,
-  getUnitFriends,
-  getUnitFriendIds,
-  isUnitFriend,
-  isUnitHasEffect,
   getAllAvailableForAttackTargetIds,
   isTargetAvailableForAttack,
   getRawUnitSource,
-  getDeadOpponentUnits
+  getDeadEnemyUnits
 } from "./battle/index";
 
 export { getAvailableTargets } from "./targets";

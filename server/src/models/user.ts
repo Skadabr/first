@@ -20,16 +20,16 @@ export interface UserJSON {
   _id: string;
   name: string;
   email: string;
-  socket_id: string;
+  socketId: string;
   status: UserStatusType;
   rate: number;
 }
 
 interface Gamer {
-  opponent_id: ObjectId;
+  opponentId: ObjectId;
   turn: boolean;
   money: number;
-  current_money: number;
+  currentMoney: number;
   health: number;
 }
 
@@ -56,11 +56,11 @@ export default function UserModel({ logger, mongoose }) {
       unique: true,
       validate: [{ isAsync: false, validator: isEmail, msg: "Invalid email" }]
     },
-    password_hash: {
+    passwordHash: {
       type: String,
       required: true
     },
-    socket_id: String,
+    socketId: String,
     status: {
       type: Number,
       enum: [UserStatusType.Peace, UserStatusType.Ready, UserStatusType.Fight],
@@ -76,17 +76,17 @@ export default function UserModel({ logger, mongoose }) {
 
   Object.assign(schema.methods, {
     toJSON(): UserJSON {
-      const { _id, name, email, status, socket_id, rate } = this;
-      return { _id: _id.toString(), name, email, status, socket_id, rate };
+      const { _id, name, email, status, socketId, rate } = this;
+      return { _id: _id.toString(), name, email, status, socketId, rate };
     },
 
     async setPassword(password) {
       if (password.length < 8) throw new TypeError("Password to short");
-      this.password_hash = await bcrypt.hash(password, 8);
+      this.passwordHash = await bcrypt.hash(password, 8);
     },
 
     comparePassword(password) {
-      return bcrypt.compare(password, this.password_hash);
+      return bcrypt.compare(password, this.passwordHash);
     },
 
     generateJWT() {
@@ -100,7 +100,7 @@ export default function UserModel({ logger, mongoose }) {
     },
 
     async onDisconnect() {
-      this.socket_id = null;
+      this.socketId = null;
       await this.save();
     },
 
@@ -122,7 +122,7 @@ export default function UserModel({ logger, mongoose }) {
       return user.save().then();
     },
 
-    acquireOpponent(user) {
+    acquireEnemy(user) {
       return this.findOneAndUpdate(
         { status: UserStatusType.Ready, name: { $ne: user.name } },
         { status: UserStatusType.Fight },
@@ -131,7 +131,7 @@ export default function UserModel({ logger, mongoose }) {
     },
 
     getOnlineUsers() {
-      return this.find({ socket_id: { $ne: null } }).then(users =>
+      return this.find({ socketId: { $ne: null } }).then(users =>
         users.map(({ name, status }) => ({ name, status }))
       );
     }

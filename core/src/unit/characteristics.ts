@@ -1,5 +1,5 @@
 import { increaseMoves, taunt, tauntDisabler } from "./effects/fabric";
-import { EffectImpact, EffectScope } from "../index";
+import { EffectApplicabilityStage, EffectTargetingScope } from "../index";
 import { UnitTypes } from "../index";
 
 export default {
@@ -8,7 +8,7 @@ export default {
     name: "Pawn",
     cost: 1,
     health: 6,
-    damage: 1,
+    attack: 1,
     moves: 0,
     availability: 0,
     effects: [increaseMoves(1)]
@@ -19,7 +19,7 @@ export default {
     name: "Officer",
     cost: 2,
     health: 6,
-    damage: 2,
+    attack: 2,
     moves: 0,
     availability: 0,
     effects: [taunt()]
@@ -30,7 +30,7 @@ export default {
     name: "Horse",
     cost: 3,
     health: 5,
-    damage: 3,
+    attack: 3,
     moves: 0,
     availability: 0,
     effects: [tauntDisabler()]

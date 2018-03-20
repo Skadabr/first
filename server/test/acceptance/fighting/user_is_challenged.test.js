@@ -70,7 +70,7 @@ describe("fighting: when user was challenged", function() {
         await this.other.page.waitForSelector("button#turn:not([disabled])");
       });
 
-      it("user see that opponent receive damage", async function() {
+      it("user see that opponent receive attack", async function() {
         const health = await this.page.$eval(
           "#opponent_game_stats",
           el => el.dataset.health
@@ -78,7 +78,7 @@ describe("fighting: when user was challenged", function() {
         expect(health).to.be.equal("8");
       });
 
-      it("opponent see that he receive damage", async function() {
+      it("opponent see that he receive attack", async function() {
         const health = await this.other.page.$eval(
           "#my_game_stats",
           el => el.dataset.health

@@ -22,8 +22,8 @@ export default class ChatController {
     const {battle, user} = this.ws;
     if (!battle) return;
 
-    const opponent = await battle.getOpponentOf(user._id);
-    this.ws.to(opponent.socket_id).emit(SEND_MESSAGE, data);
+    const opponent = await battle.getEnemyOf(user._id);
+    this.ws.to(opponent.socketId).emit(SEND_MESSAGE, data);
     return opponent;
   }
 

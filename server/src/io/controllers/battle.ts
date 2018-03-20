@@ -44,10 +44,10 @@ const {
   getCard,
   getPlayer,
   getPlayerUnitIds,
-  getOpponentUnitIds,
+  getEnemyUnitIds,
   getAllAvailableTargetIds,
   getRawUnitSource,
-  getDeadOpponentUnits
+  getDeadEnemyUnits
 } = selectors;
 //
 // ============ controller ============
@@ -71,7 +71,7 @@ export default class BattleController {
   @bind
   public async tryCreateBattle() {
     const { ws, User } = this;
-    const opponent = await User.acquireOpponent(ws.user);
+    const opponent = await User.acquireEnemy(ws.user);
     if (!opponent) {
       await this._setUserReady(ws.user);
       return;
@@ -82,7 +82,7 @@ export default class BattleController {
 
     battle.updateState(store.getState().battle);
 
-    this._send(BATTLE_REQUEST, opponent.socket_id, {
+    this._send(BATTLE_REQUEST, opponent.socketId, {
       data: store.getState().battle
     });
   }
@@ -91,10 +91,10 @@ export default class BattleController {
   // ============ addUnit ============
   //
 
-  public addUnit = async ({ card_id, position }, cb) => {
+  public addUnit = async ({ cardId, position }, cb) => {
     const { store, battle, opponent } = this.ws;
 
-    const card = getCard(store.getState(), card_id);
+    const card = getCard(store.getState(), cardId);
     const player = getPlayer(store.getState());
 
     const { error } = validateAddUnitParams(card, player, position);
@@ -106,7 +106,7 @@ export default class BattleController {
 
     battle.updateState(store.getState().battle);
 
-    this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
+    this._send(BATTLE_REQUEST, opponent.socketId, { data: battle.toJSON() });
   };
 
   //
@@ -121,26 +121,26 @@ export default class BattleController {
 
     if (!isCurrentUserTurnOwner(state)) return;
 
-    getPlayerUnitIds(store.getState()).forEach(unit_id => {
-      store.dispatch(unitSetMoves(unit_id, 0));
-      store.dispatch(unitSetAvailability(unit_id, 1));
+    getPlayerUnitIds(store.getState()).forEach(unitId => {
+      store.dispatch(unitSetMoves(unitId, 0));
+      store.dispatch(unitSetAvailability(unitId, 1));
     });
-    getOpponentUnitIds(store.getState()).forEach(unit_id => {
-      store.dispatch(unitSetMoves(unit_id, 1));
-      store.dispatch(unitSetAvailability(unit_id, 0));
+    getEnemyUnitIds(store.getState()).forEach(unitId => {
+      store.dispatch(unitSetMoves(unitId, 1));
+      store.dispatch(unitSetAvailability(unitId, 0));
     });
     store.dispatch(playerAdjustMoney(turnOwner));
     store.dispatch(battleNextTurn());
 
     battle.updateState(store.getState().battle);
-    this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
+    this._send(BATTLE_REQUEST, opponent.socketId, { data: battle.toJSON() });
   };
 
   //
   // ============ attack ============
   //
 
-  public attack = async ({ unit_id, target_id }) => {
+  public attack = async ({ unitId, targetId }) => {
     const { store, battle, opponent } = this.ws;
     const { dispatch, getState } = store;
     const state = getState();
@@ -148,23 +148,23 @@ export default class BattleController {
     const turnOwner = getTurnOwner(state);
     if (!isCurrentUserTurnOwner(state)) return;
 
-    const targetIds = getAllAvailableTargetIds(unit_id, state);
+    const targetIds = getAllAvailableTargetIds(unitId, state);
 
-    if (!targetIds.includes(target_id)) return;
+    if (!targetIds.includes(targetId)) return;
 
-    const rawUnit = getRawUnitSource(unit_id, target_id, state);
+    const rawUnit = getRawUnitSource(unitId, targetId, state);
 
-    dispatch(unitAttack(target_id, rawUnit.damage));
-    dispatch(unitDecreaseMoves(unit_id, 1));
+    dispatch(unitAttack(targetId, rawUnit.attack));
+    dispatch(unitDecreaseMoves(unitId, 1));
 
-    const deadUnits = getDeadOpponentUnits(getState());
+    const deadUnits = getDeadEnemyUnits(getState());
 
     deadUnits.forEach(unit => {
-      dispatch(playerRemoveUnit(unit._id, unit.owner_id));
+      dispatch(playerRemoveUnit(unit._id, unit.ownerId));
     });
 
     battle.updateState(getState().battle);
-    this._send(BATTLE_REQUEST, opponent.socket_id, { data: battle.toJSON() });
+    this._send(BATTLE_REQUEST, opponent.socketId, { data: battle.toJSON() });
   };
 
   //
@@ -192,9 +192,9 @@ export default class BattleController {
     return battle;
   }
 
-  private async _createDeck(user_id, opponent_id, store) {
-    user_id = user_id.toString();
-    opponent_id = opponent_id.toString();
+  private async _createDeck(userId, opponentId, store) {
+    userId = userId.toString();
+    opponentId = opponentId.toString();
     // let cards: any[] = (await new Promise(ok =>
     //   this.ws.emit(SELECT_CARDS_FOR_DECK, createRandomCards(DECK_INIT_SIZE), ok)
     // )) as any;
@@ -203,10 +203,10 @@ export default class BattleController {
     // }
     // store.dispatch(playerAddCards(cards));
     store.dispatch(
-      playerAddCards(user_id.toString(), createRandomCards(3, user_id))
+      playerAddCards(userId.toString(), createRandomCards(3, userId))
     );
     store.dispatch(
-      playerAddCards(opponent_id.toString(), createRandomCards(3, opponent_id))
+      playerAddCards(opponentId.toString(), createRandomCards(3, opponentId))
     );
   }
 
@@ -214,12 +214,12 @@ export default class BattleController {
     this._broadcast(USERS_UPSERT, { name, status });
   }
 
-  private _send(event, opponent_sid, ...args) {
+  private _send(event, opponentSid, ...args) {
     this.ws.emit(event, ...args);
-    this.ws.to(opponent_sid).emit(event, ...args);
+    this.ws.to(opponentSid).emit(event, ...args);
   }
 
-  private _sendWithCallBack(event, opponent_sid, ...args) {
+  private _sendWithCallBack(event, opponentSid, ...args) {
     const cb = args.pop();
     this.ws.emit(event, ...args);
     cb(...args);

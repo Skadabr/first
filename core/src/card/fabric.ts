@@ -2,30 +2,30 @@ import { UnitTypes } from "../index";
 import { generateID } from "../utils";
 import { createUnit } from "../unit/index";
 
-export function createCard(type: UnitTypes, owner_id) {
+export function createCard(type: UnitTypes, ownerId) {
   switch (type) {
     case UnitTypes.Pawn:
       return {
         type,
-        owner_id,
+        ownerId,
         _id: generateID(),
-        unit: createUnit(type, owner_id)
+        unit: createUnit(type, ownerId)
       };
 
     case UnitTypes.Officer:
       return {
         type,
-        owner_id,
+        ownerId,
         _id: generateID(),
-        unit: createUnit(type, owner_id)
+        unit: createUnit(type, ownerId)
       };
 
     case UnitTypes.Horse:
       return {
         type,
-        owner_id,
+        ownerId,
         _id: generateID(),
-        unit: createUnit(type, owner_id)
+        unit: createUnit(type, ownerId)
       };
   }
 }

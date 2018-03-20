@@ -7,3 +7,19 @@ export function createNumberSequence(n) {
 export function generateID() {
   return Math.random().toString();
 }
+
+export class UnitSet {
+  private units: any[];
+
+  constructor() {
+    this.units = []
+  }
+
+  add(unit) {
+    this.units = [...this.units.filter(unit._id), unit];
+  }
+
+  toArray() {
+    return this.units;
+  }
+}

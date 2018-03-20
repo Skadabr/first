@@ -9,14 +9,14 @@ export default function battleIOMiddleware({ logger, models }) {
   return async (ws, next) => {
     try {
       await getBattle();
-      await getBattleOpponent();
+      await getBattleEnemy();
       createStore();
       await sendBattle();
 
-      ws.use(async ([event_name], next) => {
+      ws.use(async ([eventName], next) => {
         try {
           await getBattle();
-          await getBattleOpponent();
+          await getBattleEnemy();
           createStore();
           next();
         } catch (err) {
@@ -36,9 +36,9 @@ export default function battleIOMiddleware({ logger, models }) {
       ws.battle = await Battle.findBattleByUserId(ws.user._id);
     }
 
-    async function getBattleOpponent() {
+    async function getBattleEnemy() {
       if (!ws.battle) return;
-      ws.opponent = await ws.battle.findOpponentByUserId(ws.user._id);
+      ws.opponent = await ws.battle.findEnemyByUserId(ws.user._id);
     }
 
     function createStore() {
@@ -51,15 +51,15 @@ export default function battleIOMiddleware({ logger, models }) {
     async function sendBattle() {
       if (!ws.battle) return;
 
-      _send(BATTLE_REQUEST, ws.opponent.socket_id, {
+      _send(BATTLE_REQUEST, ws.opponent.socketId, {
         data: ws.battle.toJSON()
       });
       logger.debug(`get battle object for ${ws.user.name}`);
     }
 
-    function _send(event, opponent_sid, ...args) {
+    function _send(event, opponentSid, ...args) {
       ws.emit(event, ...args);
-      ws.to(opponent_sid).emit(event, ...args);
+      ws.to(opponentSid).emit(event, ...args);
     }
   };
 }

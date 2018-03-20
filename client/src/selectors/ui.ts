@@ -1,3 +1,3 @@
-export const getShowBattleChat = state => state.ui.show_battle_chat;
+export const getShowBattleChat = state => state.ui.showBattleChat;
 
-export const isDesktop = state => state.ui.desktop_width >= 992;
+export const isDesktop = state => state.ui.desktopWidth >= 992;

@@ -35,10 +35,10 @@ const {
 const {
   getEffects,
   getUnit,
-  getOpponentUnits,
+  getEnemyUnits,
   getNextTurnOwnerPlayer,
   getAllAvailableTargetIds,
-  getDeadOpponentUnits,
+  getDeadEnemyUnits,
   getRawUnitSource
 } = selectors;
 //
@@ -78,34 +78,34 @@ export function onTurn() {
   };
 }
 
-export function activateUnit(unit_id) {
+export function activateUnit(unitId) {
   return (dispatch, getState) => {
     const state = getState();
-    const targetIds = getAllAvailableTargetIds(unit_id, state);
+    const targetIds = getAllAvailableTargetIds(unitId, state);
     dispatch(availableTargetsUpdate(targetIds));
   };
 }
 
-export function attack(data: { unit_id: string; target_id: string }) {
+export function attack(data: { unitId: string; targetId: string }) {
   return (dispatch, getState) => {
-    const { target_id, unit_id } = data;
+    const { targetId, unitId } = data;
 
-    const rawUnit = getRawUnitSource(unit_id, target_id, getState());
+    const rawUnit = getRawUnitSource(unitId, targetId, getState());
 
-    dispatch(unitAttack(target_id, rawUnit.damage));
-    dispatch(unitDecreaseMoves(unit_id, 1));
+    dispatch(unitAttack(targetId, rawUnit.attack));
+    dispatch(unitDecreaseMoves(unitId, 1));
 
-    const deadUnits = getDeadOpponentUnits(getState());
+    const deadUnits = getDeadEnemyUnits(getState());
 
     deadUnits.forEach(unit => {
-      dispatch(playerRemoveUnit(unit._id, unit.owner_id));
+      dispatch(playerRemoveUnit(unit._id, unit.ownerId));
     });
 
     IO().gameIO.attack(data);
   };
 }
 
-export function disActivateUnit(unit_id) {
+export function disActivateUnit(unitId) {
   return (dispatch, getState) => {
     dispatch(availableTargetsUpdate([]));
   };

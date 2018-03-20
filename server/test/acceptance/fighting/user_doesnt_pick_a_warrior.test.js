@@ -34,7 +34,7 @@ describe("fighting: user click turn button but doesn't pick a warrior", function
     });
   });
 
-  it("other user don't receive a damage", async function() {
+  it("other user don't receive a attack", async function() {
     expect(this.pageData.health).is.equal(USER_HEALTH);
     expect(this.otherPageData.health).is.equal(USER_HEALTH);
   });

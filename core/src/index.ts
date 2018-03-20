@@ -26,16 +26,21 @@ export enum GameStatus {
   Lose,
   Broken
 }
-export enum EffectScope {
-  Global,
-  Local
+
+export enum EffectTargetingScope {
+  Local,
+  AllUnits,
+  AllEnemyUnits,
+  AllEnemyMinions,
+  AllFriendlyUnits,
+  AllFriendlyMinions,
+  OtherFriendlyMinions
 }
-export enum EffectImpact {
-  Availability,
+
+export enum EffectApplicabilityStage {
+  Targeting,
   Attack,
-  Defend,
-  Move,
-  Selection
+  Selection,
 }
 
 export const POSITIONS = 13;
@@ -72,10 +77,10 @@ export class Battle extends EventEmitter {
   //
   // NOTE: bad name ???
   //
-  public playCard(card_id, position) {
+  public playCard(cardId, position) {
     const state = this.state;
 
-    const card = selectors.getCard(state, card_id);
+    const card = selectors.getCard(state, cardId);
     const player = selectors.getPlayer(state);
 
     const { error } = validators.validateAddUnitParams(card, player, position);
@@ -84,44 +89,44 @@ export class Battle extends EventEmitter {
       return this.emit(BATTLE_ERROR, error);
     }
 
-    this.removeCard(card_id);
+    this.removeCard(cardId);
     this.decreaseMoney(player.user._id, card.unit.cost);
     this.addUnit(card.unit, position);
     this.applyBuffsBy(unit);
   }
 
-  public attack({ unit_id, target_id }) {
+  public attack({ unitId, targetId }) {
     const state = this.state;
     if (!selectors.isPlayerTurnOwner(state)) return;
-    if (!selectors.isTargetAvailableForAttack(state, unit_id, target_id))
-      return;
+    if (!selectors.isTargetAvailableForAttack(state, unitId, targetId)) return;
 
-    const rawUnit = selectors.getRawUnitSource(state, unit_id, target_id);
+    const rawUnit = selectors.getRawUnitSource(state, unitId, targetId);
 
-    this.updatePuplicState(actions.unitDecreaseHealth(target_id, rawUnit.damage));
-    this.updatePuplicState(actions.unitDecreaseMoves(unit_id, 1));
+    this.updatePuplicState(
+      actions.unitDecreaseHealth(targetId, rawUnit.attack)
+    );
+    this.updatePuplicState(actions.unitDecreaseMoves(unitId, 1));
 
-    const deadUnits = selectors.getDeadOpponentUnits(state);
+    const deadUnits = selectors.getDeadEnemyUnits(state);
 
     deadUnits.forEach(unit => {
-      this.updatePuplicState(actions.playerRemoveUnit(unit._id, unit.owner_id));
+      this.updatePuplicState(actions.playerRemoveUnit(unit._id, unit.ownerId));
     });
   }
 
   private applyBuffsBy(unit) {}
 
-  private removeCard(card_id) {
-    this.updatePuplicState(actions.playerRemoveCard(card_id));
+  private removeCard(cardId) {
+    this.updatePuplicState(actions.playerRemoveCard(cardId));
   }
 
-  private decreaseMoney(user_id, cost) {
-    this.updatePuplicState(actions.playerDecreseMoney(user_id, cost));
+  private decreaseMoney(userId, cost) {
+    this.updatePuplicState(actions.playerDecreseMoney(userId, cost));
   }
 
   private addUnit(unit, position) {
     this.updatePuplicState(actions.playerAddUnit(unit, position));
   }
-
 
   private get state() {
     return this.store.getState();

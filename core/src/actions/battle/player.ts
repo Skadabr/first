@@ -24,7 +24,7 @@ export default function playerReducer(state = EMPTY as any, action) {
     case PLAYER_ADD_UNIT: {
       const { unit, position } = action.payload;
 
-      if (unit.owner_id !== state.user._id) return state;
+      if (unit.ownerId !== state.user._id) return state;
 
       //const units = [...actions.units, unit];
       const units = adjustUnitsOnAdd(state.units, unit, position);
@@ -32,12 +32,12 @@ export default function playerReducer(state = EMPTY as any, action) {
     }
 
     case PLAYER_REMOVE_UNIT: {
-      const {unit_id, owner_id} = action.payload;
+      const {unitId, ownerId} = action.payload;
 
-      if (owner_id !== state.user._id) return state;
+      if (ownerId !== state.user._id) return state;
 
-      const pivot = state.units.find(u => u._id === unit_id).position;
-      const units = state.units.filter(u => u._id !== unit_id);
+      const pivot = state.units.find(u => u._id === unitId).position;
+      const units = state.units.filter(u => u._id !== unitId);
       const adjustedUnits = adjustUnitsOnRemove(units, pivot);
 
       return { ...state, units: adjustedUnits };
@@ -45,7 +45,7 @@ export default function playerReducer(state = EMPTY as any, action) {
 
     case PLAYER_ADD_CARDS: {
       const cards = action.payload.filter(
-        ({ owner_id }) => owner_id === state.user._id
+        ({ ownerId }) => ownerId === state.user._id
       );
       return {
         ...state,
@@ -54,32 +54,32 @@ export default function playerReducer(state = EMPTY as any, action) {
     }
 
     case PLAYER_REMOVE_CARD: {
-      const { card_id } = action.payload;
+      const { cardId } = action.payload;
       return {
         ...state,
-        hand: state.hand.filter(c => c._id !== card_id)
+        hand: state.hand.filter(c => c._id !== cardId)
       };
     }
 
     case PLAYER_DECREASE_MONEY: {
-      const { player_user_id, cost } = action.payload;
+      const { playerUserId, cost } = action.payload;
 
-      if (state.user._id !== player_user_id) return state;
+      if (state.user._id !== playerUserId) return state;
       if (state.money < cost) return state;
 
       return { ...state, money: state.money - cost };
     }
 
     case PLAYER_ADJUST_MONEY: {
-      const { player_user_id } = action.payload;
+      const { playerUserId } = action.payload;
 
-      if (state.user._id !== player_user_id) return state;
+      if (state.user._id !== playerUserId) return state;
 
-      const pocket_size =
-        state.pocket_size < 10 ? state.pocket_size + 1 : state.pocket_size;
-      const money = pocket_size;
+      const pocketSize =
+        state.pocketSize < 10 ? state.pocketSize + 1 : state.pocketSize;
+      const money = pocketSize;
 
-      return { ...state, money, pocket_size };
+      return { ...state, money, pocketSize };
     }
 
     default:
@@ -92,12 +92,12 @@ export default function playerReducer(state = EMPTY as any, action) {
   }
 }
 
-export function playerAddCards(user_id, cards) {
+export function playerAddCards(userId, cards) {
   return { type: PLAYER_ADD_CARDS, payload: cards };
 }
 
-export function playerRemoveCard(card_id) {
-  return { type: PLAYER_REMOVE_CARD, payload: { card_id } };
+export function playerRemoveCard(cardId) {
+  return { type: PLAYER_REMOVE_CARD, payload: { cardId } };
 }
 
 export function playerAddUnit(unit, position) {
@@ -107,24 +107,24 @@ export function playerAddUnit(unit, position) {
   };
 }
 
-export function playerRemoveUnit(unit_id, owner_id) {
+export function playerRemoveUnit(unitId, ownerId) {
   return {
     type: PLAYER_REMOVE_UNIT,
-    payload: { unit_id, owner_id },
+    payload: { unitId, ownerId },
   };
 }
 
-export function playerDecreseMoney(player_user_id, cost) {
+export function playerDecreseMoney(playerUserId, cost) {
   return {
     type: PLAYER_DECREASE_MONEY,
-    payload: { player_user_id, cost }
+    payload: { playerUserId, cost }
   };
 }
 
-export function playerAdjustMoney(player_user_id) {
+export function playerAdjustMoney(playerUserId) {
   return {
     type: PLAYER_ADJUST_MONEY,
-    payload: { player_user_id }
+    payload: { playerUserId }
   };
 }
 

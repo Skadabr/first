@@ -17,7 +17,7 @@ export function login(creadentials) {
     if (error) return { error };
 
     setAuthHeader(token);
-    localStorage.user_jwt = token;
+    localStorage.userJwt = token;
 
     const resp = await api.user.user();
 
@@ -35,7 +35,7 @@ export function logout() {
     const io = IO();
     io && io();
     setAuthHeader();
-    localStorage.removeItem("user_jwt");
+    localStorage.removeItem("userJwt");
     dispatch({ type: CLEAN_STATE });
   };
 }

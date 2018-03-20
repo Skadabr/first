@@ -2,7 +2,7 @@
 
 // export default class Card extends React.PureComponent<any> {
 //   render() {
-//     const {active, healt, damage, cost} = this.props;
+//     const {active, healt, attack, cost} = this.props;
 //     return (
 //       <div>
 

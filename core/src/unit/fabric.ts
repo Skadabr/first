@@ -2,15 +2,15 @@ import { generateID } from "../utils";
 import { UnitTypes } from "../index";
 import { characteristics } from "./index";
 
-export default function createUnit(type: UnitTypes, owner_id) {
-  const unit_id = generateID();
+export default function createUnit(type: UnitTypes, ownerId) {
+  const unitId = generateID();
   const charachteristic = characteristics[type] as any;
 
   return {
     type,
-    _id: unit_id,
-    owner_id,
+    _id: unitId,
+    ownerId,
     ...charachteristic,
-    effects: charachteristic.effects.map(eff => ({ ...eff, unit_id }))
+    effects: charachteristic.effects.map(eff => ({ ...eff, unitId }))
   };
 }

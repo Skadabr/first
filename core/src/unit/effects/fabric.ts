@@ -7,46 +7,46 @@ import {
 } from "./index";
 
 import { generateID } from "../../utils";
-import { EffectScope, EffectImpact } from "../../index";
+import { EffectTargetingScope, EffectApplicabilityStage } from "../../index";
 
 export const taunt = () => ({
   _id: generateID(),
   type: TAUNT,
-  scope: EffectScope.Global,
-  impact: EffectImpact.Availability,
+  scope: EffectTargetingScope.Global,
+  impact: EffectApplicabilityStage.Availability,
   priority: 5
 });
 
 export const tauntDisabler = () => ({
   _id: generateID(),
   type: TAUNT_DISABLER,
-  scope: EffectScope.Global,
-  impact: EffectImpact.Availability,
+  scope: EffectTargetingScope.Global,
+  impact: EffectApplicabilityStage.Availability,
   priority: 6
 });
 
 export const increaseMoves = amount => ({
   _id: generateID(),
   type: INCREASE_MOVES,
-  scope: EffectScope.Local,
-  impact: EffectImpact.Move,
+  scope: EffectTargetingScope.Local,
+  impact: EffectApplicabilityStage.Move,
   priority: 5
 });
 
-export const increaseAttackToFrieands = damage => ({
+export const increaseAttackToFrieands = attack => ({
   _id: generateID(),
   type: INCREASE_ATTACK_TO_FRIENDS,
-  scope: EffectScope.Global,
-  impact: EffectImpact.Attack,
+  scope: EffectTargetingScope.Global,
+  impact: EffectApplicabilityStage.Attack,
   priority: 5,
-  payload: { damage }
+  payload: { attack }
 });
 
 export const increaseHealthToFriends = health => ({
   _id: generateID(),
   type: INCREASE_HEALTH_TO_FRIENDS,
-  scope: EffectScope.Global,
-  impact: EffectImpact.Attack,
+  scope: EffectTargetingScope.Global,
+  impact: EffectApplicabilityStage.Attack,
   priority: 5,
   payload: { health }
 });

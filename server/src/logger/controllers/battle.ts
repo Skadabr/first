@@ -4,8 +4,8 @@ import { getErrorMessage } from "../../utils/index";
 export function _newBattleLog(err, res, user, opponent) {
   if (err) return logger.error(getErrorMessage(err));
   logger.debug(
-    `io:game - new battle between ${user.name}(${user.socket_id}) and ` +
-      `${opponent.name}(${opponent.socket_id})`
+    `io:game - new battle between ${user.name}(${user.socketId}) and ` +
+      `${opponent.name}(${opponent.socketId})`
   );
 }
 

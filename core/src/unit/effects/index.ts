@@ -1,5 +1,5 @@
 import { generateID } from "../../utils";
-import { EffectScope, EffectImpact } from "../../index";
+import { EffectTargetingScope, EffectApplicabilityStage } from "../../index";
 //
 // actions
 //
@@ -14,7 +14,7 @@ import {
 //
 import {
   getUnitFriendIds,
-  getOpponentUnits,
+  getEnemyUnits,
   getPlayerUnitIds,
   getPlayerUnits,
   isUnitFriend,
@@ -39,7 +39,7 @@ export const INCREASE_HEALTH_TO_FRIENDS = "INCREASE_HEALTH_TO_FRIENDS";
 //
 
 function applyEffect(target, effect) {
-  const state = effect.scope === EffectScope.Global ? this : undefined;
+  const state = effect.scope === EffectTargetingScope.Global ? this : undefined;
 
   switch (effect.type) {
     case TAUNT:
@@ -70,11 +70,11 @@ function increseAttackHandler(effect, target) { }
 //
 
 function tauntHandler(effect, target, state) {
-  if (effect.unit_id === target._id) {
+  if (effect.unitId === target._id) {
     return { ...target, availability: 1 };
   }
   if (
-    isUnitFriend(state, { unit_id: effect.unit_id, target_id: target._id }) &&
+    isUnitFriend(state, { unitId: effect.unitId, targetId: target._id }) &&
     !isUnitHasEffect(state, target._id, effect.type)
   ) {
     return { ...target, availability: 0 };
@@ -88,7 +88,7 @@ function tauntHandler(effect, target, state) {
 
 function tauntDisablerHandler(effect, target, state) {
   if (
-    !isUnitFriend(state, { unit_id: effect.unit_id, target_id: target._id })
+    !isUnitFriend(state, { unitId: effect.unitId, targetId: target._id })
   ) {
     return { ...target, availability: 1 };
   }

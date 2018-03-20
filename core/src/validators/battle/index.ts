@@ -10,8 +10,8 @@ export function validateAddUnitParams(card, player, position) {
   }
 
   if (
-    player.user._id !== card.owner_id ||
-    player.user._id !== card.unit.owner_id
+    player.user._id !== card.ownerId ||
+    player.user._id !== card.unit.ownerId
   ) {
     return {
       error: {

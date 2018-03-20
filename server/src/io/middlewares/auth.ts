@@ -13,21 +13,21 @@ export default function authIOMiddleware({ logger, models }) {
       const { name } = jwt.verify(handshake.query.token, JWT_SECRET);
       const user = await User.findOneAndUpdate(
         { name },
-        { socket_id: id },
+        { socketId: id },
         { new: true }
       );
       if (user) {
         logger.debug(
           `io:auth - authenticate new conn(${ws.nsp.name}). User "${
             user.name
-          }"-"${id} aka ${user.socket_id}" is coming`
+          }"-"${id} aka ${user.socketId}" is coming`
         );
         ws.user = user;
       }
-      ws.use(async ([event_name], next) => {
-        if (ESCAPE_AUTH.includes(event_name)) return next();
+      ws.use(async ([eventName], next) => {
+        if (ESCAPE_AUTH.includes(eventName)) return next();
         try {
-          ws.user = await User.findOne({ name, socket_id: id });
+          ws.user = await User.findOne({ name, socketId: id });
           next();
         } catch (err) {
           next(err);
