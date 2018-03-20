@@ -1,6 +1,4 @@
 import { CLEAN_STATE } from "../index";
-import battleReducer from "./battle";
-import availableTargetsReducer from "./targets";
 
 const EMPTY = {};
 
@@ -15,7 +13,7 @@ export {
 export {
   unitActivate,
   unitDisActivate,
-  unitAttack,
+  unitDecreaseHealth,
   unitDecreaseAvailability,
   unitDecreaseMoves,
   unitIncreaseMoves,
@@ -28,21 +26,6 @@ export {
   default as battleReducer
 } from "./battle/index";
 
-export {
-  userAdd,
-  userDecreaseRate,
-  userIncreaseRate,
-  userUpdateStatus,
-  default as userReducer
-} from "../../../client/src/actions/user";
-
-export {
-  loadUsers,
-  usersUpsert,
-  usersLoad,
-  usersRemove,
-  default as usersReducer
-} from "../../../client/src/actions/users";
 
 export {
   availableTargetsUpdate,

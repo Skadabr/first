@@ -40,10 +40,10 @@
 //  }
 //}
 //
-//function mapStateToProps(state) {
+//function mapStateToProps(actions) {
 //  return {
-//    messages: chatMessagesSelector(state),
-//    name: userInfoSelector(state).name
+//    messages: chatMessagesSelector(actions),
+//    name: userInfoSelector(actions).name
 //  };
 //}
 //

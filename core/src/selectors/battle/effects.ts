@@ -1,5 +1,5 @@
 import { EffectScope, EffectImpact } from "../../index";
-import { getUnit, getUnits, getPlayerUnits, getOpponentUnits } from "./index";
+import { getUnitById, getUnits, getPlayerUnits, getOpponentUnits } from "./index";
 
 //
 // ============ general effects selectors ============
@@ -16,7 +16,7 @@ export const getAllEffects = (state, owner_id) => {
   return effects;
 };
 
-export const getEffects = (state, unit_id) => getUnit(state, unit_id).effects;
+export const getEffects = (state, unit_id) => getUnitById(state, unit_id).effects;
 
 export const getFilteredEffects = (
   state,

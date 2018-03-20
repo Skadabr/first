@@ -1,5 +1,4 @@
 import { applyEffects } from "../../unit/index";
-import { getUserInfo } from "../../../../client/src/selectors/user";
 import {
   getAllAvailabilityEffects,
   getAllAttackingEffects,
@@ -27,11 +26,11 @@ export const getOpponent = state =>
 // ============ turn ============
 //
 
-export const getTurnOwner = state => getBattle(state).turnOwner;
+export const getTurnOwnerId = state => getBattle(state).turnOwner;
 
-export const isCurrentUserTurnOwner = state => {
-  const turnOwner = getTurnOwner(state);
-  const _id = getUserInfo(state)._id;
+export const isPlayerTurnOwner = state => {
+  const turnOwner = getTurnOwnerId(state);
+  const _id = state.user._id;
   return turnOwner === _id;
 };
 
@@ -43,9 +42,13 @@ export const getNextTurnOwnerPlayer = state => {
 //
 // ============ hero ============
 
-export const getPlayerHero = state => getPlayer(state).hero;
+export const getPlayerHero = state => {
+  const hero = state.units.find(u => u.hero && u.owner_id === state.user._id);
+};
 
-export const getOpponentHero = state => getOpponent(state).hero;
+export const getOpponentHero = state => {
+  const hero = state.units.find(u => u.hero && u.owner_id === state.user._id);
+};
 
 //
 // ============ hand/card ============
@@ -62,38 +65,45 @@ export const getCard = (state, id) => getCards(state).find(c => c._id === id);
 //
 // ============ units ============
 
-export const getUnits = state =>
-  getPlayers(state).reduce((units, p) => [...units, ...p.units], []);
-export const getUnit = (state, id) => {
-  const units = getUnits(state);
-  const unit = units.find(unit => unit._id === id);
+export const getUnits = state => state.units;
+
+export const getUnitById = (state, id) => {
+  const unit = getUnits(state).find(({ _id }) => _id === id);
   return unit;
 };
 
-export const getUnitsByUserId = (state, user_id) =>
-  getPlayerByUserId(state, user_id).units;
+export const getUnitsByUserId = (state, user_id) => {
+  const units = getUnits(state).filter(u => u.owner_id === user_id);
+  return units;
+};
 
-export const getPlayerUnits = state => getPlayer(state).units;
+export const getPlayerUnits = state => getUnitsByUserId(state, state.user._id);
 export const getPlayerUnitIds = state =>
-  getPlayerUnits(state).map(unit => unit._id);
+  getPlayerUnits(state).map(({ _id }) => _id);
 
-export const getOpponentUnits = state => getOpponent(state).units;
+export const getOpponentUnits = state => {
+  const users = getUnits(state).filter(({ _id }) => _id !== state.user._id);
+  return users;
+};
+
 export const getOpponentUnitIds = state =>
-  getOpponentUnits(state).map(unit => unit._id);
+  getOpponentUnits(state).map(({ _id }) => _id);
+
 
 export const getUnitFriends = (state, unit_id) => {
-  const unitOwnerId = getUnit(state, unit_id).owner_id;
+  const unitOwnerId = getUnitById(state, unit_id).owner_id;
   return getUnitsByUserId(state, unitOwnerId).filter(
     unit => unit._id !== unit_id
   );
 };
+
 export const getUnitFriendIds = (state, unit_id) =>
   getUnitFriends(state, unit_id).map(unit => unit._id);
 export const isUnitFriend = (state, { unit_id, target_id }) =>
   getUnitFriendIds(state, unit_id).includes(target_id);
 
 export const isUnitHasEffect = (state, unit_id, effect_type) =>
-  getUnit(state, unit_id)
+  getUnitById(state, unit_id)
     .effects.map(eff => eff.type)
     .includes(effect_type);
 
@@ -107,17 +117,23 @@ export function getAllAvailableForAttackTargetIds(state, source_id) {
   return targetIds.filter(target_id =>
     isTargetAvailableForAttack(state, source_id, target_id)
   );
+
+  function isTargetAvailableForAttack(state, source_id, target_id) {
+    const target = getUnitById(state, target_id);
+    const effects = getAllAvailabilityEffects(state, source_id, target_id);
+    const rawTarget = applyEffects(effects, target, state);
+    return isUnitAvailable(rawTarget);
+  }
 }
 
 export function isTargetAvailableForAttack(state, source_id, target_id) {
-  const target = getUnit(state, target_id);
-  const effects = getAllAvailabilityEffects(state, source_id, target_id);
-  const rawTarget = applyEffects(effects, target, state);
-  return isUnitAvailable(rawTarget);
+  return getAllAvailableForAttackTargetIds(state, source_id).includes(
+    target_id
+  );
 }
 
 export function getRawUnitSource(state, source_id, target_id) {
-  const source = getUnit(state, source_id);
+  const source = getUnitById(state, source_id);
 
   const effects = getAllAttackingEffects(state, source_id, target_id);
   const rawSource = applyEffects(effects, source, state);
@@ -131,7 +147,7 @@ export function getDeadOpponentUnits(state) {
   return targetIds.filter(target => isTargetDead(target._id));
 
   function isTargetDead(target_id) {
-    const target = getUnit(state, target_id);
+    const target = getUnitById(state, target_id);
     const effects = getAllSelectionEffects(state, target_id);
     const rawTarget = applyEffects(effects, target, state);
     return isUnitDead(rawTarget);

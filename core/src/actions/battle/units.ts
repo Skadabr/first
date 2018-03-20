@@ -1,5 +1,5 @@
 import unitReducer, { unitDecreaseAvailability } from "./unit";
-import { UNITS_REMOVE } from ".";
+import { UNITS_REMOVE } from "./index";
 
 const EMPTY = {};
 

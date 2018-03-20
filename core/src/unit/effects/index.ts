@@ -8,7 +8,7 @@ import {
   unitDisActivate,
   unitDecreaseAvailability,
   unitIncreaseMoves
-} from "../../state/battle/unit";
+} from "../../actions/battle/unit";
 //
 // selectors
 //

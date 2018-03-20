@@ -1,5 +1,5 @@
-import { UserStatusType } from "../index";
-import { UserState } from "../state/user";
+import { UserStatusType } from "../../../core/src/index";
+import { UserState } from "../actions/user";
 
 export const getUserInfo = state => {
   const { _id, name, status, email, rate } = state.user;

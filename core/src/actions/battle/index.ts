@@ -20,10 +20,10 @@ export const UNIT_SET_AVAILABILITY = "UNIT_SET_AVAILABILITY";
 export const UNIT_SET_MOVES = "UNIT_SET_MOVES";
 export const UNIT_DECREASE_MOVES = "UNIT_DECREASE_MOVES";
 export const UNIT_INCREASE_MOVES = "UNIT_INCREASE_MOVES";
+export const UNIT_DECREASE_HEALTH = "UNIT_DECREASE_HEALTH";
+export const UNIT_INCREASE_HEALTH = "UNIT_INCREASE_HEALTH";
 
 export const UNITS_REMOVE = "UNITS_REMOVE";
-
-export const ATTACK = "ATTACK";
 
 //
 // ============ reducers ============

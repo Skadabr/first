@@ -6,7 +6,7 @@ import { shallow } from "enzyme";
 import WarriorTypes from "../../../src/warrior_types";
 import { GameBoard } from "../../../src/components/game/board/GameBoard";
 import WarriorList from "../../../src/components/game/board/WarriorList";
-import {  ME, OPPONENT } from "../../../src/state/game.state";
+import {  ME, OPPONENT } from "../../../src/actions/game.actions";
 
 const me = {
   name: "Oleg",

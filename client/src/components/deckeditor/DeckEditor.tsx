@@ -11,12 +11,12 @@
 //export default class DeckEditor extends React.Component<any, DeckEditorState> {
 //  constructor(props) {
 //    super(props);
-//    this.state = {
+//    this.actions = {
 //      deck: props.deck.map(card => ({ ...card, active: true }))
 //    };
 //  }
 //  render() {
-//    const { deck } = this.state;
+//    const { deck } = this.actions;
 //    return (
 //      <div>
 //        {deck.map(card => {
@@ -27,9 +27,9 @@
 //  }
 //}
 //
-//function mapStateToProps(state) {
+//function mapStateToProps(actions) {
 //  return {
-//    deck: deckSelector(state)
+//    deck: deckSelector(actions)
 //  };
 //}
 //

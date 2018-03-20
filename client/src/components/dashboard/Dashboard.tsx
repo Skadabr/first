@@ -1,14 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { UserStatusType, selectors } from "core";
+import { UserStatusType } from "core";
 import { readyToFight } from "../../actions/dashboard";
 
 import StatusBadge from "./StatusBadge";
 import OpponentsList from "./OpponentsList";
 import UserInfo from "./UserInfo";
 
-const { getOtherUsers, getUserInfo } = selectors;
+import { getUserInfo } from "../../selectors/user"
+import { getOtherUsers } from "../../selectors/users"
 
 interface PropTypes {
   user: {

@@ -13,8 +13,8 @@ export {
   getPlayerByUserId,
   getPlayer,
   getOpponent,
-  getTurnOwner,
-  isCurrentUserTurnOwner,
+  getTurnOwnerId,
+  isPlayerTurnOwner,
   getNextTurnOwnerPlayer,
   getPlayerHero,
   getOpponentHero,
@@ -23,7 +23,7 @@ export {
   getCards,
   getCard,
   getUnits,
-  getUnit,
+  getUnitById,
   getUnitsByUserId,
   getPlayerUnits,
   getPlayerUnitIds,
@@ -38,8 +38,5 @@ export {
   getRawUnitSource,
   getDeadOpponentUnits
 } from "./battle/index";
-
-export { getUserInfo, isAuthenticated } from "../../../client/src/selectors/user";
-export { getOtherUsers } from "../../../client/src/selectors/users";
 
 export { getAvailableTargets } from "./targets";

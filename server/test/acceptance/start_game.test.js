@@ -27,7 +27,7 @@ describe("start game", function() {
     expect(text).to.be.equal("Email: john@mail.com");
   });
 
-  context("when click on state badge", function() {
+  context("when click on actions badge", function() {
     before(async function() {
       await this.page.click("#user_status_badge.badge-success");
       await this.page.screenshot({ path: "/data/image.png" });
@@ -50,7 +50,7 @@ describe("start game", function() {
       expect(text).to.be.equal("ready");
     });
 
-    context("when another user click on state badge", function() {
+    context("when another user click on actions badge", function() {
       before(async function() {
         this.other.page = await goToPage(this.other.browser, ORIGIN);
         await becomeUser(

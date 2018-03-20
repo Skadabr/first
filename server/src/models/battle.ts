@@ -1,11 +1,12 @@
+///<reference path="../../node_modules/core/lib/index.d.ts"/>
 "use strict";
 
 import { ObjectId } from "mongodb";
 import uniqueValidator from "mongoose-unique-validator";
 import { isEmail, isAlphanumeric } from "validator";
+import { utils } from "core";
 
 import { UnitTypes, POSITIONS } from "core";
-
 
 const { JWT_SECRET } = process.env;
 
@@ -19,26 +20,34 @@ interface User {
   name: string;
 }
 
-interface Hero {
+interface Unit {
+  _id: string;
+  owner_id: string;
+  type: number;
+  hero: boolean;
   health: number;
+  buffed_health: number;
+  damage: number;
+  position: number;
 }
 
-interface Unit {
-  type: number;
-  health: number;
-  position: number;
+interface Effects {
+  _id: string;
+  owner_id: string;
+  type: string;
+  payload: any;
 }
 
 interface Battle {
   turnOwner: ObjectId;
   players: {
     user: User;
-    hero: Hero;
-    units: Unit[];
     hand: any[];
     money: number;
     pocket_size: number;
   }[];
+  units: Unit[];
+  effects: Effects[];
 }
 
 export default function BattleModel({ logger, mongoose }) {
@@ -46,6 +55,8 @@ export default function BattleModel({ logger, mongoose }) {
 
   const EffectSchema = new Schema(
     {
+      _id: String,
+      owner_id: String,
       type: String
     },
     {
@@ -58,6 +69,7 @@ export default function BattleModel({ logger, mongoose }) {
     {
       _id: String,
       owner_id: Schema.ObjectId,
+      hero: Boolean,
       type: {
         type: Number,
         enum: [UnitTypes.Pawn, UnitTypes.Officer],
@@ -71,14 +83,29 @@ export default function BattleModel({ logger, mongoose }) {
           msg: "Health should be bigger than 0"
         }
       },
+      buffed_health: {
+        type: Number,
+        required: true,
+        validate: {
+          validator: h => h > 0,
+          msg: "Buffered Health should be bigger than 0"
+        }
+      },
+      damage: {
+        type: Number,
+        required: true,
+        validate: {
+          validator: h => h > 0,
+          msg: "Buffered Health should be bigger than 0"
+        }
+      },
       position: {
         type: Number,
         validate: {
           validator: val => val > 0 && val < POSITIONS,
           msg: "Position is out of range"
         }
-      },
-      effects: [EffectSchema]
+      }
     },
     {
       _id: false,
@@ -92,7 +119,7 @@ export default function BattleModel({ logger, mongoose }) {
       owner_id: Schema.ObjectId,
       type: {
         type: Number,
-        enum: [UnitTypes.Pawn, UnitTypes.Officer],
+        enum: [UnitTypes.Pawn, UnitTypes.Officer, UnitTypes.Horse],
         required: true
       },
       unit: UnitSchema
@@ -125,17 +152,6 @@ export default function BattleModel({ logger, mongoose }) {
           }
         }
       },
-      units: [UnitSchema],
-      hero: {
-        health: {
-          type: Number,
-          validate: {
-            isAsync: false,
-            validator: h => h >= 0,
-            msg: "Health should be bigger than 0"
-          }
-        }
-      },
       money: {
         type: Number,
         validate: {
@@ -160,8 +176,14 @@ export default function BattleModel({ logger, mongoose }) {
       type: Schema.ObjectId,
       required: true
     },
-    players: [PlayerSchema]
+    players: [PlayerSchema],
+    units: [UnitSchema],
+    effects: [EffectSchema]
   });
+
+  //
+  // ========= methods =========
+  //
 
   Object.assign(BattleSchema.methods, {
     toJSON() {
@@ -178,10 +200,10 @@ export default function BattleModel({ logger, mongoose }) {
         throw new Error(
           `User with id: ${user_id} doesn't participate in this battle`
         );
-      const opponentPlayer =  this.players.find(
+      const opponentPlayer = this.players.find(
         p => p.user._id.toString() !== user_id.toString()
       );
-      return this.model("User").findOne({_id: opponentPlayer.user._id});
+      return this.model("User").findOne({ _id: opponentPlayer.user._id });
     },
 
     nextTurnOwner() {
@@ -195,6 +217,10 @@ export default function BattleModel({ logger, mongoose }) {
     }
   });
 
+  //
+  // ========= static methods =========
+  //
+
   Object.assign(BattleSchema.statics, {
     newBattle(user, opponent) {
       const turnOwner = user._id;
@@ -205,10 +231,6 @@ export default function BattleModel({ logger, mongoose }) {
             socket_id: user.socket_id,
             name: user.name
           },
-          units: [],
-          hero: {
-            health: INIT_HEALTH
-          },
           money: INIT_MONEY,
           pocket_size: INIT_MONEY
         },
@@ -218,15 +240,26 @@ export default function BattleModel({ logger, mongoose }) {
             socket_id: opponent.socket_id,
             name: opponent.name
           },
-          units: [],
-          hero: {
-            health: INIT_HEALTH
-          },
           money: INIT_MONEY,
           pocket_size: INIT_MONEY
         }
       ];
-      return new this({ turnOwner, players });
+      const units = [
+        {
+          _id: utils.generateID(),
+          owner_id: user._id,
+          health: INIT_HEALTH,
+          damage: 1
+        },
+        {
+          _id: utils.generateID(),
+          owner_id: opponent._id,
+          health: INIT_HEALTH,
+          damage: 1
+        }
+      ];
+      const effects = [];
+      return new this({ turnOwner, players, units, effects });
     },
 
     createBattle(user, opponent) {

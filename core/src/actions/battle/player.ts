@@ -13,7 +13,7 @@ import {
   PLAYER_REMOVE_CARD,
   PLAYER_DECREASE_MONEY,
   PLAYER_ADJUST_MONEY
-} from ".";
+} from "./index";
 
 //
 // ============ reducer ============
@@ -26,7 +26,7 @@ export default function playerReducer(state = EMPTY as any, action) {
 
       if (unit.owner_id !== state.user._id) return state;
 
-      //const units = [...state.units, unit];
+      //const units = [...actions.units, unit];
       const units = adjustUnitsOnAdd(state.units, unit, position);
       return { ...state, units };
     }

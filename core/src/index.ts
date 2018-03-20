@@ -4,12 +4,10 @@ import EventEmitter from "eventemitter3";
 
 import * as card from "./card/index";
 import * as unit from "./unit/index";
-import * as state from "./state/index";
+import * as actions from "./actions/index";
 import * as selectors from "./selectors/index";
 import * as validators from "./validators/index";
-import { isTargetAvailableForAttack } from "./selectors/battle";
-
-export { battleReducer } from "./state/index";
+import * as Utils from "./utils";
 
 export enum UserStatusType {
   Peace,
@@ -46,25 +44,21 @@ export const MIDDLE_POSITION = (POSITIONS / 2) | 0;
 
 export const CLEAN_STATE = "CLEAN_STATE";
 
-export function createBattleWithStore(store) {
-  return new Battle(store);
-}
+export const utils = Utils;
 
-export function createBattle(battle, user) {
-  battle = copy(battle);
-  user = copy(user);
-  const store = createStore(state.reducer, { battle, user });
+export function createBattle() {}
 
-  return new Battle(store);
-}
+const BATTLE_EVENT = "event";
+const BATTLE_ERROR = "error";
 
-export const TAKE_CARD = "TAKE_CARD";
-
-class Battle extends EventEmitter {
+export class Battle extends EventEmitter {
   private store: any;
 
-  constructor() {
-    this.store = store;
+  constructor(battle, user) {
+    super();
+    battle = copy(battle);
+    user = copy(user);
+    this.store = createStore(actions.reducer, { battle, user });
   }
 
   public toJSON() {
@@ -75,42 +69,70 @@ class Battle extends EventEmitter {
     };
   }
 
-  getAvailableTargetsByAttacker;
-  applyGlobalFeatures;
+  //
+  // NOTE: bad name ???
+  //
+  public playCard(card_id, position) {
+    const state = this.state;
 
-  public addUnit(card_id) {
-    const { getState, dispatch } = this.store;
-
-    const card = selectors.getCard(getState(), card_id);
-    const player = selectors.getPlayer(getState());
+    const card = selectors.getCard(state, card_id);
+    const player = selectors.getPlayer(state);
 
     const { error } = validators.validateAddUnitParams(card, player, position);
-    return error;
 
-    this.emit(state.playerRemoveCard(card_id));
-    this.emit(state.playerDecreseMoney(player.user._id, card.unit.cost));
-    this.emit(state.playerAddUnit(card.unit, position));
-    // dispatch(state.playerRemoveCard(card_id));
-    // dispatch(state.playerDecreseMoney(player.user._id, card.unit.cost));
-    // dispatch(state.playerAddUnit(card.unit, position));
+    if (error) {
+      return this.emit(BATTLE_ERROR, error);
+    }
+
+    this.removeCard(card_id);
+    this.decreaseMoney(player.user._id, card.unit.cost);
+    this.addUnit(card.unit, position);
+    this.applyBuffsBy(unit);
   }
 
   public attack({ unit_id, target_id }) {
-    const { dispatch, getState } = this.store;
-
-    if (!selectors.isCurrentUserTurnOwner(getState())) return;
+    const state = this.state;
+    if (!selectors.isPlayerTurnOwner(state)) return;
     if (!selectors.isTargetAvailableForAttack(state, unit_id, target_id))
       return;
 
     const rawUnit = selectors.getRawUnitSource(state, unit_id, target_id);
 
-    dispatch(state.unitAttack(target_id, rawUnit.damage));
-    dispatch(state.unitDecreaseMoves(unit_id, 1));
+    this.updatePuplicState(actions.unitDecreaseHealth(target_id, rawUnit.damage));
+    this.updatePuplicState(actions.unitDecreaseMoves(unit_id, 1));
 
-    const deadUnits = selectors.getDeadOpponentUnits(getState());
+    const deadUnits = selectors.getDeadOpponentUnits(state);
 
     deadUnits.forEach(unit => {
-      dispatch(state.playerRemoveUnit(unit._id, unit.owner_id));
+      this.updatePuplicState(actions.playerRemoveUnit(unit._id, unit.owner_id));
     });
+  }
+
+  private applyBuffsBy(unit) {}
+
+  private removeCard(card_id) {
+    this.updatePuplicState(actions.playerRemoveCard(card_id));
+  }
+
+  private decreaseMoney(user_id, cost) {
+    this.updatePuplicState(actions.playerDecreseMoney(user_id, cost));
+  }
+
+  private addUnit(unit, position) {
+    this.updatePuplicState(actions.playerAddUnit(unit, position));
+  }
+
+
+  private get state() {
+    return this.store.getState();
+  }
+
+  private updatePuplicState(action) {
+    this.emit(BATTLE_EVENT, action);
+    this.store.dispatch(action);
+  }
+
+  private updatePrivateState(action) {
+    this.store.dispatch(action);
   }
 }

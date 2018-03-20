@@ -11,13 +11,6 @@ const EMPTY = {};
 // ============ reducer ============
 //
 
-export default function reducer(state = EMPTY as any, action) {
-  return {
-    battle: battleReducer(state.battle, action),
-    user: userReducer(state.user, action)
-  };
-}
-
 export function createStore(battle, user) {
   const store = redux.createStore(
     reducer,
