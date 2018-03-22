@@ -20,6 +20,7 @@
     "source-map-support": "^0.5.3"
   },
   "dependencies": {
+    "fast-deep-equal": "^1.1.0",
     "lodash.flatmap": "^4.5.0",
     "reselect": "^3.0.1",
     "yarn": "^1.5.1"

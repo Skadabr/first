@@ -1,23 +1,33 @@
 export {
-  getAllEffects,
   getEffects,
-  getEffectsFilteredBy,
-  getAllAvailabilityEffects,
-  getAllAttackingEffects,
-  getAllSelectionEffects
+  getEffectsByUnitId,
+  getEffectsByUserId,
+  getEffectsByImpact,
+  filterEffectsByImpact,
+  getUnitEffects,
+  getUnitCounterEffects,
 } from "./battle/effects";
 import {
   getUnits,
   getUnitById,
   getUnitsByUserId,
+  getMinionsByUserId,
+  getHero,
+  getEnemyUnitsByUserId,
+  getEnemyMinionsByUserId,
+  getEnemyHero,
+  getUnitIdsByUserId,
+  getEnemyUnitIdsByUserId,
   getPlayerUnits,
   getPlayerUnitIds,
   getEnemyUnits,
   getEnemyUnitIds,
   getUnitFriends,
-  getUnitFriendIds,
-  isUnitFriend,
-  isUnitHasEffect
+  getUnitsByTargetingScope,
+  getUnitIdsByTargetingScope,
+  isEffectApplicableToUnit,
+  getEffectsApplicableToUnit,
+  getUnitAttackWithAppliedEffects,
 } from "./battle/units";
 export {
   getBattle,
@@ -29,16 +39,16 @@ export {
   getTurnOwnerId,
   isPlayerTurnOwner,
   getNextTurnOwnerPlayer,
-  getPlayerHero,
-  getEnemyHero,
   getPlayerHand,
   getEnemyHand,
   getCards,
   getCard,
-  getAllAvailableForAttackTargetIds,
-  isTargetAvailableForAttack,
-  getRawUnitSource,
-  getDeadEnemyUnits
+  getStateWithAppliedEffects,
 } from "./battle/index";
+
+import {
+  getAllAvailableForAttackTargetIds,
+  isTargetAvailableForAttack
+} from "./battle/targeting";
 
 export { getAvailableTargets } from "./targets";

@@ -1,5 +1,5 @@
 import { generateID } from "../../utils";
-import { EffectTargetingScope, EffectApplicabilityStage } from "../../index";
+import { EffectTargetingScope, EffectImpact } from "../../index";
 //
 // actions
 //

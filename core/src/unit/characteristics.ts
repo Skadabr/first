@@ -1,5 +1,5 @@
 import { increaseMoves, taunt, tauntDisabler } from "./effects/fabric";
-import { EffectApplicabilityStage, EffectTargetingScope } from "../index";
+import { EffectImpact, EffectTargetingScope } from "../index";
 import { UnitTypes } from "../index";
 
 export default {

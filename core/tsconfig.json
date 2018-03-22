@@ -1,17 +1,16 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
     "rootDir": "src",
+    "outDir": "lib",
 
     "experimentalDecorators": true,
     "noImplicitAny": false,
 
     "sourceMap": true,
-    "module": "CommonJS",
     "target": "es6",
     "lib": ["es2017"],
+    "module": "CommonJS",
     "moduleResolution": "Node",
-
     "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true

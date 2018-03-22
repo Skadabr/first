@@ -8,7 +8,8 @@ import {
   UNIT_DECREASE_MOVES,
   UNIT_INCREASE_MOVES,
   UNIT_DECREASE_HEALTH,
-  UNIT_INCREASE_HEALTH
+  UNIT_INCREASE_HEALTH,
+  UNIT_ADD_EFFECT
 } from "./index";
 
 //
@@ -23,9 +24,9 @@ export default function unitReducer(state, { type, payload }) {
       return decrease(state, payload, "health");
 
     case UNIT_ACTIVATE:
-      return update(state, {...payload, active: true},'active');
+      return update(state, { ...payload, active: true }, "active");
     case UNIT_DISACTIVATE:
-      return update(state, {...payload, active: false},'active');
+      return update(state, { ...payload, active: false }, "active");
 
     case UNIT_SET_AVAILABILITY:
       return update(state, payload, "availability");
@@ -40,6 +41,9 @@ export default function unitReducer(state, { type, payload }) {
       return increase(state, payload, "moves");
     case UNIT_DECREASE_MOVES:
       return decrease(state, payload, "moves");
+
+    case UNIT_ADD_EFFECT:
+      return add(state, payload, 'effects');
 
     default:
       return state;
@@ -64,31 +68,31 @@ export function unitDisActivate(unitId) {
   };
 }
 
-export function unitDecreaseHealth(targetId, amount) {
+export function unitDecreaseHealth(targetId, value) {
   return {
     type: UNIT_DECREASE_HEALTH,
-    payload: { targetId, amount }
+    payload: { targetId, value }
   };
 }
 
-export function unitDecreaseAvailability(unitId, amount) {
+export function unitDecreaseAvailability(unitId, value) {
   return {
     type: UNIT_DECREASE_AVAILABILITY,
-    payload: { amount, unitId }
+    payload: { value, unitId }
   };
 }
 
-export function unitDecreaseMoves(unitId, amount) {
+export function unitDecreaseMoves(unitId, value) {
   return {
     type: UNIT_DECREASE_MOVES,
-    payload: { amount, unitId }
+    payload: { value, unitId }
   };
 }
 
-export function unitIncreaseMoves(unitId, amount) {
+export function unitIncreaseMoves(unitId, value) {
   return {
     type: UNIT_INCREASE_MOVES,
-    payload: { amount, unitId }
+    payload: { value, unitId }
   };
 }
 
@@ -106,23 +110,35 @@ export function unitSetAvailability(unitId, availability) {
   };
 }
 
+export function unitAddEffect(unitId, effect) {
+  return {
+    type: UNIT_ADD_EFFECT,
+    payload: { unitId, effect }
+  };
+}
+
 //
 // ========= helpers =========
 //
 
 function increase(state, payload, field) {
-  const { amount, unitId } = payload;
+  const { value, unitId } = payload;
   if (unitId !== state._id) return state;
-  return { ...state, [field]: [field] + amount };
+  return { ...state, [field]: [field] + value };
 }
 
 function decrease(state, payload, field) {
-  const { amount, unitId } = payload;
+  const { value, unitId } = payload;
   if (unitId !== state._id) return state;
-  return { ...state, [field]: state[field] - amount };
+  return { ...state, [field]: state[field] - value };
 }
 
 function update(state, payload, field) {
   if (payload.unitId !== state._id) return state;
   return { ...state, [field]: payload[field] };
+}
+
+function add(state, payload, field) {
+  if (payload.unitId !== state._id) return state;
+  return { ...state, [field]: [...state[field], payload.value] };
 }

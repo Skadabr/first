@@ -8,6 +8,9 @@ import * as actions from "./actions/index";
 import * as selectors from "./selectors/index";
 import * as validators from "./validators/index";
 import * as Utils from "./utils";
+import { getStateWithAppliedEffects } from "./selectors/battle";
+import {getUniqueListOfTradeEffectTypes} from "./selectors/battle/effects";
+import {getTradingFn} from "./actions/trading_rules";
 
 export enum UserStatusType {
   Peace,
@@ -37,10 +40,11 @@ export enum EffectTargetingScope {
   OtherFriendlyMinions
 }
 
-export enum EffectApplicabilityStage {
-  Targeting,
+export enum EffectImpact {
+  Availability,
   Attack,
-  Selection,
+  Health,
+  Trade
 }
 
 export const POSITIONS = 13;
@@ -74,9 +78,6 @@ export class Battle extends EventEmitter {
     };
   }
 
-  //
-  // NOTE: bad name ???
-  //
   public playCard(cardId, position) {
     const state = this.state;
 
@@ -95,23 +96,28 @@ export class Battle extends EventEmitter {
     this.applyBuffsBy(unit);
   }
 
-  public attack({ unitId, targetId }) {
-    const state = this.state;
+  public attack(sourceId, targetId) {
+    const state = getStateWithAppliedEffects(this.state);
+
     if (!selectors.isPlayerTurnOwner(state)) return;
-    if (!selectors.isTargetAvailableForAttack(state, unitId, targetId)) return;
+    if (!selectors.isTargetAvailableForAttack(state, sourceId, targetId))
+      return;
 
-    const rawUnit = selectors.getRawUnitSource(state, unitId, targetId);
+    this.trade(state, sourceId, targetId);
 
-    this.updatePuplicState(
-      actions.unitDecreaseHealth(targetId, rawUnit.attack)
-    );
-    this.updatePuplicState(actions.unitDecreaseMoves(unitId, 1));
+    //const deadUnits = selectors.getDeadEnemyUnits(state);
+    // deadUnits.forEach(unit => {
+    //   this.updatePuplicState(actions.playerRemoveUnit(unit._id, unit.ownerId));
+    // });
+  }
 
-    const deadUnits = selectors.getDeadEnemyUnits(state);
+  private trade(state, sourceId, targetId) {
+    const sourceTradeEffects = getUniqueListOfTradeEffectTypes(state, sourceId);
+    const targetTradeEffects = getUniqueListOfTradeEffectTypes(state, targetId);
 
-    deadUnits.forEach(unit => {
-      this.updatePuplicState(actions.playerRemoveUnit(unit._id, unit.ownerId));
-    });
+    const tradingFn = getTradingFn(sourceTradeEffects, targetTradeEffects);
+
+    const rawSource = tradingFn(state, sourceId, targetId);
   }
 
   private applyBuffsBy(unit) {}
@@ -128,10 +134,6 @@ export class Battle extends EventEmitter {
     this.updatePuplicState(actions.playerAddUnit(unit, position));
   }
 
-  private get state() {
-    return this.store.getState();
-  }
-
   private updatePuplicState(action) {
     this.emit(BATTLE_EVENT, action);
     this.store.dispatch(action);
@@ -139,5 +141,9 @@ export class Battle extends EventEmitter {
 
   private updatePrivateState(action) {
     this.store.dispatch(action);
+  }
+
+  private get state() {
+    return this.store.getState();
   }
 }

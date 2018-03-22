@@ -1,7 +1,5 @@
-import copy from "deep-copy";
-import { EffectApplicabilityStage, EffectTargetingScope } from "../../index";
-import { getEffectsByApplicabilityScope } from "./effects";
-import { UnitSet } from "../../utils";
+import { EffectImpact, EffectTargetingScope } from "../../index";
+import { getEffectsByImpact } from "./effects";
 
 export const getUnits = state => state.units;
 
@@ -10,14 +8,37 @@ export const getUnitById = (state, id) => {
   return unit;
 };
 
+//////////////////////////////////////////////////////////////////
+
 export const getUnitsByUserId = (state, userId) => {
   const units = getUnits(state).filter(u => u.ownerId === userId);
   return units;
 };
 
+export const getMinionsByUserId = (state, userId) => {
+  const minions = getUnitsByUserId(state, userId).filter(({hero}) => !hero);
+  return minions;
+}
+
+export const getHero = (state, userId) => {
+  const hero = getUnitsByUserId(state, userId).filter(({hero}) => hero);
+  return hero;
+};
+
+
 export const getEnemyUnitsByUserId = (state, userId) => {
   const units = getUnits(state).filter(u => u.ownerId !== userId);
   return units;
+};
+
+export const getEnemyMinionsByUserId = (state, userId) => {
+  const minions = getEnemyUnitsByUserId(state, userId).filter(({hero}) => !hero);
+  return minions;
+}
+
+export const getEnemyHero = (state, userId) => {
+  const hero = getUnitsByUserId(state, userId).filter(({hero}) => hero);
+  return hero;
 };
 
 export const getUnitIdsByUserId = (state, userId) =>
@@ -25,6 +46,10 @@ export const getUnitIdsByUserId = (state, userId) =>
 
 export const getEnemyUnitIdsByUserId = (state, userId) =>
   getEnemyUnitsByUserId(state, userId).map(({ _id }) => _id);
+
+
+//////////////////////////////////////////////////////////////////
+
 
 export const getPlayerUnits = state => getUnitsByUserId(state, state.user._id);
 
@@ -47,6 +72,7 @@ export const getUnitFriends = (state, unitId) => {
     ({ _id }) => _id !== unitId
   );
 };
+
 
 export const getUnitsByTargetingScope = (state, sourceId, targetingScope) => {
   switch (targetingScope) {
@@ -94,9 +120,9 @@ export const isEffectApplicableToUnit = (state, eff, unit) => {
 export const getEffectsApplicableToUnit = (
   state,
   unitId,
-  applicabilityScope
+  impact
 ) => {
-  const effs = getEffectsByApplicabilityScope(state, applicabilityScope);
+  const effs = getEffectsByImpact(state, impact);
   const acc = [];
 
   for (const eff of effs)
@@ -110,14 +136,22 @@ export const getUnitAttackWithAppliedEffects = (state, unitId) => {
   const effs = getEffectsApplicableToUnit(
     state,
     unitId,
-    EffectApplicabilityStage.Attack
+    EffectImpact.Attack
   );
 
   const attack = effs.reduce((attack, eff) => {
-    eff.value + attack
+    eff.value + attack;
   }, unit.attack);
 
   return attack;
-
-
 };
+
+export const getUnitHealthWithAppliedEffects = (state, unitId) => {
+  const unit = getUnitById(state, unitId);
+  const effs = getEffectsApplicableToUnit(
+    state,
+    unitId,
+    EffectImpact.Health
+  );
+}
+

@@ -17,6 +17,7 @@ export {
   unitDecreaseAvailability,
   unitDecreaseMoves,
   unitIncreaseMoves,
+  unitAddEffect,
   unitSetMoves,
   unitSetAvailability
 } from "./battle/unit";
