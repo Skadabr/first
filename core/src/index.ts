@@ -8,10 +8,11 @@ import * as actions from "./actions/index";
 import * as selectors from "./selectors/index";
 import * as validators from "./validators/index";
 import * as Utils from "./utils";
-import { getStateWithAppliedEffects } from "./selectors/battle";
-import {getUniqueListOfTradeEffectTypes} from "./selectors/battle/effects";
-import {getTradingFn} from "./unit/trade/index";
-import {unitAddCounterEffects, unitSetHealth} from "./actions/battle/unit";
+import { getUniqueListOfTradeEffectTypes } from "./selectors/battle/effects";
+import { getTradingFn } from "./unit/trade/index";
+import { unitAddCounterEffects, unitSetHealth } from "./actions/battle/unit";
+import { getUnitHealthWithAppliedEffects } from "./selectors/battle/unit";
+import { playerAddUnit, playerDecreseMoney, playerRemoveCard } from "./actions";
 
 export enum UserStatusType {
   Peace,
@@ -94,11 +95,10 @@ export class Battle extends EventEmitter {
     this.removeCard(cardId);
     this.decreaseMoney(player.user._id, card.unit.cost);
     this.addUnit(card.unit, position);
-    this.applyBuffsBy(unit);
   }
 
   public attack(sourceId, targetId) {
-    const state = getStateWithAppliedEffects(this.state);
+    const state = this.state;
 
     if (!selectors.isPlayerTurnOwner(state)) return;
     if (!selectors.isTargetAvailableForAttack(state, sourceId, targetId))
@@ -118,32 +118,42 @@ export class Battle extends EventEmitter {
 
     const tradingFn = getTradingFn(sourceTradeEffects, targetTradeEffects);
 
-    const {health, additionalCounterEffects} = tradingFn(state, sourceId, targetId);
+    const { health, additionalCounterEffects } = tradingFn(
+      state,
+      sourceId,
+      targetId
+    );
 
-    this.updatePrivateState(unitAddCounterEffects(targetId, additionalCounterEffect))
-    this.updatePuplicState(unitSetHealth(targetId, additionalCounterEffects))
+    this.updateState(unitAddCounterEffects(targetId, additionalCounterEffects));
+    this.updateState(unitSetHealth(targetId, health));
+
+    const finalHealth = getUnitHealthWithAppliedEffects(state, targetId);
+    this.emit(BATTLE_EVENT, unitSetHealth(targetId, finalHealth));
   }
 
-  private applyBuffsBy(unit) {}
+  //
+  // ===== private =====
+  //
 
   private removeCard(cardId) {
-    this.updatePuplicState(actions.playerRemoveCard(cardId));
+    const action = playerRemoveCard(cardId);
+    this.updateState(action);
+    this.emit(BATTLE_EVENT, action);
   }
 
   private decreaseMoney(userId, cost) {
-    this.updatePuplicState(actions.playerDecreseMoney(userId, cost));
+    const action = playerDecreseMoney(userId, cost);
+    this.updateState(action);
+    this.emit(BATTLE_EVENT, action);
   }
 
   private addUnit(unit, position) {
-    this.updatePuplicState(actions.playerAddUnit(unit, position));
-  }
-
-  private updatePuplicState(action) {
+    const action = playerAddUnit(unit, position);
+    this.updateState(action);
     this.emit(BATTLE_EVENT, action);
-    this.store.dispatch(action);
   }
 
-  private updatePrivateState(action) {
+  private updateState(action) {
     this.store.dispatch(action);
   }
 

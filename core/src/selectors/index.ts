@@ -1,10 +1,44 @@
-export {
+import {
   getEffects,
   getEffectsByUnitId,
   getEffectsByUserId,
   getEffectsByImpact,
-  } from "./battle/effects";
-import {
+  isEffectApplicableToUnit,
+  getEffectsApplicableToUnit,
+  getUniqueListOfTradeEffectTypes
+} from "./battle/effects";
+export {
+  getEffects,
+  getEffectsByUnitId,
+  getEffectsByUserId,
+  getEffectsByImpact
+} from "./battle/effects";
+export {
+  getBattle,
+  getPlayers,
+  isBattleStarted,
+  getPlayerByUserId,
+  getPlayer,
+  getEnemy,
+  getTurnOwnerId,
+  isPlayerTurnOwner,
+  getNextTurnOwnerPlayer,
+  getPlayerHand,
+  getEnemyHand,
+  getCards,
+  getCard
+} from "./battle/index";
+
+export {
+  getAllAvailableForAttackTargetIds,
+  isTargetAvailableForAttack
+} from "./battle/targeting";
+export {
+  getUnitAttackWithAppliedEffects,
+  getUnitHealthWithAppliedEffects,
+  getUnitHealthAfterAttack
+} from "./battle/unit";
+export {
   getUnits,
   getUnitById,
   getUnitsByUserId,
@@ -21,35 +55,11 @@ import {
   getEnemyUnitIds,
   getUnitFriends,
   getUnitsByTargetingScope,
-  getUnitIdsByTargetingScope,
-  isEffectApplicableToUnit,
-  getEffectsApplicableToUnit,
-  getUnitAttackWithAppliedEffects,
-  getUnitHealthAfterAttack,
+  getUnitIdsByTargetingScope
 } from "./battle/units";
-export {
-  getBattle,
-  getPlayers,
-  isBattleStarted,
-  getPlayerByUserId,
-  getPlayer,
-  getEnemy,
-  getTurnOwnerId,
-  isPlayerTurnOwner,
-  getNextTurnOwnerPlayer,
-  getPlayerHand,
-  getEnemyHand,
-  getCards,
-  getCard,
-  getStateWithAppliedEffects,
-} from "./battle/index";
-
-import {
-  getAllAvailableForAttackTargetIds,
-  isTargetAvailableForAttack
-} from "./battle/targeting";
 
 export { getAvailableTargets } from "./targets";
-export {filterEffectsByImpact} from "../unit/effects";
-export {getUnitEffects} from "../unit/methods";
-export {getUnitCounterEffects} from "../unit/methods";
+
+export { filterEffectsByImpact } from "../unit/effects";
+export { getUnitEffects } from "../unit/methods";
+export { getUnitCounterEffects } from "../unit/methods";

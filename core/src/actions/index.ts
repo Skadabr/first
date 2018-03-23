@@ -11,27 +11,18 @@ export {
   playerAdjustMoney
 } from "./battle/player";
 export {
-  unitActivate,
-  unitDisActivate,
   unitDecreaseHealth,
-  unitDecreaseAvailability,
   unitDecreaseMoves,
   unitIncreaseMoves,
   unitAddEffect,
   unitSetMoves,
-  unitSetAvailability
 } from "./battle/unit";
-export {
-  battleUpdate,
-  battleNextTurn,
-  default as battleReducer
-} from "./battle/index";
+export { battleUpdate, battleNextTurn } from "./battle/index";
 
+export { availableTargetsUpdate } from "./targets";
 
-export {
-  availableTargetsUpdate,
-  default as availableTargetsReducer
-} from "./targets";
+import availableTargetsReducer from "./targets";
+import battleReducer from "./battle/index";
 
 export function reducer(state = EMPTY as any, action) {
   return {

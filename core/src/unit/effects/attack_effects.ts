@@ -1,15 +1,14 @@
 import {
-  INCREASE_ATTACK_TO_FRIENDS,
+  ATTACK,
 } from "./index";
 
 import { generateID } from "../../utils";
 import { EffectTargetingScope, EffectImpact } from "../../index";
 
-export const increaseAttackToFrieands = attack => ({
+export const attack = (attack, targetingScope) => ({
   _id: generateID(),
-  type: INCREASE_ATTACK_TO_FRIENDS,
-  targetingScope: EffectTargetingScope.OtherFriendlyMinions,
+  type: ATTACK,
+  targetingScope,
   impact: EffectImpact.Attack,
-  priority: 5,
-  payload: { attack }
+  value: attack
 });

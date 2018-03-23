@@ -3,16 +3,8 @@ import groupBy from "lodash.groupby";
 
 import {
   getUnitAttackWithAppliedEffects,
-  getUnitById
-} from "../selectors/battle/units";
-import {
-  filterEffectsByImpact,
-  getUnitCounterEffects,
-  getUnitEffects
-} from "../selectors";
-import { EffectImpact } from "../index";
-import { normalizeHealthEffects, takeAwayHealthBuffs } from "./health";
-import { getUnitHealthAfterAttack } from "../../selectors/battle/units";
+} from "../../selectors/battle/unit";
+import { getUnitHealthAfterAttack } from "../../selectors/battle/unit";
 
 export function getTradingFn(sourceEffects, targetEffects) {
   let tradingFunction = defaultTradingFunction;
@@ -43,8 +35,19 @@ export function normalizeEffects(effects, counterEffects, normalizer) {
   return normalizedEffects;
 }
 
+//
+// attempt to guaranty that `counterEffect` has the same `ownerId` as `effect`
+//
+export function createCounterEffect(effect, value) {
+  return {
+    ...effect,
+    value
+  };
+}
+
 function filterObsoleteCounterEffects(effects, counterEffects) {
   return counterEffects.filter(cEff => {
     effects.map(({ ownerId }) => ownerId).includes(cEff.ownerId);
   });
 }
+

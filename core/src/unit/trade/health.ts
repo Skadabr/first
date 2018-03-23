@@ -1,5 +1,6 @@
 import { EffectImpact } from "../../index";
 import { filterEffectsByImpact } from "../../selectors";
+import { createCounterEffect } from "./index";
 
 export function normalizeHealthEffects(effects, counterEffects) {
   const normalizedEffects = effects.map(eff => {
@@ -31,31 +32,15 @@ export function takeAwayHealthBuffs(effects, attack) {
 
   for (let eff of effects) {
     // NOTE: should here be `value` or maybe `payload.health`
-    if (attack < eff.value) {
-      additionalCounterEffects.push({
-        ...eff,
-        value: attack
-      });
+    if (attack <= eff.value) {
+      additionalCounterEffects.push(createCounterEffect(eff, attack));
       return {
-        attack: 0,
-        additionalCounterEffects
-      };
-    }
-    if (attack === eff.value) {
-      additionalCounterEffects.push({
-        ...eff,
-        value: eff.value
-      });
-      return {
-        attack: 0,
+        remainderOfAttack: 0,
         additionalCounterEffects
       };
     }
     if (attack > eff.value) {
-      additionalCounterEffects.push({
-        ...eff,
-        value: eff.value
-      });
+      additionalCounterEffects.push(createCounterEffect(eff, eff.value));
       attack = attack - eff.value;
     }
   }

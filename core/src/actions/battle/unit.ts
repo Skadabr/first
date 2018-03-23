@@ -1,6 +1,4 @@
 import {
-  UNIT_ACTIVATE,
-  UNIT_DISACTIVATE,
   UNIT_SET_MOVES,
   UNIT_DECREASE_MOVES,
   UNIT_INCREASE_MOVES,
@@ -9,7 +7,6 @@ import {
   UNIT_INCREASE_HEALTH,
   UNIT_ADD_EFFECT,
   UNIT_ADD_COUNTER_EFFECTS,
-  UNIT_REMOVE_EFFECT
 } from "./index";
 
 //
@@ -25,11 +22,6 @@ export default function unitReducer(state, { type, payload }) {
     case UNIT_DECREASE_HEALTH:
       return decrease(state, payload, "health");
 
-    case UNIT_ACTIVATE:
-      return update(state, { ...payload, value: true }, "active");
-    case UNIT_DISACTIVATE:
-      return update(state, { ...payload, value: false }, "active");
-
     case UNIT_SET_MOVES:
       return update(state, payload, "moves");
     case UNIT_INCREASE_MOVES:
@@ -38,16 +30,9 @@ export default function unitReducer(state, { type, payload }) {
       return decrease(state, payload, "moves");
 
     case UNIT_ADD_EFFECT:
-      return addToList(state, payload, "effects");
-    case UNIT_REMOVE_EFFECT: {
-      if (payload.unitId !== state._id) return state;
-      return {
-        ...state,
-        effects: state.effects.filter(eff => eff.type !== payload.value)
-      };
-    }
+      return addEffectsToList(state, payload);
     case UNIT_ADD_COUNTER_EFFECTS:
-      return addToList(state, payload, "counterEffects");
+      return addCounterEffectsToList(state, payload);
 
     default:
       return state;
@@ -58,19 +43,6 @@ export default function unitReducer(state, { type, payload }) {
 // ============ Actions ============
 //
 
-export function unitActivate(unitId) {
-  return {
-    type: UNIT_ACTIVATE,
-    payload: { unitId }
-  };
-}
-
-export function unitDisActivate(unitId) {
-  return {
-    type: UNIT_DISACTIVATE,
-    payload: { unitId }
-  };
-}
 
 // === health ===
 
@@ -116,14 +88,7 @@ export function unitDecreaseMoves(unitId, value) {
 export function unitAddEffect(unitId, effect) {
   return {
     type: UNIT_ADD_EFFECT,
-    payload: { unitId, value: [effect] }
-  };
-}
-
-export function unitRemoveEffect(unitId, effectType) {
-  return {
-    type: UNIT_REMOVE_EFFECT,
-    payload: { unitId, value: effectType }
+    payload: { unitId, value: effect }
   };
 }
 
@@ -133,19 +98,6 @@ export function unitAddCounterEffects(unitId, effects) {
     payload: { unitId, value: effects }
   };
 }
-
-// export function unitSetAvailability(unitId, availability) {
-//   return {
-//     type: UNIT_SET_AVAILABILITY,
-//     payload: { availability, unitId }
-//   };
-// }
-// export function unitDecreaseAvailability(unitId, value) {
-//   return {
-//     type: UNIT_DECREASE_AVAILABILITY,
-//     payload: { value, unitId }
-//   };
-// }
 
 //
 // ========= helpers =========
@@ -166,7 +118,13 @@ function update(state, payload, field) {
   return { ...state, [field]: payload.value };
 }
 
-function addToList(state, payload, field) {
+function addEffectsToList(state, payload) {
   if (payload.unitId !== state._id) return state;
-  return { ...state, [field]: [...state[field], ...payload.value] };
+  payload.value.ownerId = payload.unitId;
+  return { ...state, effect: [...state.effect, ...payload.value] };
+}
+
+function addCounterEffectsToList(state, payload) {
+  if (payload.unitId !== state._id) return state;
+  return { ...state, counterEffects: [...state.counterEffects, ...payload.value] };
 }

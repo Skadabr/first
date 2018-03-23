@@ -1,13 +1,12 @@
-import unitReducer, { unitDecreaseAvailability } from "./unit";
-import { UNITS_REMOVE } from "./index";
+import unitReducer from "./unit";
 
-const EMPTY = {};
+const EMPTY = [];
 
 //
 // ============ reducer ============
 //
 
-export default function unitsReducer(state, action) {
+export default function unitsReducer(state = EMPTY, action) {
   switch (action.type) {
     default:
       return state.map(unit => unitReducer(unit, action));
@@ -17,4 +16,3 @@ export default function unitsReducer(state, action) {
 //
 // ============ Actions ============
 //
-

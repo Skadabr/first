@@ -1,15 +1,14 @@
 import {
-  INCREASE_HEALTH_TO_FRIENDS
+  HEALTH
 } from "./index";
 
 import { generateID } from "../../utils";
 import { EffectTargetingScope, EffectImpact } from "../../index";
 
-export const increaseHealthToFriends = health => ({
+export const health = (health, targetingScope) => ({
   _id: generateID(),
-  type: INCREASE_HEALTH_TO_FRIENDS,
-  targetingScope: EffectTargetingScope.OtherFriendlyMinions,
+  type: HEALTH,
+  targetingScope,
   impact: EffectImpact.Health,
-  priority: 5,
-  payload: { health }
+  value: health
 });

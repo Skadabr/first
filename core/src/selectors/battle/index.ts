@@ -1,13 +1,3 @@
-import copy from "deep-copy";
-import { createStore } from "redux";
-
-import { reducer, unitAddEffect } from "../../actions/index";
-
-import { getEffectsByUnitId } from "./effects";
-import { getUnits, getUnitById, getUnitIdsByTargetingScope } from "./units";
-import {EffectImpact, EffectTargetingScope} from "../../index";
-import {filterEffectsNotInTargetingScope} from "../../unit/effects";
-
 export const getBattle = state => state.battle;
 export const getPlayers = state => state.battle.players;
 export const isBattleStarted = state => getBattle(state).players.length > 0;
@@ -58,55 +48,6 @@ export const getCard = (state, id) => getCards(state).find(c => c._id === id);
 // ============
 //
 
-export const getUnitWithAllEffects = (state, unitId) => {
-  const unit = getUnitById(state);
-
-  for (const sourceUnit of units) {
-    const effs = filterEffectsNotInTargetingScope(
-      getEffectsByUnitId(state, sourceUnit._id),
-      EffectTargetingScope.Local
-    );
-
-    for (const eff of effs) {
-      const ids = getUnitIdsByTargetingScope(
-        state,
-        sourceUnit._id,
-        eff.targetingScope
-      );
-      for (const id of ids) {
-        const targetUnit = getUnitById(state, id);
-        dispatch(unitAddEffect(targetUnit._id, eff));
-      }
-    }
-  }
-};
-
-// export function getRawUnitSource(state, sourceId, targetId) {
-//   const source = getUnitById(state, sourceId);
-//
-//   const effects = getAllAttackingEffects(state, sourceId, targetId);
-//   const rawSource = applyEffects(effects, source, state);
-//
-//   return rawSource;
-// }
-//
-// export function getDeadEnemyUnits(state) {
-//   const targetIds = getEnemyUnits(state);
-//
-//   return targetIds.filter(target => isTargetDead(target._id));
-//
-//   function isTargetDead(targetId) {
-//     const target = getUnitById(state, targetId);
-//     const effects = getAllSelectionEffects(state, targetId);
-//     const rawTarget = applyEffects(effects, target, state);
-//     return isUnitDead(rawTarget);
-//   }
-// }
-
 function isUnitDead(target) {
   return target.health <= 0;
-}
-
-function isUnitAvailable(target) {
-  return target.availability > 0;
 }
