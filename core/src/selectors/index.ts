@@ -3,10 +3,7 @@ export {
   getEffectsByUnitId,
   getEffectsByUserId,
   getEffectsByImpact,
-  filterEffectsByImpact,
-  getUnitEffects,
-  getUnitCounterEffects,
-} from "./battle/effects";
+  } from "./battle/effects";
 import {
   getUnits,
   getUnitById,
@@ -28,6 +25,7 @@ import {
   isEffectApplicableToUnit,
   getEffectsApplicableToUnit,
   getUnitAttackWithAppliedEffects,
+  getUnitHealthAfterAttack,
 } from "./battle/units";
 export {
   getBattle,
@@ -52,3 +50,6 @@ import {
 } from "./battle/targeting";
 
 export { getAvailableTargets } from "./targets";
+export {filterEffectsByImpact} from "../unit/effects";
+export {getUnitEffects} from "../unit/methods";
+export {getUnitCounterEffects} from "../unit/methods";

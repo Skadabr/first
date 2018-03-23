@@ -1,10 +1,7 @@
-import { EffectTargetingScope, EffectImpact } from "../../index";
-import { getUnitIdsByUserId } from "./units";
-import { uniqueArray } from "../../utils";
-
-//
-// ============ general effects selectors ============
-//
+import {EffectImpact} from "../../index";
+import {getUnitIdsByUserId} from "./units";
+import {uniqueArray} from "../../utils";
+import {filterEffectsByImpact} from "../../unit/effects";
 
 export const getEffects = state => state.effects;
 
@@ -22,13 +19,11 @@ export const getEffectsByUserId = (state, userId) => {
 };
 
 export const getEffectsByImpact = (state, impact) => {
-  const effs = getEffects(state).filter(eff => eff.impact === impact);
+  const effs = filterEffectsByImpact(getEffects(state));
   return effs;
 };
 
-export const filterEffectsByImpact = (effs, impact) => {
-  return effs.filter(eff => eff.impact === impact);
-};
+
 
 export const getUniqueListOfTradeEffectTypes = (state, unitId) => {
   const effs = filterEffectsByImpact(
@@ -37,11 +32,3 @@ export const getUniqueListOfTradeEffectTypes = (state, unitId) => {
   );
   return uniqueArray(effs.map(eff => eff.type));
 };
-
-export function getUnitEffects(target) {
-  return target.effects;
-}
-
-export function getUnitCounterEffects(target) {
-  return target.counterEffects;
-}

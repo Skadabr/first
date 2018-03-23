@@ -10,7 +10,8 @@ import * as validators from "./validators/index";
 import * as Utils from "./utils";
 import { getStateWithAppliedEffects } from "./selectors/battle";
 import {getUniqueListOfTradeEffectTypes} from "./selectors/battle/effects";
-import {getTradingFn} from "./actions/trading_rules";
+import {getTradingFn} from "./unit/trade/index";
+import {unitAddCounterEffects, unitSetHealth} from "./actions/battle/unit";
 
 export enum UserStatusType {
   Peace,
@@ -117,7 +118,10 @@ export class Battle extends EventEmitter {
 
     const tradingFn = getTradingFn(sourceTradeEffects, targetTradeEffects);
 
-    const rawSource = tradingFn(state, sourceId, targetId);
+    const {health, additionalCounterEffects} = tradingFn(state, sourceId, targetId);
+
+    this.updatePrivateState(unitAddCounterEffects(targetId, additionalCounterEffect))
+    this.updatePuplicState(unitSetHealth(targetId, additionalCounterEffects))
   }
 
   private applyBuffsBy(unit) {}

@@ -4,11 +4,9 @@ import { createStore } from "redux";
 import { reducer, unitAddEffect } from "../../actions/index";
 
 import { getEffectsByUnitId } from "./effects";
-import {
-  getUnits,
-  getUnitById,
-  getUnitIdsByTargetingScope,
-} from "./units";
+import { getUnits, getUnitById, getUnitIdsByTargetingScope } from "./units";
+import {EffectImpact, EffectTargetingScope} from "../../index";
+import {filterEffectsNotInTargetingScope} from "../../unit/effects";
 
 export const getBattle = state => state.battle;
 export const getPlayers = state => state.battle.players;
@@ -60,13 +58,15 @@ export const getCard = (state, id) => getCards(state).find(c => c._id === id);
 // ============
 //
 
-export const getStateWithAppliedEffects = state => {
-  const { getState, dispatch } = createStore(reducer, copy(state));
-
-  const units = getUnits(getState());
+export const getUnitWithAllEffects = (state, unitId) => {
+  const unit = getUnitById(state);
 
   for (const sourceUnit of units) {
-    const effs = getEffectsByUnitId(state, sourceUnit._id);
+    const effs = filterEffectsNotInTargetingScope(
+      getEffectsByUnitId(state, sourceUnit._id),
+      EffectTargetingScope.Local
+    );
+
     for (const eff of effs) {
       const ids = getUnitIdsByTargetingScope(
         state,
@@ -79,8 +79,6 @@ export const getStateWithAppliedEffects = state => {
       }
     }
   }
-
-  return getState();
 };
 
 // export function getRawUnitSource(state, sourceId, targetId) {
@@ -112,4 +110,3 @@ function isUnitDead(target) {
 function isUnitAvailable(target) {
   return target.availability > 0;
 }
-

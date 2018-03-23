@@ -11,7 +11,8 @@ import {
   getUnitEffects
 } from "../selectors";
 import { EffectImpact } from "../index";
-import {normalizeHealthEffects, takeAwayHealthBuffs} from "./health";
+import { normalizeHealthEffects, takeAwayHealthBuffs } from "./health";
+import { getUnitHealthAfterAttack } from "../../selectors/battle/units";
 
 export function getTradingFn(sourceEffects, targetEffects) {
   let tradingFunction = defaultTradingFunction;
@@ -30,34 +31,10 @@ export function getTradingFn(sourceEffects, targetEffects) {
 
 export function defaultTradingFunction(state, sourceId, targetId) {
   const attack = getUnitAttackWithAppliedEffects(state, sourceId);
-  const target = getUnitById(state, targetId);
-  applyAttackToTarget(target, attack);
-  targetId.receivedDamage += sourceId.attack;
-  return targetId;
+  return getUnitHealthAfterAttack(state, targetId, attack);
 }
 
-function applyAttackToTarget(
-  target,
-  attack
-): {
-  attack: any;
-  counterEffects: any;
-} {
-  const effects = getUnitEffects(target);
-  const counterEffects = getUnitCounterEffects(target);
-  const normalizedEffects = normalizeEffects(
-    effects,
-    counterEffects,
-    normalizeHealthEffects,
-  );
-  const remainderOfAttackAndNewCounterEffects = takeAwayHealthBuffs(
-    normalizedEffects,
-    attack
-  );
-  return remainderOfAttackAndNewCounterEffects;
-}
-
-function normalizeEffects(effects, counterEffects, normalizer) {
+export function normalizeEffects(effects, counterEffects, normalizer) {
   const actualCounterEffects = filterObsoleteCounterEffects(
     effects,
     counterEffects
@@ -67,8 +44,7 @@ function normalizeEffects(effects, counterEffects, normalizer) {
 }
 
 function filterObsoleteCounterEffects(effects, counterEffects) {
-  return counterEffects.filter(eff => {
-    effects.map(({ ownerId }) => ownerId).includes(eff.ownerId);
+  return counterEffects.filter(cEff => {
+    effects.map(({ ownerId }) => ownerId).includes(cEff.ownerId);
   });
 }
-
