@@ -7,8 +7,9 @@ import {
   UNIT_SET_HEALTH,
   UNIT_DECREASE_HEALTH,
   UNIT_INCREASE_HEALTH,
-  UNIT_ADD_EFFECT
+  UNIT_ADD_EFFECT,
   UNIT_ADD_COUNTER_EFFECTS,
+  UNIT_REMOVE_EFFECT
 } from "./index";
 
 //
@@ -20,7 +21,7 @@ export default function unitReducer(state, { type, payload }) {
     case UNIT_INCREASE_HEALTH:
       return increase(state, payload, "health");
     case UNIT_SET_HEALTH:
-      return update(state, payload, 'health');
+      return update(state, payload, "health");
     case UNIT_DECREASE_HEALTH:
       return decrease(state, payload, "health");
 
@@ -37,9 +38,16 @@ export default function unitReducer(state, { type, payload }) {
       return decrease(state, payload, "moves");
 
     case UNIT_ADD_EFFECT:
-      return add(state, payload, 'effects');
+      return addToList(state, payload, "effects");
+    case UNIT_REMOVE_EFFECT: {
+      if (payload.unitId !== state._id) return state;
+      return {
+        ...state,
+        effects: state.effects.filter(eff => eff.type !== payload.value)
+      };
+    }
     case UNIT_ADD_COUNTER_EFFECTS:
-      return add(state, payload, 'counterEffects');
+      return addToList(state, payload, "counterEffects");
 
     default:
       return state;
@@ -103,13 +111,19 @@ export function unitDecreaseMoves(unitId, value) {
   };
 }
 
-
 // === effects & counterEffects ===
 
 export function unitAddEffect(unitId, effect) {
   return {
     type: UNIT_ADD_EFFECT,
     payload: { unitId, value: [effect] }
+  };
+}
+
+export function unitRemoveEffect(unitId, effectType) {
+  return {
+    type: UNIT_REMOVE_EFFECT,
+    payload: { unitId, value: effectType }
   };
 }
 
@@ -133,8 +147,6 @@ export function unitAddCounterEffects(unitId, effects) {
 //   };
 // }
 
-
-
 //
 // ========= helpers =========
 //
@@ -154,7 +166,7 @@ function update(state, payload, field) {
   return { ...state, [field]: payload.value };
 }
 
-function add(state, payload, field) {
+function addToList(state, payload, field) {
   if (payload.unitId !== state._id) return state;
   return { ...state, [field]: [...state[field], ...payload.value] };
 }
