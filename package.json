@@ -5,6 +5,19 @@
   "repository": "git@github.com:olegmedoed/first.git",
   "author": "Oleg Tsyba <oleg.tsyba.ua@gmail.com>",
   "license": "MIT",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.test.+(ts|tsx|js)"
+    ]
+  },
   "scripts": {
     "start": "docker-compose up -d --remove-orphans",
     "start:dev": "docker-compose -f docker-compose.dev.yml up -d --remove-orphans",
@@ -16,6 +29,7 @@
   "devDependencies": {
     "bind-decorator": "^1.0.11",
     "globby": "^8.0.1",
+    "jest": "^22.4.3",
     "prettier": "^1.11.1",
     "source-map-support": "^0.5.3"
   },

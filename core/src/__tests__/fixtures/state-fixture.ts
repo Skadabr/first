@@ -7,7 +7,7 @@ export const state = {
       user: {
         _id: "player"
       },
-    }
+    },
     {
       user: {
         _id: "enemy"
