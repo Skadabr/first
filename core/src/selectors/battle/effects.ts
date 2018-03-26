@@ -23,8 +23,9 @@ export const getEffectsByUnitId = (state, unitId) => {
 
 export const getEffectsByUserId = (state, userId) => {
   const unitIds = getUnitIdsByUserId(state, userId);
-  const effs = unitIds.reduce((sum, unitId) =>
-    [...sum, ...getEffectsByUnitId(state, unitId)]
+  const effs = unitIds.reduce(
+    (sum, unitId) => [...sum, ...getEffectsByUnitId(state, unitId)],
+    []
   );
   return effs;
 };
@@ -33,7 +34,6 @@ export const getEffectsByImpact = (state, impact) => {
   const effs = filterEffectsByImpact(getEffects(state), impact);
   return effs;
 };
-
 
 export const isEffectApplicableToUnit = (state, eff, unitId) => {
   const targetIds = getUnitIdsByTargetingScope(

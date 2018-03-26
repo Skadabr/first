@@ -53,7 +53,7 @@ export {
   getPlayerUnitIds,
   getEnemyUnits,
   getEnemyUnitIds,
-  getUnitFriends,
+  getUnitFriendlyMinions,
   getUnitsByTargetingScope,
   getUnitIdsByTargetingScope
 } from "./battle/units";

@@ -1,23 +1,17 @@
-import {
-  TAUNT,
-  TAUNT_DISABLER,
-} from "./index";
-
 import { generateID } from "../../utils";
-import { EffectTargetingScope, EffectImpact } from "../../index";
+import { EffectTargetingScope, EffectImpact, EffectTypes } from "../../index";
+import { Effect } from "./index";
 
-export const taunt = () => ({
+export const taunt = (): Effect => ({
   _id: generateID(),
-  type: TAUNT,
+  type: EffectTypes.Taunt,
   targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-  impact: EffectImpact.Availability,
-  priority: 5
+  impact: EffectImpact.Availability
 });
 
-export const tauntDisabler = () => ({
+export const tauntDisabler = (): Effect => ({
   _id: generateID(),
-  type: TAUNT_DISABLER,
+  type: EffectTypes.UnTaunt,
   targetingScope: EffectTargetingScope.AllEnemyMinions,
-  impact: EffectImpact.Availability,
-  priority: 6
+  impact: EffectImpact.Availability
 });

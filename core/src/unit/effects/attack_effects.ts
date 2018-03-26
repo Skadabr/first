@@ -1,13 +1,10 @@
-import {
-  ATTACK,
-} from "./index";
-
 import { generateID } from "../../utils";
-import { EffectTargetingScope, EffectImpact } from "../../index";
+import {EffectTypes, EffectImpact, EffectTargetingScope} from "../../index";
+import {Effect} from "./index";
 
-export const attack = (attack, targetingScope) => ({
+export const attack = (attack, targetingScope: EffectTargetingScope) : Effect => ({
   _id: generateID(),
-  type: ATTACK,
+  type: EffectTypes.Attack,
   targetingScope,
   impact: EffectImpact.Attack,
   value: attack

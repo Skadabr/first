@@ -6,7 +6,8 @@
   "typings": "./lib/index.d.ts",
   "scripts": {
     "typecheck": "rm -rf lib; tsc --pretty --noEmit",
-    "build": "rm -rf lib; tsc --pretty -d",
+    "build": "rm -rf lib; tsc --pretty",
+    "build:def": "rm -rf lib; tsc -d --pretty",
     "test": "jest",
     "precommit": "lint-staged"
   },
@@ -25,7 +26,9 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "testMatch": ["**/*.test.+(ts|tsx|js)"]
+    "testMatch": [
+      "**/*.test.+(ts|tsx|js)"
+    ]
   },
   "dependencies": {
     "deep-copy": "^1.4.2",
@@ -34,6 +37,7 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
+    "@types/jest": "^22.2.2",
     "@types/node": "^9.4.6",
     "jest": "^22.4.3",
     "prettier": "^1.11.1",

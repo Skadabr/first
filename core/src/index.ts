@@ -2,8 +2,6 @@ import copy from "deep-copy";
 import { createStore } from "redux";
 import EventEmitter from "eventemitter3";
 
-import * as card from "./card/index";
-import * as unit from "./unit/index";
 import * as actions from "./actions/index";
 import * as selectors from "./selectors/index";
 import * as validators from "./validators/index";
@@ -15,14 +13,14 @@ import { getUnitHealthWithAppliedEffects } from "./selectors/battle/unit";
 import { playerAddUnit, playerDecreseMoney, playerRemoveCard } from "./actions";
 
 export enum UserStatusType {
-  Peace,
-  Ready,
-  Fight
+  Peace = "PEACE",
+  Ready = "READY",
+  Fight = "FIGHT"
 }
 export enum UnitTypes {
-  Pawn,
-  Officer,
-  Horse
+  Pawn = "PAWN",
+  Officer = "OFFICER",
+  Horse = "HORSE"
 }
 export enum GameStatus {
   None,
@@ -32,21 +30,28 @@ export enum GameStatus {
   Broken
 }
 
+export enum EffectTypes {
+  Health = "HEALTH",
+  Attack = "ATTACK",
+  Taunt = "TAUNT",
+  UnTaunt = "UNTAUNT",
+}
+
 export enum EffectTargetingScope {
-  Local,
-  AllUnits,
-  AllEnemyUnits,
-  AllEnemyMinions,
-  AllFriendlyUnits,
-  AllFriendlyMinions,
-  OtherFriendlyMinions
+  Local = "LOCAL",
+  AllUnits = "ALL_UNITS",
+  AllEnemyUnits = "ALL_ENEMY_UNITS",
+  AllEnemyMinions = "ALL_ENEMY_MINIONS",
+  AllFriendlyUnits = "ALL_FRIENDLY_UNITS",
+  AllFriendlyMinions = "ALL_FRIENDLY_MINIONS",
+  OtherFriendlyMinions = "OTHER_FRIENDLY_MINIONS"
 }
 
 export enum EffectImpact {
-  Availability,
-  Attack,
-  Health,
-  Trade
+  Availability = "AVAILABILITY",
+  Attack = "ATTACK",
+  Health = "HEALTH",
+  Trade = "TRADE"
 }
 
 export const POSITIONS = 13;
