@@ -1,9 +1,8 @@
-import { generateID } from "../../utils";
 import {EffectImpact, EffectTargetingScope, EffectTypes} from "../../index";
 import {Effect} from "./index";
 
-export const health = (health, targetingScope: EffectTargetingScope) : Effect => ({
-  _id: generateID(),
+export const health = (ownerId, targetingScope: EffectTargetingScope, health) : Effect => ({
+  ownerId,
   type: EffectTypes.Health,
   targetingScope,
   impact: EffectImpact.Health,

@@ -1,88 +1,68 @@
-import { state } from "../../__tests__/fixtures/state-fixture";
+import { state, State } from "../../__tests__/fixtures/state-fixture";
 import {
   getEffects,
+  getEffectsApplicableToUnit,
   getEffectsByImpact,
   getEffectsByUnitId,
   getEffectsByUserId,
   isEffectApplicableToUnit
 } from "./effects";
-import {EffectImpact, EffectTargetingScope, EffectTypes} from "../../index";
+import { EffectImpact, EffectTargetingScope } from "../../index";
 
 describe("getEffects", () => {
   it("should return list of effects", () => {
-    expect(getEffects(state)).toMatchObject([
-      {
-        impact: EffectImpact.Health,
-        targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-        type: EffectTypes.Health,
-        value: 2
-      },
-      {
-        impact: EffectImpact.Attack,
-        targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-        type: EffectTypes.Attack,
-        value: 1
-      }
-    ]);
+    expect(getEffects(state)).toMatchSnapshot();
   });
 });
 
 describe("getEffectByUnitId", () => {
   it("should return effects of unit", () => {
-    expect(getEffectsByUnitId(state, "pl_pawn2")).toMatchObject([
-      {
-        impact: EffectImpact.Health,
-        targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-        type: EffectTypes.Health,
-        value: 2
-      }
-    ]);
+    expect(getEffectsByUnitId(state, "pl_pawn2")).toMatchSnapshot();
   });
 });
 
 describe("getEffectByUserId", () => {
   it("should return effects of user", () => {
-    expect(getEffectsByUserId(state, "player")).toMatchObject([
-      {
-        impact: EffectImpact.Health,
-        targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-        type: EffectTypes.Health,
-        value: 2
-      },
-      {
-        impact: EffectImpact.Attack,
-        targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-        type: EffectTypes.Attack,
-        value: 1
-      }
-    ]);
+    expect(getEffectsByUserId(state, "player")).toMatchSnapshot();
   });
 });
 
 describe("getEffectByImpact", () => {
   it("should return effects with `Health` impact", () => {
-
-    expect(getEffectsByImpact(state, EffectImpact.Health)).toMatchObject([
-      {
-        impact: EffectImpact.Health,
-        targetingScope: EffectTargetingScope.OtherFriendlyMinions,
-        type: EffectTypes.Health,
-        value: 2
-      }
-    ]);
+    expect(getEffectsByImpact(state, EffectImpact.Health)).toMatchSnapshot();
   });
 });
 
-// describe('isEffectApplicableToUnit', () => {
-//   describe('when user has no effects', () => {
-//     let effects;
-//
-//     beforeEach(function () {
-//       effects = getEffectsByUnitId(state, 'pl_pawn2');
-//     });
-//     it.skip('should return false', function () {
-//       const res = isEffectApplicableToUnit(state, effects[0], 'e_pawn3');
-//       expect(res).toBe(false);
-//     });
-//   });
-// });
+describe("isEffectApplicableToUnit", () => {
+  describe("when we take effect which is targeting only other friendly minions", () => {
+    let effect;
+
+    beforeEach(function() {
+      effect = getEffectsByUnitId(state, "pl_pawn2")[0];
+    });
+
+    it("should target OtherFriendlyMinions", function() {
+      expect(effect.targetingScope).toEqual(
+        EffectTargetingScope.OtherFriendlyMinions
+      );
+    });
+
+    it("should not target on enemy minions", function() {
+      const res = isEffectApplicableToUnit(state, effect, "e_pawn3");
+      expect(res).toBe(false);
+    });
+
+    it("should target on other friendly minions", function() {
+      const res = isEffectApplicableToUnit(state, effect, "pl_pawn1");
+    });
+  });
+});
+
+describe("getEffectsApplicableToUnit", () => {
+  it("should return all effects which can be applicable to unit (impact on its behavior)", function() {
+    const effs = getEffectsApplicableToUnit(state, "pl_pawn1");
+    expect(effs).toMatchSnapshot();
+  });
+});
+
+describe.skip("getUniqueListOfTradeEffectTypes", () => {});

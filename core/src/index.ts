@@ -34,7 +34,7 @@ export enum EffectTypes {
   Health = "HEALTH",
   Attack = "ATTACK",
   Taunt = "TAUNT",
-  UnTaunt = "UNTAUNT",
+  UnTaunt = "UN_TAUNT",
 }
 
 export enum EffectTargetingScope {

@@ -1,16 +1,34 @@
 import { generateID } from "../utils";
 import { UnitTypes } from "../index";
 import { characteristics } from "./index";
+import { taunt, unTaunt } from "./effects";
 
 export default function createUnit(type: UnitTypes, ownerId) {
   const _id = generateID();
-  const charachteristic = characteristics[type] as any;
+  const characteristic = characteristics[type] as any;
 
-  return {
+  const unit = {
     type,
     _id,
     ownerId,
-    ...charachteristic,
-    effects: charachteristic.effects.map(eff => ({ ...eff, _id }))
+    ...characteristic,
+    effects: []
   };
+
+  switch (type) {
+    case UnitTypes.Pawn:
+      return unit;
+
+    case UnitTypes.Officer:
+      return {
+        ...unit,
+        effects: [taunt(_id)]
+      };
+
+    case UnitTypes.Horse:
+      return {
+        ...unit,
+        effects: [unTaunt(_id)]
+      };
+  }
 }

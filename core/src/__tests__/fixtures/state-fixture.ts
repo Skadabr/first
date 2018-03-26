@@ -1,8 +1,8 @@
 import { EffectTargetingScope, UnitTypes } from "../../index";
-import {attack, health} from "../../unit/effects/index";
+import { attack, health } from "../../unit/effects/index";
 import createUnit from "../../unit/fabric";
 
-interface State {
+export interface State {
   user: any;
   battle: {
     players: any[];
@@ -43,12 +43,16 @@ export const state: State = {
       {
         ...createUnit(UnitTypes.Pawn, "player"),
         _id: "pl_pawn2",
-        effects: [health(2, EffectTargetingScope.OtherFriendlyMinions)]
+        effects: [
+          health("pl_pawn2", EffectTargetingScope.OtherFriendlyMinions, 2)
+        ]
       },
       {
         ...createUnit(UnitTypes.Pawn, "player"),
         _id: "pl_pawn3",
-        effects: [attack(1, EffectTargetingScope.OtherFriendlyMinions)]
+        effects: [
+          attack("pl_pawn3", EffectTargetingScope.OtherFriendlyMinions, 1)
+        ]
       },
       //
       // enemy
@@ -65,4 +69,3 @@ export const state: State = {
     ]
   }
 };
-

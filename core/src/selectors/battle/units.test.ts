@@ -9,7 +9,6 @@ import {
   getEnemyUnitsByUserId,
   getHero,
   getMinionsByUserId,
-  getPlayerUnitIds,
   getPlayerUnits,
   getUnitById,
   getUnitFriendlyMinions,
@@ -18,70 +17,27 @@ import {
   getUnitsByTargetingScope,
   getUnitsByUserId
 } from "./units";
-import { EffectImpact, EffectTargetingScope, UnitTypes } from "../../index";
-import { attack, health } from "../../unit/effects";
+import { EffectTargetingScope, UnitTypes } from "../../index";
 import createUnit from "../../unit/fabric";
-import { playerDecreseMoney } from "../../actions";
 
 describe("getUnitById", () => {
   it("should return a unit", function() {
     const unit = getUnitById(state, "pl_pawn1");
-    expect(unit).toMatchObject({
-      ownerId: "player",
-      type: UnitTypes.Pawn,
-      _id: "pl_pawn1"
-    });
+    expect(unit).toMatchSnapshot();
   });
 });
 
 describe("getUnitsByUserId", () => {
   it("should return list of `player` users", function() {
     const units = getUnitsByUserId(state, "player");
-    expect(units).toMatchObject([
-      {
-        _id: "pl_hero",
-        ownerId: "player",
-        type: UnitTypes.Pawn,
-        hero: true
-      },
-      {
-        _id: "pl_pawn1",
-        ownerId: "player",
-        type: UnitTypes.Pawn
-      },
-      {
-        _id: "pl_pawn2",
-        ownerId: "player",
-        type: UnitTypes.Pawn
-      },
-
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
 describe("getMinionsByUserId", () => {
   it("should return list of `player` users", function() {
     const units = getMinionsByUserId(state, "player");
-    expect(units).toMatchObject([
-      {
-        _id: "pl_pawn1",
-        ownerId: "player",
-        type: UnitTypes.Pawn
-      },
-      {
-        _id: "pl_pawn2",
-        ownerId: "player",
-        type: UnitTypes.Pawn
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
@@ -116,29 +72,14 @@ describe("getHero", () => {
 describe("getEnemyUnitsByUserId", () => {
   it("should return all enemy units of player which has passed id", function() {
     const units = getEnemyUnitsByUserId(state, "player");
-    expect(units).toMatchObject([
-      {
-        ownerId: "enemy",
-        _id: "e_hero",
-        hero: true
-      },
-      {
-        ownerId: "enemy",
-        _id: "e_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
 describe("getEnemyMinionsByUserId", () => {
   it("should return all enemy minions of player which has passed id", function() {
     const units = getEnemyMinionsByUserId(state, "player");
-    expect(units).toMatchObject([
-      {
-        ownerId: "enemy",
-        _id: "e_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
@@ -173,96 +114,42 @@ describe("getEnemyHero", () => {
 describe("getUnitIdsByUserId", () => {
   it("should return list of all ids of `player`", function() {
     const ids = getUnitIdsByUserId(state, "player");
-    expect(ids).toMatchObject(["pl_hero", "pl_pawn1", "pl_pawn2", "pl_pawn3"]);
+    expect(ids).toMatchSnapshot();
   });
 });
 
 describe("getEnemyUnitIdsByUserId", () => {
   it("should return list of all ids of `enemy`", function() {
     const ids = getEnemyUnitIdsByUserId(state, "player");
-    expect(ids).toMatchObject(["e_hero", "e_pawn3"]);
+    expect(ids).toMatchSnapshot();
   });
 });
 
 describe("getPlayerUnits", () => {
   it("should return units of current player", function() {
     const units = getPlayerUnits(state);
-    expect(units).toMatchObject([
-      {
-        _id: "pl_hero",
-        ownerId: "player",
-        type: UnitTypes.Pawn,
-        hero: true
-      },
-      {
-        _id: "pl_pawn1",
-        ownerId: "player",
-        type: UnitTypes.Pawn
-      },
-      {
-        _id: "pl_pawn2",
-        ownerId: "player",
-        type: UnitTypes.Pawn
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
 describe("getEnemyUnits", () => {
   it("should return units of enemy of the current user", function() {
     const units = getEnemyUnits(state);
-    expect(units).toMatchObject([
-      {
-        ownerId: "enemy",
-        _id: "e_hero",
-        hero: true
-      },
-      {
-        ownerId: "enemy",
-        _id: "e_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
 describe("getUnitFriendlyMinions", () => {
   it("should return list of friendly minions", function() {
     const units = getUnitFriendlyMinions(state, "pl_pawn1");
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_pawn2"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
 describe("getUnitFriendlyUnits", () => {
   it("should return list of all friendly units", function() {
     const units = getUnitFriendlyUnits(state, "pl_pawn1");
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_hero",
-        hero: true
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn2"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });
 
@@ -275,16 +162,7 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.OtherFriendlyMinions
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_pawn2"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 
   test("get all friendly minions", function() {
@@ -293,20 +171,7 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.AllFriendlyMinions
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_pawn1"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn2"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 
   test("get all friendly units", function() {
@@ -315,25 +180,7 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.AllFriendlyUnits
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_hero",
-        hero: true
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn1"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn2"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 
   test("get all enemy units", function() {
@@ -342,17 +189,7 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.AllEnemyUnits
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "enemy",
-        _id: "e_hero",
-        hero: true
-      },
-      {
-        ownerId: "enemy",
-        _id: "e_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 
   test("get all enemy minions", function() {
@@ -361,12 +198,7 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.AllEnemyMinions
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "enemy",
-        _id: "e_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 
   test("get all units", function() {
@@ -375,34 +207,7 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.AllUnits
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_hero",
-        hero: true
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn1"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn2"
-      },
-      {
-        ownerId: "player",
-        _id: "pl_pawn3"
-      },
-      {
-        ownerId: "enemy",
-        _id: "e_hero",
-        hero: true
-      },
-      {
-        ownerId: "enemy",
-        _id: "e_pawn3"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 
   test("get local unit", function() {
@@ -411,11 +216,6 @@ describe("getUnitsByTargetingScope", () => {
       sourceId,
       EffectTargetingScope.Local
     );
-    expect(units).toMatchObject([
-      {
-        ownerId: "player",
-        _id: "pl_pawn1"
-      }
-    ]);
+    expect(units).toMatchSnapshot();
   });
 });

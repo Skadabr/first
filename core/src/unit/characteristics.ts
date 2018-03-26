@@ -1,4 +1,3 @@
-import { taunt, tauntDisabler } from "./effects/availability_effects";
 import { UnitTypes } from "../index";
 
 export default {
@@ -9,7 +8,6 @@ export default {
     health: 6,
     attack: 1,
     moves: 0,
-    effects: []
   },
 
   [UnitTypes.Officer]: {
@@ -19,7 +17,6 @@ export default {
     health: 6,
     attack: 2,
     moves: 0,
-    effects: [taunt()]
   },
 
   [UnitTypes.Horse]: {
@@ -29,6 +26,5 @@ export default {
     health: 5,
     attack: 3,
     moves: 0,
-    effects: [tauntDisabler()]
   }
 };

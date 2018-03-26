@@ -1,11 +1,11 @@
 import {EffectImpact, EffectTargetingScope, EffectTypes} from "../../index";
 
-export { taunt, tauntDisabler } from "./availability_effects";
+export { taunt, unTaunt } from "./availability_effects";
 export { attack } from "./attack_effects";
 export { health } from "./health_effects";
 
 export interface Effect {
-  _id: string;
+  ownerId: string;
   type: EffectTypes;
   impact: EffectImpact;
   targetingScope: EffectTargetingScope;

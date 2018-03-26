@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getEffectByImpact should return effects with \`Health\` impact 1`] = `
+Array [
+  Object {
+    "impact": "HEALTH",
+    "ownerId": "pl_pawn2",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "HEALTH",
+    "value": 2,
+  },
+]
+`;
+
+exports[`getEffectByUnitId should return effects of unit 1`] = `
+Array [
+  Object {
+    "impact": "HEALTH",
+    "ownerId": "pl_pawn2",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "HEALTH",
+    "value": 2,
+  },
+]
+`;
+
+exports[`getEffectByUserId should return effects of user 1`] = `
+Array [
+  Object {
+    "impact": "HEALTH",
+    "ownerId": "pl_pawn2",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "HEALTH",
+    "value": 2,
+  },
+  Object {
+    "impact": "ATTACK",
+    "ownerId": "pl_pawn3",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "ATTACK",
+    "value": 1,
+  },
+]
+`;
+
+exports[`getEffects should return list of effects 1`] = `
+Array [
+  Object {
+    "impact": "HEALTH",
+    "ownerId": "pl_pawn2",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "HEALTH",
+    "value": 2,
+  },
+  Object {
+    "impact": "ATTACK",
+    "ownerId": "pl_pawn3",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "ATTACK",
+    "value": 1,
+  },
+]
+`;
+
+exports[`getEffectsApplicableToUnit should return all effects which can be applicable to unit (impact on its behavior) 1`] = `
+Array [
+  Object {
+    "impact": "HEALTH",
+    "ownerId": "pl_pawn2",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "HEALTH",
+    "value": 2,
+  },
+  Object {
+    "impact": "ATTACK",
+    "ownerId": "pl_pawn3",
+    "targetingScope": "OTHER_FRIENDLY_MINIONS",
+    "type": "ATTACK",
+    "value": 1,
+  },
+]
+`;
