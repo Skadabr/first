@@ -1,4 +1,5 @@
 import { EffectTargetingScope } from "../../index";
+import { state } from "../../__tests__/fixtures/state-fixture";
 
 export const getUnits = state => state.battle.units;
 
@@ -121,3 +122,9 @@ export const getUnitIdsByTargetingScope = (state, sourceId, targetingScope) =>
   getUnitsByTargetingScope(state, sourceId, targetingScope).map(
     ({ _id }) => _id
   );
+
+export const getDeadUnitsIds = state => {
+  return getUnits(state)
+    .filter(u => u.health <= 0)
+    .map(u => u._id);
+};

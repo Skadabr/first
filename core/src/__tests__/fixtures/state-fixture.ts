@@ -1,6 +1,7 @@
 import { EffectTargetingScope, UnitTypes } from "../../index";
 import { attack, health } from "../../unit/effects/index";
 import createUnit from "../../unit/fabric";
+import {createCard} from "../../card";
 
 export interface State {
   user: any;
@@ -68,6 +69,13 @@ export const state: State = {
         ...createUnit(UnitTypes.Pawn, "enemy"),
         _id: "e_pawn3"
       }
-    ]
+    ],
+    // cards: [
+    //   {
+    //     ...createCard(UnitTypes.Pawn, 'player'),
+    //     _id: 'pl_card1'
+    //   }
+
+    // ]
   }
 };

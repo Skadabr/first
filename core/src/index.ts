@@ -14,9 +14,12 @@ import { unitAddCounterEffects, unitSetHealth } from "./actions/battle/unit";
 import { getUnitHealthWithAppliedEffects } from "./selectors/battle/unit";
 import { playerAddUnit, playerDecreseMoney, playerRemoveCard } from "./actions";
 import {
-  getUnitAttackWithAppliedEffects, getUnitById,
+  getUnitAttackWithAppliedEffects,
+  getUnitById,
   getUnitHealthAfterAttack
 } from "./selectors";
+import { getDeadUnitsIds } from "./selectors/battle/units";
+import unitsReducer, { unitsRemove } from "./actions/battle/units";
 
 export enum UserStatusType {
   Peace = "PEACE",
@@ -83,7 +86,7 @@ export class Battle extends EventEmitter {
       {
         battle,
         user
-      },
+      }
       //applyMiddleware(reduxLogger)
     );
   }
@@ -116,17 +119,16 @@ export class Battle extends EventEmitter {
     if (!selectors.isTargetAvailableForAttack(state, sourceId, targetId))
       return;
 
-    this.trade(state, sourceId, targetId);
-
-    //const deadUnits = selectors.getDeadEnemyUnits(state);
-    // deadUnits.forEach(unit => {
-    //   this.updatePuplicState(actions.playerRemoveUnit(unit._id, unit.ownerId));
-    // });
+    this.trade(sourceId, targetId);
+    this.removeDeadUnits();
   }
 
   public getUnit(unitId) {
     const state = this.state;
     const unit = getUnitById(state, unitId);
+
+    if (!unit) return;
+
     const health = getUnitHealthWithAppliedEffects(state, unitId);
     const attack = getUnitAttackWithAppliedEffects(state, unitId);
     return {
@@ -136,7 +138,8 @@ export class Battle extends EventEmitter {
     };
   }
 
-  private trade(state, sourceId, targetId) {
+  private trade(sourceId, targetId) {
+    const state = this.state;
     const sourceTradeEffects = getUniqueListOfTradeEffectTypes(state, sourceId);
     const targetTradeEffects = getUniqueListOfTradeEffectTypes(state, targetId);
 
@@ -148,12 +151,19 @@ export class Battle extends EventEmitter {
       targetId
     );
 
-
     this.updateState(unitAddCounterEffects(targetId, additionalCounterEffects));
     this.updateState(unitSetHealth(targetId, health));
 
-    const finalHealth = getUnitHealthWithAppliedEffects(state, targetId);
+    const finalHealth = getUnitHealthWithAppliedEffects(this.state, targetId);
     this.emit(BATTLE_EVENT, unitSetHealth(targetId, finalHealth));
+  }
+
+  private removeDeadUnits() {
+    const deadUnitIds = getDeadUnitsIds(this.state);
+    for (const id of deadUnitIds) {
+      this.updateState(unitsRemove(id));
+      this.emit(BATTLE_EVENT, unitsRemove(id));
+    }
   }
 
   //
