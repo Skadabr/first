@@ -14,8 +14,8 @@ export class UnitSet {
   }
 }
 
-export function createNumberSequence(n) {
-  const res = [];
+export function createNumberSequence(n: number): number[] {
+  const res: number[] = [];
   for (let i = 0; i < n; i++) res.push(i);
   return res;
 }
@@ -24,6 +24,6 @@ export function generateID() {
   return Math.random().toString();
 }
 
-export function uniqueArray(arr) {
+export function createUniqueArray(arr) {
   return [...new Set(arr)];
 }

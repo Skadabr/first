@@ -1,33 +1,42 @@
 import { EffectImpact } from "../../index";
 import { filterEffectsByImpact } from "../../selectors";
 import { createCounterEffect } from "./index";
+import { Effect } from "../effects";
+import { createUniqueArray } from "../../utils";
 
-export function normalizeHealthEffects(effects, counterEffects) {
-  const normalizedEffects = effects.map(eff => {
-    if (eff.impact !== EffectImpact.Health) return eff;
+export function normalizeHealthEffects(
+  effects: Effect[],
+  counterEffects: Effect[]
+): Effect[] {
+  const effectOwnerIds = createUniqueArray(effects.map(e => e.ownerId));
+  const normalizedEffects = effectOwnerIds
+    .map(effectOwnerId => {
+      const effs = effects.filter(
+        e => e.ownerId === effectOwnerId && e.impact === EffectImpact.Health
+      );
 
-    const counterEffectsSum = counterEffects
-      // NOTE: there can be potential bug with `casted` effects which all has
-      //  the same `ownerId` of the current unit
-      .filter(cEff => cEff.ownerId === eff.ownerId)
-      .reduce((sum, { value }) => sum + value, 0);
+      const counterEffectsSum = counterEffects
+        .filter(cEff => cEff.ownerId === effectOwnerId)
+        .reduce((sum, { value }) => sum + value, 0);
 
-    // by design `counterSum` can't be bigger then `eff.value`,
-    // but just in case we take this case into account also.
-    if (counterEffectsSum >= eff.value) {
-      return null;
-    }
-    return {
-      ...eff,
-      value: counterEffectsSum
-    };
-  });
+      const effectsSum = effs.reduce((sum, { value }) => sum + value, 0);
+
+      return {
+        ...effs[0], // here can be any of effects
+        value: effectsSum - counterEffectsSum
+      };
+    })
+    // BTW: by design `counterSum` can't be bigger then `effectsSum`.
+    .filter(eff => eff.value > 0);
 
   return normalizedEffects;
 }
 
-export function takeAwayHealthBuffs(effects, attack) {
-  const additionalCounterEffects = [];
+export function takeAwayHealthBuffs(
+  effects: Effect[],
+  attack: number
+): { remainderOfAttack: number; additionalCounterEffects: Effect[] } {
+  const additionalCounterEffects: Effect[] = [];
   effects = filterEffectsByImpact(effects, EffectImpact.Health);
 
   for (let eff of effects) {

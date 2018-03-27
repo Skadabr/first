@@ -85,8 +85,6 @@ export default function playerReducer(state = EMPTY as any, action) {
     default:
       return {
         ...state,
-        units: unitsReducer(state.units, action),
-        hero: heroReducer(state.hero, action),
         user: userReducer(state.user, action)
       };
   }

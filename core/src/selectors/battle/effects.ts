@@ -5,14 +5,15 @@ import {
   getUnitIdsByUserId,
   getUnits
 } from "./units";
-import { uniqueArray } from "../../utils";
+import { createUniqueArray } from "../../utils";
 import {
+  Effect,
   filterEffectsByImpact,
   filterEffectsInTargetingScope
 } from "../../unit/effects";
 import { getUnitEffects } from "../../unit/methods";
 
-export const getEffects = state => {
+export const getEffects: (any) => Effect[] = state => {
   return getUnits(state).reduce((sum, { effects }) => [...sum, ...effects], []);
 };
 
@@ -44,19 +45,16 @@ export const isEffectApplicableToUnit = (state, eff, unitId) => {
   return targetIds.includes(unitId);
 };
 
-export const getEffectsApplicableToUnit = (state, unitId) => {
+export const getEffectsApplicableToUnit = (state, unitId): Effect[] => {
   const unit = getUnitById(state, unitId);
   const effs = getEffects(state);
-  const localUnitEffects = filterEffectsInTargetingScope(
-    getUnitEffects(unit),
-    EffectTargetingScope.Local
+  const acc: Effect[] = [];
+
+  const applicableEffects = effs.filter(eff =>
+    isEffectApplicableToUnit(state, eff, unitId)
   );
-  const acc = [...localUnitEffects];
 
-  for (const eff of effs)
-    if (isEffectApplicableToUnit(state, eff, unitId)) acc.push(eff);
-
-  return acc;
+  return applicableEffects;
 };
 
 export const getUniqueListOfTradeEffectTypes = (state, unitId) => {
@@ -64,5 +62,5 @@ export const getUniqueListOfTradeEffectTypes = (state, unitId) => {
     getEffectsByUnitId(state, unitId),
     EffectImpact.Trade
   );
-  return uniqueArray(effs.map(eff => eff.type));
+  return createUniqueArray(effs.map(eff => eff.type));
 };

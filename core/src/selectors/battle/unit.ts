@@ -78,8 +78,9 @@ function getNormalizedEffectsApplicableToUnit(state, unit, impact, normalizer) {
     counterEffects,
     normalizer
   );
-  return {
-    normalizedEffects,
-    counterEffects
-  };
+  return normalizedEffects;
+  // return {
+  //   normalizedEffects,
+  //   counterEffects
+  // };
 }

@@ -18,5 +18,6 @@ export function getAllAvailableForAttackTargetIds(state, sourceId) {
 }
 
 export function isTargetAvailableForAttack(state, sourceId, targetId) {
+  return true;
   //return getAllAvailableForAttackTargetIds(state, sourceId).includes(targetId);
 }

@@ -1,5 +1,7 @@
 import copy from "deep-copy";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import reduxLogger from "redux-logger";
+
 import EventEmitter from "eventemitter3";
 
 import * as actions from "./actions/index";
@@ -11,6 +13,10 @@ import { getTradingFn } from "./unit/trade/index";
 import { unitAddCounterEffects, unitSetHealth } from "./actions/battle/unit";
 import { getUnitHealthWithAppliedEffects } from "./selectors/battle/unit";
 import { playerAddUnit, playerDecreseMoney, playerRemoveCard } from "./actions";
+import {
+  getUnitAttackWithAppliedEffects, getUnitById,
+  getUnitHealthAfterAttack
+} from "./selectors";
 
 export enum UserStatusType {
   Peace = "PEACE",
@@ -34,7 +40,7 @@ export enum EffectTypes {
   Health = "HEALTH",
   Attack = "ATTACK",
   Taunt = "TAUNT",
-  UnTaunt = "UN_TAUNT",
+  UnTaunt = "UN_TAUNT"
 }
 
 export enum EffectTargetingScope {
@@ -62,8 +68,6 @@ export const CLEAN_STATE = "CLEAN_STATE";
 
 export const utils = Utils;
 
-export function createBattle() {}
-
 const BATTLE_EVENT = "event";
 const BATTLE_ERROR = "error";
 
@@ -74,15 +78,18 @@ export class Battle extends EventEmitter {
     super();
     battle = copy(battle);
     user = copy(user);
-    this.store = createStore(actions.reducer, { battle, user });
+    this.store = createStore(
+      actions.reducer,
+      {
+        battle,
+        user
+      },
+      //applyMiddleware(reduxLogger)
+    );
   }
 
   public toJSON() {
-    const { turnOwner, players } = this.store.getState();
-    return {
-      turnOwner,
-      players: copy(players)
-    };
+    return copy(this.state);
   }
 
   public playCard(cardId, position) {
@@ -117,6 +124,18 @@ export class Battle extends EventEmitter {
     // });
   }
 
+  public getUnit(unitId) {
+    const state = this.state;
+    const unit = getUnitById(state, unitId);
+    const health = getUnitHealthWithAppliedEffects(state, unitId);
+    const attack = getUnitAttackWithAppliedEffects(state, unitId);
+    return {
+      ...unit,
+      health,
+      attack
+    };
+  }
+
   private trade(state, sourceId, targetId) {
     const sourceTradeEffects = getUniqueListOfTradeEffectTypes(state, sourceId);
     const targetTradeEffects = getUniqueListOfTradeEffectTypes(state, targetId);
@@ -128,6 +147,7 @@ export class Battle extends EventEmitter {
       sourceId,
       targetId
     );
+
 
     this.updateState(unitAddCounterEffects(targetId, additionalCounterEffects));
     this.updateState(unitSetHealth(targetId, health));

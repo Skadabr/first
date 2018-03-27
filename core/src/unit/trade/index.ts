@@ -1,23 +1,21 @@
 import deepEqual from "fast-deep-equal";
-import groupBy from "lodash.groupby";
 
-import {
-  getUnitAttackWithAppliedEffects,
-} from "../../selectors/battle/unit";
+import { getUnitAttackWithAppliedEffects } from "../../selectors/battle/unit";
 import { getUnitHealthAfterAttack } from "../../selectors/battle/unit";
+import { Effect } from "../effects";
 
 export function getTradingFn(sourceEffects, targetEffects) {
   let tradingFunction = defaultTradingFunction;
 
-  for (const tradingRule of tradingRules) {
-    if (
-      deepEqual(sourceEffects, tradingRule.sourceFeatures) &&
-      deepEqual(targetEffects, tradingRule.targetFeatures)
-    ) {
-      tradingFunction = tradingRule.action;
-      break;
-    }
-  }
+  // for (const tradingRule of tradingRules) {
+  //   if (
+  //     deepEqual(sourceEffects, tradingRule.sourceFeatures) &&
+  //     deepEqual(targetEffects, tradingRule.targetFeatures)
+  //   ) {
+  //     tradingFunction = tradingRule.action;
+  //     break;
+  //   }
+  // }
   return tradingFunction;
 }
 
@@ -26,7 +24,11 @@ export function defaultTradingFunction(state, sourceId, targetId) {
   return getUnitHealthAfterAttack(state, targetId, attack);
 }
 
-export function normalizeEffects(effects, counterEffects, normalizer) {
+export function normalizeEffects(
+  effects: Effect[],
+  counterEffects: Effect[],
+  normalizer: (effs: Effect[], cEffs: Effect[]) => Effect[]
+): Effect[] {
   const actualCounterEffects = filterObsoleteCounterEffects(
     effects,
     counterEffects
@@ -38,16 +40,19 @@ export function normalizeEffects(effects, counterEffects, normalizer) {
 //
 // attempt to guaranty that `counterEffect` has the same `ownerId` as `effect`
 //
-export function createCounterEffect(effect, value) {
+export function createCounterEffect(effect: Effect, value: any): Effect {
   return {
     ...effect,
     value
   };
 }
 
-function filterObsoleteCounterEffects(effects, counterEffects) {
+function filterObsoleteCounterEffects(
+  effects: Effect[],
+  counterEffects: Effect[]
+): Effect[] {
   return counterEffects.filter(cEff => {
-    effects.map(({ ownerId }) => ownerId).includes(cEff.ownerId);
+    const effIds = effects.map(({ ownerId }) => ownerId);
+    return effIds.includes(cEff.ownerId);
   });
 }
-

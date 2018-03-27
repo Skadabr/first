@@ -5,6 +5,7 @@ import createUnit from "../../unit/fabric";
 export interface State {
   user: any;
   battle: {
+    turnOwner: string;
     players: any[];
     units: any[];
   };
@@ -15,6 +16,7 @@ export const state: State = {
     _id: "player"
   },
   battle: {
+    turnOwner: "player",
     players: [
       {
         user: {

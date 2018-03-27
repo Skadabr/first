@@ -12,7 +12,8 @@ export default function createUnit(type: UnitTypes, ownerId) {
     _id,
     ownerId,
     ...characteristic,
-    effects: []
+    effects: [],
+    counterEffects: []
   };
 
   switch (type) {

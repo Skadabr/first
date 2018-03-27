@@ -6,6 +6,7 @@ Array [
     "_id": "e_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -29,6 +30,7 @@ Array [
     "_id": "e_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -41,6 +43,7 @@ Array [
     "_id": "e_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -57,6 +60,7 @@ Array [
     "_id": "e_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -69,6 +73,7 @@ Array [
     "_id": "e_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -85,6 +90,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -96,6 +102,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -115,6 +122,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -139,6 +147,7 @@ Array [
     "_id": "pl_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -151,6 +160,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -162,6 +172,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -181,6 +192,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -204,6 +216,7 @@ Object {
   "_id": "pl_pawn1",
   "attack": 1,
   "cost": 1,
+  "counterEffects": Array [],
   "effects": Array [],
   "health": 6,
   "moves": 0,
@@ -219,6 +232,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -238,6 +252,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -262,6 +277,7 @@ Array [
     "_id": "pl_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -274,6 +290,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -293,6 +310,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -326,6 +344,7 @@ Array [
     "_id": "e_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -342,6 +361,7 @@ Array [
     "_id": "e_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -354,6 +374,7 @@ Array [
     "_id": "e_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -370,6 +391,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -381,6 +403,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -400,6 +423,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -424,6 +448,7 @@ Array [
     "_id": "pl_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -436,6 +461,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -447,6 +473,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -466,6 +493,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -490,6 +518,7 @@ Array [
     "_id": "pl_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -502,6 +531,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -513,6 +543,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -532,6 +563,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -551,6 +583,7 @@ Array [
     "_id": "e_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -563,6 +596,7 @@ Array [
     "_id": "e_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -579,6 +613,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -595,6 +630,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -614,6 +650,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",
@@ -638,6 +675,7 @@ Array [
     "_id": "pl_hero",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
@@ -650,6 +688,7 @@ Array [
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "moves": 0,
@@ -661,6 +700,7 @@ Array [
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "HEALTH",
@@ -680,6 +720,7 @@ Array [
     "_id": "pl_pawn3",
     "attack": 1,
     "cost": 1,
+    "counterEffects": Array [],
     "effects": Array [
       Object {
         "impact": "ATTACK",

@@ -1,4 +1,6 @@
 import playersReducer from "./players";
+import unitReducer from "./unit";
+import unitsReducer from "./units";
 
 const EMPTY = {};
 
@@ -49,7 +51,8 @@ export default function battleReducer(state = EMPTY as any, action) {
     default:
       return {
         ...state,
-        players: playersReducer(state.players, action)
+        players: playersReducer(state.players, action),
+        units: unitsReducer(state.units, action)
       };
   }
 }
