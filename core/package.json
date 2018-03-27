@@ -34,11 +34,13 @@
     "deep-copy": "^1.4.2",
     "eventemitter3": "^3.0.1",
     "lodash.groupby": "^4.6.0",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6"
   },
   "devDependencies": {
     "@types/jest": "^22.2.2",
-    "@types/node": "^9.4.6",
+    "@types/node": "^9.6.0",
+    "@types/redux-logger": "^3.0.5",
     "jest": "^22.4.3",
     "prettier": "^1.11.1",
     "ts-jest": "^22.4.2",
