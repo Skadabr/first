@@ -5,50 +5,15 @@ import {
   _newBattleLog,
   _setUserReadyLog
 } from "../../logger/controllers/battle";
-import { validators, state, selectors, card, unit, UserStatusType, DECK_INIT_SIZE } from "core";
-import { createStore } from "../../reducer";
-
-const { createRandomCards } = card;
+import {Battle, validators} from "core";
 
 import {
   USERS_UPSERT,
   USER_UPDATE_STATUS,
   BATTLE_REQUEST,
-  TURN,
-  SELECT_CARDS_FOR_DECK
 } from "../game";
 
 const { validateAddUnitParams } = validators;
-//
-// ============ actions ============
-//
-const {
-  battleNextTurn,
-  playerAddCards,
-  playerAddUnit,
-  playerRemoveCard,
-  playerDecreseMoney,
-  playerAdjustMoney,
-  unitSetMoves,
-  unitSetAvailability,
-  unitDecreaseMoves,
-  unitAttack,
-  playerRemoveUnit
-} = state;
-//
-// ============ selectors ============
-//
-const {
-  isCurrentUserTurnOwner,
-  getTurnOwner,
-  getCard,
-  getPlayer,
-  getPlayerUnitIds,
-  getEnemyUnitIds,
-  getAllAvailableTargetIds,
-  getRawUnitSource,
-  getDeadEnemyUnits
-} = selectors;
 //
 // ============ controller ============
 //
@@ -72,23 +37,27 @@ export default class BattleController {
   public async tryCreateBattle() {
     const { ws, User } = this;
     const opponent = await User.acquireEnemy(ws.user);
+
     if (!opponent) {
       await this._setUserReady(ws.user);
       return;
     }
-    const battle = await this._newBattle(ws.user, opponent);
-    const store = createStore(battle.toJSON(), ws.user.toJSON());
+
+    const battleCollection = await this._newBattle(ws.user, opponent);
+    const battleJSON = battleCollection.toJSON();
+    const battle = new Battle(battleJSON.battle, ws.user.toJSON());
+
     await this._createDeck(ws.user._id, opponent._id, store);
 
-    battle.updateState(store.getState().battle);
+    battleCollection.updateState(battle.toJSON().battle);
 
     this._send(BATTLE_REQUEST, opponent.socketId, {
-      data: store.getState().battle
+      data: battle.toJSON().battle
     });
   }
 
   //
-  // ============ addUnit ============
+  // ============ addTestUnit ============
   //
 
   public addUnit = async ({ cardId, position }, cb) => {

@@ -30,6 +30,8 @@ export default function battleIOMiddleware({ logger, models }) {
       logger.error(getErrorMessage(err));
     }
 
+    // === where ===
+
     async function getBattle() {
       if (!ws.user || ws.user.status !== UserStatusType.Fight) return;
 
