@@ -29,9 +29,9 @@ export class DropPosition extends React.PureComponent<DropPositionPT> {
 }
 
 const dropTarget = {
-  drop({ onDrop }, monitor) {
+  drop(props, monitor) {
     console.log("DropPosition->drop");
-    onDrop(monitor.getItem());
+    props.onDrop(monitor.getItem());
   }
 };
 

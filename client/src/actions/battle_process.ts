@@ -49,6 +49,7 @@ const { applyEffects } = unit;
 //
 // ============ Actions ============
 //
+
 export function createBattle(val, router) {
   return dispatch => {
     const { data, error } = val;

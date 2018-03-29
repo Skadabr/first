@@ -1,6 +1,6 @@
 import { UnitTypes, state } from "core";
 import { chatAddMessage } from "../actions/chat";
-import { createBattle } from "../actions/battleProcess";
+import { createBattle } from "../actions/battle_process";
 
 const { loadUsers, usersUpsert, usersRemove, userUpdateStatus } = state;
 

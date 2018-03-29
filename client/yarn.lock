@@ -1485,7 +1485,7 @@ convert-source-map@^1.5.0:
 
 copy-concurrently@^1.0.0:
   version "1.0.5"
-  resolved "https://registry.yarnpkg.com/copy-concurrently/-/copy-concurrently-1.0.5.tgz#92297398cae34937fcafd6ec8139c18051f0b5e0"
+  resolved "https://registry.yarnpkg.com/dcopy-concurrently/-/dcopy-concurrently-1.0.5.tgz#92297398cae34937fcafd6ec8139c18051f0b5e0"
   dependencies:
     aproba "^1.1.1"
     fs-write-stream-atomic "^1.0.8"
@@ -1496,7 +1496,7 @@ copy-concurrently@^1.0.0:
 
 copy-descriptor@^0.1.0:
   version "0.1.1"
-  resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
+  resolved "https://registry.yarnpkg.com/dcopy-descriptor/-/dcopy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
 
 core-js@^1.0.0:
   version "1.2.7"
@@ -1728,7 +1728,7 @@ decompress-response@^3.2.0, decompress-response@^3.3.0:
 
 deep-copy@^1.4.2:
   version "1.4.2"
-  resolved "https://registry.yarnpkg.com/deep-copy/-/deep-copy-1.4.2.tgz#0622719257e4bd60240e401ea96718211c5c4697"
+  resolved "https://registry.yarnpkg.com/deep-dcopy/-/deep-dcopy-1.4.2.tgz#0622719257e4bd60240e401ea96718211c5c4697"
 
 deep-eql@^3.0.0:
   version "3.0.1"
@@ -3696,7 +3696,7 @@ move-concurrently@^1.0.1:
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"
   dependencies:
     aproba "^1.1.1"
-    copy-concurrently "^1.0.0"
+    dcopy-concurrently "^1.0.0"
     fs-write-stream-atomic "^1.0.8"
     mkdirp "^0.5.1"
     rimraf "^2.5.4"
@@ -3922,9 +3922,9 @@ object-component@0.0.3:
 
 object-copy@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.yarnpkg.com/object-copy/-/object-copy-0.1.0.tgz#7e7d858b781bd7c991a41ba975ed3812754e998c"
+  resolved "https://registry.yarnpkg.com/object-dcopy/-/object-dcopy-0.1.0.tgz#7e7d858b781bd7c991a41ba975ed3812754e998c"
   dependencies:
-    copy-descriptor "^0.1.0"
+    dcopy-descriptor "^0.1.0"
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
@@ -5367,7 +5367,7 @@ static-extend@^0.1.1:
   resolved "https://registry.yarnpkg.com/static-extend/-/static-extend-0.1.2.tgz#60809c39cbff55337226fd5e0b520f341f1fb5c6"
   dependencies:
     define-property "^0.2.5"
-    object-copy "^0.1.0"
+    object-dcopy "^0.1.0"
 
 stream-browserify@^2.0.1:
   version "2.0.1"
