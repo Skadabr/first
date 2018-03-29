@@ -25,18 +25,81 @@ export interface UserJSON {
   rate: number;
 }
 
-interface Gamer {
-  opponentId: ObjectId;
-  turn: boolean;
-  money: number;
-  currentMoney: number;
-  health: number;
-}
-
 export default function UserModel({ logger, mongoose }) {
   const { Schema } = mongoose;
 
-  const schema = new Schema({
+  const UserSchema = getUserSchema(Schema);
+
+  Object.assign(UserSchema.methods, {
+    toJSON(): UserJSON {
+      const { _id, name, email, status, socketId, rate } = this;
+      return { _id: _id.toString(), name, email, status, socketId, rate };
+    },
+
+    async setPassword(password) {
+      if (password.length < 8) throw new TypeError("Password to short");
+      this.passwordHash = await bcrypt.hash(password, 8);
+    },
+
+    comparePassword(password) {
+      return bcrypt.compare(password, this.passwordHash);
+    },
+
+    generateJWT(): string {
+      const { email, name } = this;
+      return jwt.sign({ email, name }, JWT_SECRET);
+    },
+
+    updateStatus(status) {
+      this.status = status;
+      return this.save();
+    },
+
+    async onDisconnect() {
+      this.socketId = null;
+      await this.save();
+    },
+
+    async winFight() {
+      this.rate = this.rate + 1;
+      return this.updateStatus(UserStatusType.Peace);
+    },
+
+    async loseFight() {
+      this.rate = this.rate - 1;
+      return this.updateStatus(UserStatusType.Peace);
+    }
+  });
+
+  Object.assign(UserSchema.statics, {
+    async createUser({ email, name, password }) {
+      const user = new this({ email, name });
+      await user.setPassword(password);
+      return user.save().then();
+    },
+
+    acquireEnemy(user) {
+      return this.findOneAndUpdate(
+        { status: UserStatusType.Ready, name: { $ne: user.name } },
+        { status: UserStatusType.Fight },
+        { new: true }
+      ).exec();
+    },
+
+    getOnlineUsers() {
+      return this.find({ socketId: { $ne: null } }).then(users =>
+        users.map(({ name, status }) => ({ name, status }))
+      );
+    }
+  });
+
+  UserSchema.plugin(uniqueValidator);
+
+  mongoose.model("User", UserSchema);
+}
+
+function getUserSchema(Schema) {
+  return Schema({
     name: {
       type: String,
       required: true,
@@ -73,71 +136,4 @@ export default function UserModel({ logger, mongoose }) {
       min: [0, "Your rate can't be less than 0"]
     }
   } as any);
-
-  Object.assign(schema.methods, {
-    toJSON(): UserJSON {
-      const { _id, name, email, status, socketId, rate } = this;
-      return { _id: _id.toString(), name, email, status, socketId, rate };
-    },
-
-    async setPassword(password) {
-      if (password.length < 8) throw new TypeError("Password to short");
-      this.passwordHash = await bcrypt.hash(password, 8);
-    },
-
-    comparePassword(password) {
-      return bcrypt.compare(password, this.passwordHash);
-    },
-
-    generateJWT() {
-      const { email, name } = this;
-      return jwt.sign({ email, name }, JWT_SECRET);
-    },
-
-    updateStatus(status) {
-      this.status = status;
-      return this.save();
-    },
-
-    async onDisconnect() {
-      this.socketId = null;
-      await this.save();
-    },
-
-    async winFight() {
-      this.rate = this.rate + 1;
-      return this.updateStatus(UserStatusType.Peace);
-    },
-
-    async loseFight() {
-      this.rate = this.rate - 1;
-      return this.updateStatus(UserStatusType.Peace);
-    }
-  });
-
-  Object.assign(schema.statics, {
-    async createUser({ email, name, password }) {
-      const user = new this({ email, name });
-      await user.setPassword(password);
-      return user.save().then();
-    },
-
-    acquireEnemy(user) {
-      return this.findOneAndUpdate(
-        { status: UserStatusType.Ready, name: { $ne: user.name } },
-        { status: UserStatusType.Fight },
-        { new: true }
-      ).exec();
-    },
-
-    getOnlineUsers() {
-      return this.find({ socketId: { $ne: null } }).then(users =>
-        users.map(({ name, status }) => ({ name, status }))
-      );
-    }
-  });
-
-  schema.plugin(uniqueValidator);
-
-  mongoose.model("User", schema);
 }

@@ -5,13 +5,9 @@ import {
   _newBattleLog,
   _setUserReadyLog
 } from "../../logger/controllers/battle";
-import {Battle, validators} from "core";
+import { Battle, UserStatusType, validators } from "core";
 
-import {
-  USERS_UPSERT,
-  USER_UPDATE_STATUS,
-  BATTLE_REQUEST,
-} from "../game";
+import { USERS_UPSERT, USER_UPDATE_STATUS, BATTLE_REQUEST } from "../game";
 
 const { validateAddUnitParams } = validators;
 //
@@ -19,9 +15,9 @@ const { validateAddUnitParams } = validators;
 //
 
 export default class BattleController {
-  private ws: any;
-  private Battle: any;
-  private User: any;
+  private readonly ws: any;
+  private readonly Battle: any;
+  private readonly User: any;
 
   constructor(ws, { models }) {
     this.ws = ws;
@@ -36,23 +32,19 @@ export default class BattleController {
   @bind
   public async tryCreateBattle() {
     const { ws, User } = this;
-    const opponent = await User.acquireEnemy(ws.user);
 
-    if (!opponent) {
-      await this._setUserReady(ws.user);
-      return;
-    }
+    const enemy = await User.acquireEnemy(ws.user);
 
-    const battleCollection = await this._newBattle(ws.user, opponent);
+    if (!enemy) return await this._setUserReady(ws.user);
+
+    const battleCollection = await this._newBattle(ws.user, enemy);
     const battleJSON = battleCollection.toJSON();
-    const battle = new Battle(battleJSON.battle, ws.user.toJSON());
+    const battle = new Battle(battleJSON, ws.user.toJSON());
 
-    await this._createDeck(ws.user._id, opponent._id, store);
+    //battleCollection.updateState(battle.toJSON().battle);
 
-    battleCollection.updateState(battle.toJSON().battle);
-
-    this._send(BATTLE_REQUEST, opponent.socketId, {
-      data: battle.toJSON().battle
+    this._send(BATTLE_REQUEST, enemy.socketId, {
+      data: battle.toJSON()
     });
   }
 
@@ -60,22 +52,24 @@ export default class BattleController {
   // ============ addTestUnit ============
   //
 
-  public addUnit = async ({ cardId, position }, cb) => {
-    const { store, battle, opponent } = this.ws;
+  public playCard = async ({ cardId, position }, cb) => {
+    const { battle: battleCollection, enemy, user } = this.ws;
 
-    const card = getCard(store.getState(), cardId);
-    const player = getPlayer(store.getState());
+    const battleJSONInit = battleCollection.toJSON();
+    const userJSON = user.toJSON();
 
-    const { error } = validateAddUnitParams(card, player, position);
-    if (error) return cb({ error });
+    const battle = new Battle(battleJSONInit, userJSON);
 
-    store.dispatch(playerRemoveCard(card));
-    store.dispatch(playerDecreseMoney(player.user._id, card.unit.cost));
-    store.dispatch(playerAddUnit(card.unit, position));
+    try {
+      battle.playCard(cardId, position);
 
-    battle.updateState(store.getState().battle);
+      const data = battle.toJSON();
 
-    this._send(BATTLE_REQUEST, opponent.socketId, { data: battle.toJSON() });
+      battleCollection.updateState(data);
+      this._send(BATTLE_REQUEST, enemy.socketId, { data });
+    } catch (err) {
+      // ?????????
+    }
   };
 
   //
@@ -83,26 +77,16 @@ export default class BattleController {
   //
 
   public passTheTurn = async () => {
-    const { store, battle, opponent } = this.ws;
-    let state = store.getState();
+    const { user, battle: battleCollection, enemy } = this.ws;
 
-    const turnOwner = getTurnOwner(state);
+    const battle = new Battle(battleCollection.toJSON(), user.toJSON());
 
-    if (!isCurrentUserTurnOwner(state)) return;
+    battle.nextTurn();
 
-    getPlayerUnitIds(store.getState()).forEach(unitId => {
-      store.dispatch(unitSetMoves(unitId, 0));
-      store.dispatch(unitSetAvailability(unitId, 1));
-    });
-    getEnemyUnitIds(store.getState()).forEach(unitId => {
-      store.dispatch(unitSetMoves(unitId, 1));
-      store.dispatch(unitSetAvailability(unitId, 0));
-    });
-    store.dispatch(playerAdjustMoney(turnOwner));
-    store.dispatch(battleNextTurn());
+    const data = battleCollection.toJSON();
 
-    battle.updateState(store.getState().battle);
-    this._send(BATTLE_REQUEST, opponent.socketId, { data: battle.toJSON() });
+    battleCollection.updateState(data);
+    this._send(BATTLE_REQUEST, enemy.socketId, { data });
   };
 
   //
@@ -110,7 +94,7 @@ export default class BattleController {
   //
 
   public attack = async ({ unitId, targetId }) => {
-    const { store, battle, opponent } = this.ws;
+    const { store, battle, enemy } = this.ws;
     const { dispatch, getState } = store;
     const state = getState();
 
@@ -133,7 +117,7 @@ export default class BattleController {
     });
 
     battle.updateState(getState().battle);
-    this._send(BATTLE_REQUEST, opponent.socketId, { data: battle.toJSON() });
+    this._send(BATTLE_REQUEST, enemy.socketId, { data: battle.toJSON() });
   };
 
   //
@@ -151,19 +135,19 @@ export default class BattleController {
   }
 
   @log(_newBattleLog)
-  private async _newBattle(user, opponent) {
+  private async _newBattle(user, enemy) {
     await user.updateStatus(UserStatusType.Fight);
-    const battle = await this.Battle.newBattle(user, opponent);
+    const battle = await this.Battle.newBattle(user, enemy);
 
     this._broadcastStatusUpdate(user);
-    this._broadcastStatusUpdate(opponent);
+    this._broadcastStatusUpdate(enemy);
 
     return battle;
   }
 
-  private async _createDeck(userId, opponentId, store) {
+  private async _createDeck(userId, enemyId, store) {
     userId = userId.toString();
-    opponentId = opponentId.toString();
+    enemyId = enemyId.toString();
     // let cards: any[] = (await new Promise(ok =>
     //   this.ws.emit(SELECT_CARDS_FOR_DECK, createRandomCards(DECK_INIT_SIZE), ok)
     // )) as any;
@@ -175,7 +159,7 @@ export default class BattleController {
       playerAddCards(userId.toString(), createRandomCards(3, userId))
     );
     store.dispatch(
-      playerAddCards(opponentId.toString(), createRandomCards(3, opponentId))
+      playerAddCards(enemyId.toString(), createRandomCards(3, enemyId))
     );
   }
 
@@ -183,12 +167,12 @@ export default class BattleController {
     this._broadcast(USERS_UPSERT, { name, status });
   }
 
-  private _send(event, opponentSid, ...args) {
+  private _send(event, enemySid, ...args) {
     this.ws.emit(event, ...args);
-    this.ws.to(opponentSid).emit(event, ...args);
+    this.ws.to(enemySid).emit(event, ...args);
   }
 
-  private _sendWithCallBack(event, opponentSid, ...args) {
+  private _sendWithCallBack(event, enemySid, ...args) {
     const cb = args.pop();
     this.ws.emit(event, ...args);
     cb(...args);

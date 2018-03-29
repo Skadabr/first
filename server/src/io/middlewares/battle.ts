@@ -1,6 +1,6 @@
 import { getErrorMessage } from "../../utils/index";
 import { BATTLE_REQUEST } from "../game";
-import { UserStatusType } from "core"
+import { UserStatusType } from "core";
 import * as reducer from "../../reducer";
 
 export default function battleIOMiddleware({ logger, models }) {
@@ -10,14 +10,12 @@ export default function battleIOMiddleware({ logger, models }) {
     try {
       await getBattle();
       await getBattleEnemy();
-      createStore();
       await sendBattle();
 
       ws.use(async ([eventName], next) => {
         try {
           await getBattle();
           await getBattleEnemy();
-          createStore();
           next();
         } catch (err) {
           logger.error(getErrorMessage(err));
@@ -34,34 +32,24 @@ export default function battleIOMiddleware({ logger, models }) {
 
     async function getBattle() {
       if (!ws.user || ws.user.status !== UserStatusType.Fight) return;
-
       ws.battle = await Battle.findBattleByUserId(ws.user._id);
     }
 
     async function getBattleEnemy() {
       if (!ws.battle) return;
-      ws.opponent = await ws.battle.findEnemyByUserId(ws.user._id);
-    }
-
-    function createStore() {
-      if (!ws.battle) return;
-      const battleJSON = ws.battle.toJSON();
-      const userJSON = ws.user.toJSON();
-      ws.store = reducer.createStore(battleJSON, userJSON);
+      ws.enemy = await ws.battle.findEnemyByUserId(ws.user._id);
     }
 
     async function sendBattle() {
       if (!ws.battle) return;
-
-      _send(BATTLE_REQUEST, ws.opponent.socketId, {
-        data: ws.battle.toJSON()
-      });
+      const data = ws.battle.toJSON();
+      _send(BATTLE_REQUEST, ws.enemy.socketId, { data });
       logger.debug(`get battle object for ${ws.user.name}`);
     }
 
-    function _send(event, opponentSid, ...args) {
+    function _send(event, enemySid, ...args) {
       ws.emit(event, ...args);
-      ws.to(opponentSid).emit(event, ...args);
+      ws.to(enemySid).emit(event, ...args);
     }
   };
 }
