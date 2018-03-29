@@ -1,5 +1,4 @@
 import playersReducer from "./players";
-import unitReducer from "./unit";
 import unitsReducer from "./units";
 
 const EMPTY = {};
@@ -32,6 +31,7 @@ export const UNITS_REMOVE = "UNITS_REMOVE";
 export interface BattleState {
   turnOwner: string;
   players: any[];
+  units: any[];
 }
 
 export default function battleReducer(state = EMPTY as any, action) {

@@ -1,7 +1,6 @@
 import { EffectTargetingScope, UnitTypes } from "../../index";
 import { attack, health } from "../../unit/effects/index";
 import createUnit from "../../unit/fabric";
-import {createCard} from "../../card";
 
 export interface State {
   user: any;
@@ -12,7 +11,7 @@ export interface State {
   };
 }
 
-export const state: State = {
+export const baseState: State = {
   user: {
     _id: "player"
   },
@@ -31,51 +30,28 @@ export const state: State = {
       }
     ],
     units: [
-      //
       // player
       //
       {
         ...createUnit(UnitTypes.Pawn, "player"),
-        _id: "pl_hero",
+        _id: "p_hero",
         hero: true
       },
-      {
-        ...createUnit(UnitTypes.Pawn, "player"),
-        _id: "pl_pawn1"
-      },
-      {
-        ...createUnit(UnitTypes.Pawn, "player"),
-        _id: "pl_pawn2",
-        effects: [
-          health("pl_pawn2", EffectTargetingScope.OtherFriendlyMinions, 2)
-        ]
-      },
-      {
-        ...createUnit(UnitTypes.Pawn, "player"),
-        _id: "pl_pawn3",
-        effects: [
-          attack("pl_pawn3", EffectTargetingScope.OtherFriendlyMinions, 1)
-        ]
-      },
-      //
+
       // enemy
       //
       {
         ...createUnit(UnitTypes.Pawn, "enemy"),
         _id: "e_hero",
         hero: true
-      },
-      {
-        ...createUnit(UnitTypes.Pawn, "enemy"),
-        _id: "e_pawn3"
       }
-    ],
+    ]
+
     // cards: [
     //   {
     //     ...createCard(UnitTypes.Pawn, 'player'),
     //     _id: 'pl_card1'
     //   }
-
     // ]
   }
 };

@@ -1,14 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getEnemyMinionsByUserId should return all enemy minions of player which has passed id 1`] = `
+exports[`Units selectors getEnemyMinionsByUserId should return all enemy minions of player which has passed id 1`] = `
 Array [
   Object {
-    "_id": "e_pawn3",
+    "_id": "e_pawn1",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "enemy",
@@ -17,14 +18,14 @@ Array [
 ]
 `;
 
-exports[`getEnemyUnitIdsByUserId should return list of all ids of \`enemy\` 1`] = `
+exports[`Units selectors getEnemyUnitIdsByUserId should return list of all ids of \`enemy\` 1`] = `
 Array [
   "e_hero",
-  "e_pawn3",
+  "e_pawn1",
 ]
 `;
 
-exports[`getEnemyUnits should return units of enemy of the current user 1`] = `
+exports[`Units selectors getEnemyUnits should return units of enemy of the current user 1`] = `
 Array [
   Object {
     "_id": "e_hero",
@@ -40,12 +41,13 @@ Array [
     "type": "PAWN",
   },
   Object {
-    "_id": "e_pawn3",
+    "_id": "e_pawn1",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "enemy",
@@ -54,7 +56,7 @@ Array [
 ]
 `;
 
-exports[`getEnemyUnitsByUserId should return all enemy units of player which has passed id 1`] = `
+exports[`Units selectors getEnemyUnitsByUserId should return all enemy units of player which has passed id 1`] = `
 Array [
   Object {
     "_id": "e_hero",
@@ -70,12 +72,13 @@ Array [
     "type": "PAWN",
   },
   Object {
-    "_id": "e_pawn3",
+    "_id": "e_pawn1",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "enemy",
@@ -84,7 +87,7 @@ Array [
 ]
 `;
 
-exports[`getMinionsByUserId should return list of \`player\` users 1`] = `
+exports[`Units selectors getMinionsByUserId should return list of \`player\` users 1`] = `
 Array [
   Object {
     "_id": "pl_pawn1",
@@ -93,6 +96,7 @@ Array [
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -103,16 +107,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -123,16 +120,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -141,10 +131,10 @@ Array [
 ]
 `;
 
-exports[`getPlayerUnits should return units of current player 1`] = `
+exports[`Units selectors getPlayerUnits should return units of current player 1`] = `
 Array [
   Object {
-    "_id": "pl_hero",
+    "_id": "p_hero",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
@@ -163,6 +153,7 @@ Array [
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -173,16 +164,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -193,16 +177,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -211,7 +188,7 @@ Array [
 ]
 `;
 
-exports[`getUnitById should return a unit 1`] = `
+exports[`Units selectors getUnitById should return a unit 1`] = `
 Object {
   "_id": "pl_pawn1",
   "attack": 1,
@@ -219,6 +196,7 @@ Object {
   "counterEffects": Array [],
   "effects": Array [],
   "health": 6,
+  "hero": false,
   "moves": 0,
   "name": "Pawn",
   "ownerId": "player",
@@ -226,23 +204,16 @@ Object {
 }
 `;
 
-exports[`getUnitFriendlyMinions should return list of friendly minions 1`] = `
+exports[`Units selectors getUnitFriendlyMinions should return list of friendly minions 1`] = `
 Array [
   Object {
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -253,16 +224,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -271,10 +235,10 @@ Array [
 ]
 `;
 
-exports[`getUnitFriendlyUnits should return list of all friendly units 1`] = `
+exports[`Units selectors getUnitFriendlyUnits should return list of all friendly units 1`] = `
 Array [
   Object {
-    "_id": "pl_hero",
+    "_id": "p_hero",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
@@ -291,16 +255,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -311,16 +268,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -329,24 +279,25 @@ Array [
 ]
 `;
 
-exports[`getUnitIdsByUserId should return list of all ids of \`player\` 1`] = `
+exports[`Units selectors getUnitIdsByUserId should return list of all ids of \`player\` 1`] = `
 Array [
-  "pl_hero",
+  "p_hero",
   "pl_pawn1",
   "pl_pawn2",
   "pl_pawn3",
 ]
 `;
 
-exports[`getUnitsByTargetingScope get all enemy minions 1`] = `
+exports[`Units selectors getUnitsByTargetingScope get all enemy minions 1`] = `
 Array [
   Object {
-    "_id": "e_pawn3",
+    "_id": "e_pawn1",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "enemy",
@@ -355,7 +306,7 @@ Array [
 ]
 `;
 
-exports[`getUnitsByTargetingScope get all enemy units 1`] = `
+exports[`Units selectors getUnitsByTargetingScope get all enemy units 1`] = `
 Array [
   Object {
     "_id": "e_hero",
@@ -371,12 +322,13 @@ Array [
     "type": "PAWN",
   },
   Object {
-    "_id": "e_pawn3",
+    "_id": "e_pawn1",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "enemy",
@@ -385,7 +337,7 @@ Array [
 ]
 `;
 
-exports[`getUnitsByTargetingScope get all friendly minions 1`] = `
+exports[`Units selectors getUnitsByTargetingScope get all friendly minions 1`] = `
 Array [
   Object {
     "_id": "pl_pawn1",
@@ -394,6 +346,7 @@ Array [
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -404,16 +357,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -424,16 +370,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -442,10 +381,10 @@ Array [
 ]
 `;
 
-exports[`getUnitsByTargetingScope get all friendly units 1`] = `
+exports[`Units selectors getUnitsByTargetingScope get all friendly units 1`] = `
 Array [
   Object {
-    "_id": "pl_hero",
+    "_id": "p_hero",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
@@ -464,6 +403,7 @@ Array [
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -474,16 +414,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -494,16 +427,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -512,68 +438,16 @@ Array [
 ]
 `;
 
-exports[`getUnitsByTargetingScope get all units 1`] = `
+exports[`Units selectors getUnitsByTargetingScope get all units 1`] = `
 Array [
   Object {
-    "_id": "pl_hero",
+    "_id": "p_hero",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
     "hero": true,
-    "moves": 0,
-    "name": "Pawn",
-    "ownerId": "player",
-    "type": "PAWN",
-  },
-  Object {
-    "_id": "pl_pawn1",
-    "attack": 1,
-    "cost": 1,
-    "counterEffects": Array [],
-    "effects": Array [],
-    "health": 6,
-    "moves": 0,
-    "name": "Pawn",
-    "ownerId": "player",
-    "type": "PAWN",
-  },
-  Object {
-    "_id": "pl_pawn2",
-    "attack": 1,
-    "cost": 1,
-    "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
-    "health": 6,
-    "moves": 0,
-    "name": "Pawn",
-    "ownerId": "player",
-    "type": "PAWN",
-  },
-  Object {
-    "_id": "pl_pawn3",
-    "attack": 1,
-    "cost": 1,
-    "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
-    "health": 6,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -593,54 +467,26 @@ Array [
     "type": "PAWN",
   },
   Object {
-    "_id": "e_pawn3",
-    "attack": 1,
-    "cost": 1,
-    "counterEffects": Array [],
-    "effects": Array [],
-    "health": 6,
-    "moves": 0,
-    "name": "Pawn",
-    "ownerId": "enemy",
-    "type": "PAWN",
-  },
-]
-`;
-
-exports[`getUnitsByTargetingScope get local unit 1`] = `
-Array [
-  Object {
     "_id": "pl_pawn1",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
     "type": "PAWN",
   },
-]
-`;
-
-exports[`getUnitsByTargetingScope get other friendly minions 1`] = `
-Array [
   Object {
     "_id": "pl_pawn2",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -651,16 +497,40 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
+    "moves": 0,
+    "name": "Pawn",
+    "ownerId": "player",
+    "type": "PAWN",
+  },
+  Object {
+    "_id": "e_pawn1",
+    "attack": 1,
+    "cost": 1,
+    "counterEffects": Array [],
+    "effects": Array [],
+    "health": 6,
+    "hero": false,
+    "moves": 0,
+    "name": "Pawn",
+    "ownerId": "enemy",
+    "type": "PAWN",
+  },
+]
+`;
+
+exports[`Units selectors getUnitsByTargetingScope get local unit 1`] = `
+Array [
+  Object {
+    "_id": "pl_pawn1",
+    "attack": 1,
+    "cost": 1,
+    "counterEffects": Array [],
+    "effects": Array [],
+    "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -669,10 +539,41 @@ Array [
 ]
 `;
 
-exports[`getUnitsByUserId should return list of \`player\` users 1`] = `
+exports[`Units selectors getUnitsByTargetingScope get other friendly minions 1`] = `
 Array [
   Object {
-    "_id": "pl_hero",
+    "_id": "pl_pawn2",
+    "attack": 1,
+    "cost": 1,
+    "counterEffects": Array [],
+    "effects": Array [],
+    "health": 6,
+    "hero": false,
+    "moves": 0,
+    "name": "Pawn",
+    "ownerId": "player",
+    "type": "PAWN",
+  },
+  Object {
+    "_id": "pl_pawn3",
+    "attack": 1,
+    "cost": 1,
+    "counterEffects": Array [],
+    "effects": Array [],
+    "health": 6,
+    "hero": false,
+    "moves": 0,
+    "name": "Pawn",
+    "ownerId": "player",
+    "type": "PAWN",
+  },
+]
+`;
+
+exports[`Units selectors getUnitsByUserId should return list of \`player\` users 1`] = `
+Array [
+  Object {
+    "_id": "p_hero",
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
@@ -691,6 +592,7 @@ Array [
     "counterEffects": Array [],
     "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -701,16 +603,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "HEALTH",
-        "ownerId": "pl_pawn2",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "HEALTH",
-        "value": 2,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",
@@ -721,16 +616,9 @@ Array [
     "attack": 1,
     "cost": 1,
     "counterEffects": Array [],
-    "effects": Array [
-      Object {
-        "impact": "ATTACK",
-        "ownerId": "pl_pawn3",
-        "targetingScope": "OTHER_FRIENDLY_MINIONS",
-        "type": "ATTACK",
-        "value": 1,
-      },
-    ],
+    "effects": Array [],
     "health": 6,
+    "hero": false,
     "moves": 0,
     "name": "Pawn",
     "ownerId": "player",

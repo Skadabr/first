@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getEffectByImpact should return effects with \`Health\` impact 1`] = `
+exports[`Effects selector getEffectByImpact should return effects with \`Health\` impact 1`] = `
 Array [
   Object {
     "impact": "HEALTH",
-    "ownerId": "pl_pawn2",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "HEALTH",
     "value": 2,
@@ -12,30 +12,18 @@ Array [
 ]
 `;
 
-exports[`getEffectByUnitId should return effects of unit 1`] = `
+exports[`Effects selector getEffectByUnitId should return effects of unit 1`] = `
 Array [
   Object {
     "impact": "HEALTH",
-    "ownerId": "pl_pawn2",
-    "targetingScope": "OTHER_FRIENDLY_MINIONS",
-    "type": "HEALTH",
-    "value": 2,
-  },
-]
-`;
-
-exports[`getEffectByUserId should return effects of user 1`] = `
-Array [
-  Object {
-    "impact": "HEALTH",
-    "ownerId": "pl_pawn2",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "HEALTH",
     "value": 2,
   },
   Object {
     "impact": "ATTACK",
-    "ownerId": "pl_pawn3",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "ATTACK",
     "value": 1,
@@ -43,18 +31,18 @@ Array [
 ]
 `;
 
-exports[`getEffects should return list of effects 1`] = `
+exports[`Effects selector getEffectByUserId should return effects of user 1`] = `
 Array [
   Object {
     "impact": "HEALTH",
-    "ownerId": "pl_pawn2",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "HEALTH",
     "value": 2,
   },
   Object {
     "impact": "ATTACK",
-    "ownerId": "pl_pawn3",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "ATTACK",
     "value": 1,
@@ -62,21 +50,23 @@ Array [
 ]
 `;
 
-exports[`getEffectsApplicableToUnit should return all effects which can be applicable to unit (impact on its behavior) 1`] = `
+exports[`Effects selector getEffects should return list of effects 1`] = `
 Array [
   Object {
     "impact": "HEALTH",
-    "ownerId": "pl_pawn2",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "HEALTH",
     "value": 2,
   },
   Object {
     "impact": "ATTACK",
-    "ownerId": "pl_pawn3",
+    "ownerId": "p_unit1",
     "targetingScope": "OTHER_FRIENDLY_MINIONS",
     "type": "ATTACK",
     "value": 1,
   },
 ]
 `;
+
+exports[`Effects selector getEffectsApplicableToUnit should return all effects which can be applicable to unit (impact on its behavior) 1`] = `Array []`;

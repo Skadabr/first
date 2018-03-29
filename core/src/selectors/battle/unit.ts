@@ -1,4 +1,5 @@
 import { EffectImpact } from "../../index";
+import {Effect} from "../../unit/effects";
 import { normalizeAttackEffects } from "../../unit/trade/attack";
 import { getUnitById } from "./units";
 import {

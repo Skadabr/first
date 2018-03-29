@@ -657,7 +657,7 @@ convert-source-map@^1.4.0, convert-source-map@^1.5.0:
 
 copy-descriptor@^0.1.0:
   version "0.1.1"
-  resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
+  resolved "https://registry.yarnpkg.com/dcopy-descriptor/-/dcopy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
 
 core-js@^2.4.0, core-js@^2.5.0:
   version "2.5.3"
@@ -741,7 +741,7 @@ decode-uri-component@^0.2.0:
 
 deep-copy@^1.4.2:
   version "1.4.2"
-  resolved "https://registry.yarnpkg.com/deep-copy/-/deep-copy-1.4.2.tgz#0622719257e4bd60240e401ea96718211c5c4697"
+  resolved "https://registry.yarnpkg.com/deep-dcopy/-/deep-dcopy-1.4.2.tgz#0622719257e4bd60240e401ea96718211c5c4697"
 
 deep-diff@^0.3.5:
   version "0.3.8"
@@ -2342,9 +2342,9 @@ object-assign@^4.1.0:
 
 object-copy@^0.1.0:
   version "0.1.0"
-  resolved "https://registry.yarnpkg.com/object-copy/-/object-copy-0.1.0.tgz#7e7d858b781bd7c991a41ba975ed3812754e998c"
+  resolved "https://registry.yarnpkg.com/object-dcopy/-/object-dcopy-0.1.0.tgz#7e7d858b781bd7c991a41ba975ed3812754e998c"
   dependencies:
-    copy-descriptor "^0.1.0"
+    dcopy-descriptor "^0.1.0"
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
@@ -3028,7 +3028,7 @@ static-extend@^0.1.1:
   resolved "https://registry.yarnpkg.com/static-extend/-/static-extend-0.1.2.tgz#60809c39cbff55337226fd5e0b520f341f1fb5c6"
   dependencies:
     define-property "^0.2.5"
-    object-copy "^0.1.0"
+    object-dcopy "^0.1.0"
 
 stealthy-require@^1.1.0:
   version "1.1.1"

@@ -1,5 +1,5 @@
 import { EffectTargetingScope } from "../../index";
-import { state } from "../../__tests__/fixtures/state-fixture";
+import { baseState } from "../../__tests__/fixtures/state-fixture";
 
 export const getUnits = state => state.battle.units;
 
@@ -7,6 +7,8 @@ export const getUnitById = (state, id) => {
   const unit = getUnits(state).find(({ _id }) => _id === id);
   return unit;
 };
+
+export const isUnitExist = (state, id) => !!getUnitById(state, id);
 
 //////////////////////////////////////////////////////////////////
 
