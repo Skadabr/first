@@ -1,21 +1,17 @@
 import { combineReducers } from "redux";
 
-import chat, { ChatState } from "./actions/chat";
-import ui, { UIState } from "./actions/ui";
+import chat from "./actions/chat";
+import ui from "./actions/ui";
 import user from "./actions/user";
 import users from "./actions/users";
-import { state } from "core";
-
-const {
-  availableTargetsReducer,
-  battleReducer
-} = state;
+import battle from "./actions/battle";
+import availableTargets from "./actions/availableTargets"
 
 export default combineReducers({
   user,
   users,
-  battle: battleReducer,
-  availableTargets: availableTargetsReducer,
+  battle,
   chat,
-  ui
+  ui,
+  availableTargets
 });

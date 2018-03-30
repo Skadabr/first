@@ -10,12 +10,12 @@ import { challenge, clickOnPawn, clickOnOfficer, turn } from "./helpers";
 
 const { ORIGIN } = process.env;
 
-describe("fighting: kill warrior", function() {
+describe("battle: kill warrior", function() {
   before(async function() {
     await initGamers(this, this.other);
   });
 
-  describe("one to one fighting", function() {
+  describe("one to one battle", function() {
     it("my warrior should disapper", async function() {
       await challenge(this.other.page, this.page);
       // me

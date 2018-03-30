@@ -8,7 +8,7 @@
     "typecheck": "rm -rf lib; tsc --pretty --noEmit",
     "build": "rm -rf lib; tsc --pretty",
     "build:def": "rm -rf lib; tsc -d --pretty",
-    "test": "jest",
+    "test": "rm -rf lib; tsc --pretty --noEmit && jest",
     "precommit": "lint-staged"
   },
   "lint-staged": {

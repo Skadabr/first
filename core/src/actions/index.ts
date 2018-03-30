@@ -19,15 +19,11 @@ export {
 } from "./battle/unit";
 export { battleUpdate, battleNextTurn } from "./battle/index";
 
-export { availableTargetsUpdate } from "./targets";
-
-import availableTargetsReducer from "./targets";
 import battleReducer from "./battle/index";
 
 export function reducer(state = EMPTY as any, action) {
   return {
     battle: battleReducer(state.battle, action),
-    availableTargets: availableTargetsReducer(state.availableTargets, action),
     user: state.user
   };
 }

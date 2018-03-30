@@ -1,4 +1,4 @@
-import { UserStatusType, CLEAN_STATE } from "../../../core/src/index";
+import { UserStatusType, CLEAN_STATE } from "core";
 
 const USER_ADD = "USER_ADD";
 const USER_REMOVE = "USER_REMOVE";

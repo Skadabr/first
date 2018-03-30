@@ -1,10 +1,8 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-
-import { selectors } from "core";
-
-const { isAuthenticated, isBattleStarted } = selectors;
+import { isAuthenticated } from "../../selectors/user";
+import { isBattleStarted } from "../../selectors/battle";
 
 // interface BattleRoutePropTypes {
 //   isBattleStarted: boolean;
@@ -14,7 +12,7 @@ const { isAuthenticated, isBattleStarted } = selectors;
 //   exact?: boolean;
 // }
 
-class BattleRoute extends React.Component<any> {
+class BattleRoute extends React.Component<any, any> {
   render() {
     const {
       isBattleStarted,

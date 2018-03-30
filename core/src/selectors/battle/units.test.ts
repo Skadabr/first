@@ -2,12 +2,12 @@ import dcopy from "deep-copy";
 
 import { baseState } from "../../__tests__/fixtures/state-fixture";
 import {
-  getEnemyHero,
+  getEnemyHeroByUserId,
   getEnemyMinionsByUserId,
   getEnemyUnitIdsByUserId,
   getEnemyUnits,
   getEnemyUnitsByUserId,
-  getHero,
+  getHeroByUserId,
   getMinionsByUserId,
   getPlayerUnits,
   getUnitById,
@@ -54,7 +54,7 @@ describe("Units selectors", () => {
     });
   });
 
-  describe("getHero", () => {
+  describe("getHeroByUserId", () => {
     describe("when there are many hero for one player", () => {
       let newState;
 
@@ -69,14 +69,14 @@ describe("Units selectors", () => {
 
       it("should throw an error", function() {
         expect(() => {
-          getHero(newState, "player");
+          getHeroByUserId(newState, "player");
         }).toThrow("There should be only one hero");
       });
     });
 
     describe("when only one hero", () => {
       it("should return unit with `hero` attribute true", function() {
-        const hero = getHero(state, "player");
+        const hero = getHeroByUserId(state, "player");
         expect(hero.hero).toBe(true);
       });
     });
@@ -96,7 +96,7 @@ describe("Units selectors", () => {
     });
   });
 
-  describe("getEnemyHero", () => {
+  describe("getEnemyHeroByUserId", () => {
     describe("when there are many hero for one player", () => {
       let newState;
 
@@ -111,14 +111,14 @@ describe("Units selectors", () => {
 
       it("should throw an error", function() {
         expect(() => {
-          getEnemyHero(newState, "player");
+          getEnemyHeroByUserId(newState, "player");
         }).toThrow("There should be only one hero");
       });
     });
 
     describe("when only one hero", () => {
       it("should return unit with `hero` attribute true", function() {
-        const hero = getEnemyHero(state, "player");
+        const hero = getEnemyHeroByUserId(state, "player");
         expect(hero.hero).toBe(true);
       });
     });

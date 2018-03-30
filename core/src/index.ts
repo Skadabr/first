@@ -50,4 +50,4 @@ export const CLEAN_STATE = "CLEAN_STATE";
 
 export const utils = _utils;
 
-export { Battle } from "./battle/index";
+export { BattleEngine } from "./battle/index";

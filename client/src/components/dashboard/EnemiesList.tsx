@@ -3,7 +3,7 @@ import React from "react";
 import { UserStatusType } from "core";
 
 interface PropTypes {
-  opponents: { name: string; status: string }[];
+  enemys: { name: string; status: string }[];
 }
 
 const colors = {
@@ -12,7 +12,7 @@ const colors = {
   [UserStatusType.Fight]: "alert-danger"
 };
 
-export default class OpponentsList extends React.Component<PropTypes> {
+export default class EnemysList extends React.Component<PropTypes> {
   private board: any;
 
   componentDidUpdate() {
@@ -23,13 +23,13 @@ export default class OpponentsList extends React.Component<PropTypes> {
   }
 
   render() {
-    const { opponents } = this.props;
+    const { enemys } = this.props;
     return (
-      <div id="opponent_list" ref={el => (this.board = el)}>
-        {opponents.length > 0 &&
-          opponents.map(opponent => (
-            <div className="card-block" key={opponent.name}>
-              <span className={colors[opponent.status]}>{opponent.name}</span>
+      <div id="enemy_list" ref={el => (this.board = el)}>
+        {enemys.length > 0 &&
+          enemys.map(enemy => (
+            <div className="card-block" key={enemy.name}>
+              <span className={colors[enemy.status]}>{enemy.name}</span>
             </div>
           ))}
       </div>

@@ -8,7 +8,7 @@ import UnitCardView from "./UnitCardView";
 
 const positions = createNumberSequence(POSITIONS);
 
-export default class OpponentPositions extends React.PureComponent<any> {
+export default class EnemyPositions extends React.PureComponent<any> {
   render() {
     const { owner_name, units, availableTargets, onAttack } = this.props;
 

@@ -3,8 +3,6 @@ import { createStore, applyMiddleware } from "redux";
 import reduxLogger from "redux-logger";
 import EventEmitter from "eventemitter3";
 
-import * as actions from "../actions/index";
-
 import { getTradingFn } from "../unit/trade/index";
 
 import { getUniqueListOfTradeEffectTypes } from "../selectors/battle/effects";
@@ -25,10 +23,9 @@ import {
 } from "../selectors/battle";
 
 import {
-  availableTargetsUpdate,
   playerAddUnit,
   playerDecreseMoney,
-  playerRemoveCard, unitSetMoves
+  playerRemoveCard, reducer, unitSetMoves
 } from "../actions";
 import { unitAddCounterEffects, unitSetHealth } from "../actions/battle/unit";
 import { unitsRemove } from "../actions/battle/units";
@@ -36,8 +33,9 @@ import { unitsRemove } from "../actions/battle/units";
 import { validateAddUnitParams } from "../validators/battle";
 import { battleNextTurn } from "../actions/battle";
 
-export class Battle extends EventEmitter {
+export class BattleEngine extends EventEmitter {
   static BATTLE_EVENT = "event";
+  static BATTLE_ERROR = "error";
 
   private store: any;
 
@@ -46,7 +44,7 @@ export class Battle extends EventEmitter {
     battle = dcopy(battle);
     user = dcopy(user);
     this.store = createStore(
-      actions.reducer,
+      reducer,
       {
         battle,
         user
@@ -75,15 +73,17 @@ export class Battle extends EventEmitter {
   //   );
   // }
 
-  public playCard(cardId, position) {
+  public playCard(cardId: string, position: number) {
     const state = this.state;
+
+    if (!isPlayerTurnOwner(state)) return;
 
     const card = getCard(state, cardId);
     const player = getPlayer(state);
 
     const { error } = validateAddUnitParams(card, player, position);
 
-    if (error) throw error;
+    if (error) this.emit(BattleEngine.BATTLE_ERROR, error);
 
     this.removeCard(cardId);
     this.decreaseMoney(player.user._id, card.unit.cost);
@@ -101,17 +101,16 @@ export class Battle extends EventEmitter {
     getEnemyUnitIds(state).forEach(unitId => {
       this.updateState(unitSetMoves(unitId, 1));
     });
-    this.updateState(availableTargetsUpdate([]));
     this.updateState(battleNextTurn());
 
-    this.emit(Battle.BATTLE_EVENT, battleNextTurn());
+    this.emit(BattleEngine.BATTLE_EVENT, battleNextTurn());
   }
 
   public attack(sourceId: string, targetId: string) {
     const state = this.state;
 
-    if (!isUnitExist(state, sourceId) || !isUnitExist(state, targetId)) return;
     if (!isPlayerTurnOwner(state)) return;
+    if (!isUnitExist(state, sourceId) || !isUnitExist(state, targetId)) return;
     if (!isTargetAvailableForAttack(state, sourceId, targetId)) return;
 
     this.trade(sourceId, targetId);
@@ -154,14 +153,14 @@ export class Battle extends EventEmitter {
     this.updateState(unitSetHealth(targetId, health));
 
     const finalHealth = getUnitHealthWithAppliedEffects(this.state, targetId);
-    this.emit(Battle.BATTLE_EVENT, unitSetHealth(targetId, finalHealth));
+    this.emit(BattleEngine.BATTLE_EVENT, unitSetHealth(targetId, finalHealth));
   }
 
   private removeDeadUnits() {
     const deadUnitIds = getDeadUnitsIds(this.state);
     for (const id of deadUnitIds) {
       this.updateState(unitsRemove(id));
-      this.emit(Battle.BATTLE_EVENT, unitsRemove(id));
+      this.emit(BattleEngine.BATTLE_EVENT, unitsRemove(id));
     }
   }
 
@@ -172,19 +171,19 @@ export class Battle extends EventEmitter {
   private removeCard(cardId) {
     const action = playerRemoveCard(cardId);
     this.updateState(action);
-    this.emit(Battle.BATTLE_EVENT, action);
+    this.emit(BattleEngine.BATTLE_EVENT, action);
   }
 
   private decreaseMoney(userId, cost) {
     const action = playerDecreseMoney(userId, cost);
     this.updateState(action);
-    this.emit(Battle.BATTLE_EVENT, action);
+    this.emit(BattleEngine.BATTLE_EVENT, action);
   }
 
   private addUnit(unit, position) {
     const action = playerAddUnit(unit, position);
     this.updateState(action);
-    this.emit(Battle.BATTLE_EVENT, action);
+    this.emit(BattleEngine.BATTLE_EVENT, action);
   }
 
   private updateState(action) {

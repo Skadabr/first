@@ -17,15 +17,15 @@ class Unit extends React.PureComponent<any> {
 }
 
 const unitSource = {
-  beginDrag({ onBeginDrag, unit }) {
+  beginDrag(props) {
     console.log("Unit->beginDrag");
-    onBeginDrag(unit._id);
-    return { unit_id: unit._id };
+    props.onBeginDrag(props.unit._id);
+    return { sourceId: props.unit._id };
   },
 
-  endDrag({ onEndDrag, unit }, monitor) {
+  endDrag(props, monitor) {
     console.log("Unit->endDrag");
-    onEndDrag(unit._id, monitor.didDrop());
+    props.onEndDrag(props.unit._id, monitor.didDrop());
 
     //  const item = monitor.getItem();
     //  const dropResult = monitor.getDropResult();

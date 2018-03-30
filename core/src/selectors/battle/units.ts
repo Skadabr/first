@@ -24,7 +24,7 @@ export const getMinionsByUserId = (state, userId) => {
   return minions;
 };
 
-export const getHero = (state, userId) => {
+export const getHeroByUserId = (state, userId) => {
   const hero: any[] = getUnitsByUserId(state, userId).filter(
     ({ hero }) => hero
   );
@@ -44,7 +44,7 @@ export const getEnemyMinionsByUserId = (state, userId): any[] => {
   return minions;
 };
 
-export const getEnemyHero = (state, userId) => {
+export const getEnemyHeroByUserId = (state, userId) => {
   const hero: any[] = getEnemyUnitsByUserId(state, userId).filter(
     ({ hero }) => hero
   );

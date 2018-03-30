@@ -10,7 +10,7 @@ import {
 
 const { ORIGIN } = process.env;
 
-describe("fighting: when user was challenger", function() {
+describe("battle: when user was challenger", function() {
   before(async function() {
     this.page = await goToPage(this.browser, ORIGIN);
     this.other.page = await goToPage(this.other.browser, ORIGIN);

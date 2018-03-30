@@ -5,7 +5,7 @@ import {
   _newBattleLog,
   _setUserReadyLog
 } from "../../logger/controllers/battle";
-import { Battle, UserStatusType } from "core";
+import { BattleEngine, UserStatusType } from "core";
 
 import {
   USERS_UPSERT,
@@ -28,9 +28,7 @@ export default class BattleController {
     this.User = models.model("User");
   }
 
-  //
   // ============ tryCreateBattle ============
-  //
 
   @bind
   public async tryCreateBattle() {
@@ -49,40 +47,32 @@ export default class BattleController {
     });
   }
 
-  //
   // ============ addTestUnit ============
-  //
 
   public playCard = async ({ cardId, position }) => {
-    initializeBattle(this, battle => {
-      battle.playCard(cardId, position);
+    initializeBattleEngine(this, battleEngine => {
+      battleEngine.playCard(cardId, position);
     });
   };
 
-  //
   // ============ passTheTurn ============
-  //
 
   public passTheTurn = () => {
-    initializeBattle(this, battle => {
-      battle.nextTurn();
+    initializeBattleEngine(this, battleEngine => {
+      battleEngine.nextTurn();
     })
   };
 
-  //
   // ============ attack ============
-  //
 
   public attack = async ({ unitId, targetId }) => {
-    initializeBattle(this, battle => {
-      battle.attack(unitId, targetId);
+    initializeBattleEngine(this, battleEngine => {
+      battleEngine.attack(unitId, targetId);
     })
   };
 
   //
-  //
   // ============ private ============
-  //
   //
 
   @log(_setUserReadyLog)
@@ -137,20 +127,20 @@ export default class BattleController {
   }
 }
 
-function initializeBattle(battleController, cb: (battle: Battle) => void) {
+function initializeBattleEngine(battleController, cb: (battle: BattleEngine) => void) {
   const { user, battle: battleCollection, enemy } = this.ws;
 
-  const battle = new Battle(battleCollection.toJSON(), user.toJSON());
-  battle.on(
-    Battle.BATTLE_EVENT,
+  const battleEngine = new BattleEngine(battleCollection.toJSON(), user.toJSON());
+  battleEngine.on(
+    BattleEngine.BATTLE_EVENT,
     handleBattleEvent(this, battleCollection, enemy.socketId)
   );
-  battle.on(
-    Battle.BATTLE_ERROR,
+  battleEngine.on(
+    BattleEngine.BATTLE_ERROR,
     handleBattleError(this, enemy.socketId)
   );
 
-  cb(battle);
+  cb(battleEngine);
 }
 
 function handleBattleEvent(battleController, battleCollection, enemySocketId) {

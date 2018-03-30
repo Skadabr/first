@@ -1,7 +1,6 @@
 import React from "react";
 import { DropTarget } from "react-dnd";
-import { DragTypes } from "../../constants";
-import { POSITION_MIN_WIDTH, CARD_HEIGHT } from "core";
+import { DragTypes,  POSITION_MIN_WIDTH, CARD_HEIGHT  } from "../../constants";
 import UnitCardView from "./UnitCardView";
 
 export class UnitTarget extends React.PureComponent<any> {
@@ -19,7 +18,7 @@ export class UnitTarget extends React.PureComponent<any> {
 const dropTarget = {
   drop({ onDrop, unit }, monitor) {
     console.log("UnitTarget->drop");
-    onDrop({ unit_id: monitor.getItem().unit_id, target_id: unit._id });
+    onDrop({ sourceId: monitor.getItem().unit_id, targetId: unit._id });
   },
 
   hover() {

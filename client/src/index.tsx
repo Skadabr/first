@@ -13,14 +13,12 @@ import setAuthHeader from "./utils/auth-header";
 import * as api from "./api";
 import Socket from "./socket";
 
-import { state } from "core";
 import reducer from "./reducer";
 import { logout } from "./actions/auth";
 import { statsSetDesktopWidth } from "./actions/stats";
 
 import App from "./App";
-
-const { userAdd } = state;
+import { userAdd } from "./actions/user";
 
 const store = createStore(
   reducer,
@@ -40,7 +38,7 @@ if (token) {
   setAuthHeader(token);
   api.user.user().then(({ error, data }) => {
     if (data) {
-      store.dispatch(userAdd({ ...data, token }));
+      store.dispatch(userAdd({...data, token }));
       renderApp();
     } else if (error) {
       console.error(error.message);

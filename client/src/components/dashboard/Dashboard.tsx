@@ -5,7 +5,7 @@ import { UserStatusType } from "core";
 import { readyToFight } from "../../actions/dashboard";
 
 import StatusBadge from "./StatusBadge";
-import OpponentsList from "./OpponentsList";
+import EnemysList from "./EnemiesList";
 import UserInfo from "./UserInfo";
 
 import { getUserInfo } from "../../selectors/user"
@@ -18,7 +18,7 @@ interface PropTypes {
     status: UserStatusType;
     rate: number;
   };
-  opponents: { name; status }[];
+  enemys: { name; status }[];
   readyToFight: Function;
   history: any;
 }
@@ -34,7 +34,7 @@ export class Dashboard extends React.Component<PropTypes> {
   };
 
   render() {
-    const { opponents, user } = this.props;
+    const { enemys, user } = this.props;
 
     return (
       <div className="card">
@@ -45,11 +45,11 @@ export class Dashboard extends React.Component<PropTypes> {
           <UserInfo {...user} />
         </div>
         <div className="card-header">
-          <span>Opponents</span>
+          <span>Enemys</span>
           <StatusBadge toggle={this.toggle} user_status={user.status} />
         </div>
         <div className="card-body">
-          <OpponentsList opponents={opponents} />
+          <EnemysList enemys={enemys} />
         </div>
       </div>
     );
@@ -59,7 +59,7 @@ export class Dashboard extends React.Component<PropTypes> {
 function mapStateToProps(state) {
   return {
     user: getUserInfo(state),
-    opponents: getOtherUsers(state)
+    enemys: getOtherUsers(state)
   };
 }
 

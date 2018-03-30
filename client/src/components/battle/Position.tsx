@@ -1,6 +1,6 @@
 import React from "react";
 
-import { POSITION_MIN_WIDTH, CARD_HEIGHT } from "core";
+import { POSITION_MIN_WIDTH, CARD_HEIGHT } from "../../constants";
 
 interface PositionPropTypes {
   width: number;

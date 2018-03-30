@@ -5,7 +5,6 @@ const EMPTY = [];
 //
 // ============ reducer ============
 //
-
 export default function availableTargetsReducer(
   state = EMPTY,
   { type, payload }
@@ -21,7 +20,6 @@ export default function availableTargetsReducer(
 //
 // ============ Actions ============
 //
-
 export function availableTargetsUpdate(targets) {
   return {
     type: UPDATE_AVAILABLE_TARGETS,

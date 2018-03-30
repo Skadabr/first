@@ -1,10 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Component, connect } from "react-redux";
-
-import { selectors } from "core";
-
-const { isAuthenticated } = selectors;
+import { isAuthenticated } from "../../selectors/user";
 
 interface GuestRoutePT {
   isAuthenticated: boolean;

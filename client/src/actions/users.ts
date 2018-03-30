@@ -1,4 +1,4 @@
-import { CLEAN_STATE, UserStatusType } from "../../../core/src/index";
+import { CLEAN_STATE, UserStatusType } from "core";
 
 const USERS_UPSERT = "USERS_UPSERT";
 const USERS_REMOVE = "USERS_REMOVE";
@@ -33,7 +33,7 @@ export default function usersReducer(
       }
     case USERS_REMOVE:
       const { name } = payload;
-      return state.filter(opponent => opponent.name !== name);
+      return state.filter(enemy => enemy.name !== name);
 
     case CLEAN_STATE:
       return [];
@@ -54,17 +54,17 @@ export function loadUsers(val) {
   };
 }
 
-export function usersUpsert(opponent) {
+export function usersUpsert(enemy) {
   return {
     type: USERS_UPSERT,
-    payload: opponent
+    payload: enemy
   };
 }
 
-export function usersLoad(opponents: UsersState) {
+export function usersLoad(enemys: UsersState) {
   return {
     type: USERS_LOAD,
-    payload: opponents
+    payload: enemys
   };
 }
 

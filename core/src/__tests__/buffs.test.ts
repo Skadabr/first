@@ -3,12 +3,12 @@ import dcopy from "deep-copy";
 import { baseState } from "./fixtures/state-fixture";
 import { addTestEffectToUnit, addTestUnit } from "./utils";
 
-import { Battle, EffectTargetingScope, UnitTypes } from "../index";
+import { BattleEngine, EffectTargetingScope, UnitTypes } from "../index";
 import { health } from "../unit/effects";
 
 const { OtherFriendlyMinions } = EffectTargetingScope;
 
-describe("Battle buffs", () => {
+describe("BattleEngine buffs", () => {
   let state;
 
   beforeEach(function initializeBattle() {
@@ -23,7 +23,7 @@ describe("Battle buffs", () => {
     const hEffect = health("p_unit2", OtherFriendlyMinions, 2);
     addTestEffectToUnit(state, "p_unit2", hEffect);
 
-    const battle = new Battle(state.battle, state.user);
+    const battle = new BattleEngine(state.battle, state.user);
 
     // attack buffed
     battle.attack("e_unit1", "p_unit1");

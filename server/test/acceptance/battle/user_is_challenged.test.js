@@ -10,7 +10,7 @@ import {
 
 const { ORIGIN } = process.env;
 
-describe("fighting: when user was challenged", function() {
+describe("battle: when user was challenged", function() {
   before(startAFightAsChallanged);
 
   it("all warriors positions is empty", async function() {

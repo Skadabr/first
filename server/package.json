@@ -19,7 +19,7 @@
     "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "bcryptjs": "^2.4.3",
-    "core": "../core",
+    "core": "../core/",
     "deep-copy": "^1.4.2",
     "express": "^4.16.2",
     "jsonwebtoken": "^8.1.0",

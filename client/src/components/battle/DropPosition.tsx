@@ -1,8 +1,7 @@
 import React from "react";
 import { DropTarget } from "react-dnd";
 
-import { DragTypes } from "../../constants";
-import { DragTypes, POSITION_MIN_WIDTH, CARD_HEIGHT } from "core";
+import { DragTypes, POSITION_MIN_WIDTH, CARD_HEIGHT } from "../../constants";
 import Position from "./Position";
 
 interface DropPositionPT {

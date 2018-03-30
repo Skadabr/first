@@ -17,6 +17,10 @@ export const morgan = Morgan("dev", {
   }
 });
 
+
+//
+// NOTE: it's just experiment (probably unsuccessful)
+//
 export function log(logger: Function, opts?: any): Function {
   const { isAsync = true } = opts || {};
   return function(

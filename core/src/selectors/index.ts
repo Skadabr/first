@@ -43,10 +43,10 @@ export {
   getUnitById,
   getUnitsByUserId,
   getMinionsByUserId,
-  getHero,
+  getHeroByUserId,
   getEnemyUnitsByUserId,
   getEnemyMinionsByUserId,
-  getEnemyHero,
+  getEnemyHeroByUserId,
   getUnitIdsByUserId,
   getEnemyUnitIdsByUserId,
   getPlayerUnits,
@@ -57,8 +57,6 @@ export {
   getUnitsByTargetingScope,
   getUnitIdsByTargetingScope
 } from "./battle/units";
-
-export { getAvailableTargets } from "./targets";
 
 export { filterEffectsByImpact } from "../unit/effects";
 export { getUnitEffects } from "../unit/methods";

@@ -3,9 +3,9 @@ import dcopy from "deep-copy";
 import { baseState } from "./fixtures/state-fixture";
 import { addTestUnit } from "./utils";
 
-import { Battle, UnitTypes } from "../index";
+import { BattleEngine, UnitTypes } from "../index";
 
-describe("Battle attack", () => {
+describe("BattleEngine attack", () => {
   let battle;
 
   beforeEach(function initializeBattle() {
@@ -14,7 +14,7 @@ describe("Battle attack", () => {
     addTestUnit(state, "p_unit1", UnitTypes.Pawn, "player");
     addTestUnit(state, "e_unit1", UnitTypes.Pawn, "enemy");
 
-    battle = new Battle(state.battle, state.user);
+    battle = new BattleEngine(state.battle, state.user);
   });
 
   it("should emit event about setting health", function(done) {

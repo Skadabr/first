@@ -20,7 +20,7 @@ class Card extends React.PureComponent<any> {
   }
 }
 
-const unitSource = {
+const cardSource = {
   beginDrag(props) {
     return { card: props.card };
   },
@@ -40,7 +40,7 @@ const unitSource = {
   }
 };
 
-export default DragSource(DragTypes.CARD, unitSource, (connect, monitor) => ({
+export default DragSource(DragTypes.CARD, cardSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 }))(Card as any);

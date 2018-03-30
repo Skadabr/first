@@ -2,13 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { selectors } from "core";
-
 import { logout } from "../actions/auth";
 import { toggleBattleChat } from "../actions/ui";
 
 import { isDesktop } from "../selectors/ui";
-const { isAuthenticated, getUserInfo, isBattleStarted } = selectors;
+import { getUserInfo, isAuthenticated } from "../selectors/user";
+import { isBattleStarted } from "../selectors/battle";
 
 interface HeaderPT {
   logout: Function;

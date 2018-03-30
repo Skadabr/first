@@ -11,7 +11,7 @@ import {
 
 const { ORIGIN } = process.env;
 
-describe("fighting: user click turn button but doesn't pick a warrior", function() {
+describe("battle: user click turn button but doesn't pick a warrior", function() {
   before(startAFightAsChallanged);
 
   before(async function() {

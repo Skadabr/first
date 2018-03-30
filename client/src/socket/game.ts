@@ -1,8 +1,7 @@
-import { UnitTypes, state } from "core";
 import { chatAddMessage } from "../actions/chat";
-import { createBattle } from "../actions/battle_process";
-
-const { loadUsers, usersUpsert, usersRemove, userUpdateStatus } = state;
+import { startBattle } from "../actions/battle_process";
+import { loadUsers, usersRemove, usersUpsert } from "../actions/users";
+import { userUpdateStatus } from "../actions/user";
 
 const USER_GOES = "USER_GOES";
 const GET_USERS = "GET_USERS";
@@ -29,7 +28,7 @@ export default function Game(ws, store, router) {
   ws.on(SEND_MESSAGE, ({ msg, name, date }) => {
     store.dispatch(chatAddMessage(msg, name, new Date(parseInt(date))));
   });
-  ws.on(BATTLE_REQUEST, val => createBattle(val, router)(store.dispatch));
+  ws.on(BATTLE_REQUEST, val => startBattle(val, router)(store.dispatch));
 
   return {
     ws,
@@ -43,8 +42,8 @@ export default function Game(ws, store, router) {
       ws.emit(SEND_MESSAGE, { msg, name, date });
     },
 
-    addUnit(cardId: string, position, cb) {
-      ws.emit(ADD_UNIT, { cardId, position }, cb);
+    playCard(cardId: string, position) {
+      ws.emit(ADD_UNIT, { cardId, position });
     },
 
     passTheTurn(cb) {
