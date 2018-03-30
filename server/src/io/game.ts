@@ -8,6 +8,7 @@ export const USER_GOES = "USER_GOES";
 export const GET_USERS = "GET_USERS";
 export const USERS_UPSERT = "USERS_UPSERT";
 export const BATTLE_REQUEST = "BATTLE_REQUEST";
+export const BATTLE_UPDATE = "BATTLE_UPDATE";
 export const USER_UPDATE_STATUS = "USER_UPDATE_STATUS";
 export const SEND_MESSAGE = "SEND_MESSAGE";
 export const TURN = "TURN";

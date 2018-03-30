@@ -5,11 +5,14 @@ import {
   _newBattleLog,
   _setUserReadyLog
 } from "../../logger/controllers/battle";
-import { Battle, UserStatusType, validators } from "core";
+import { Battle, UserStatusType } from "core";
 
-import { USERS_UPSERT, USER_UPDATE_STATUS, BATTLE_REQUEST } from "../game";
-
-const { validateAddUnitParams } = validators;
+import {
+  USERS_UPSERT,
+  USER_UPDATE_STATUS,
+  BATTLE_REQUEST,
+  BATTLE_UPDATE
+} from "../game";
 //
 // ============ controller ============
 //
@@ -37,14 +40,12 @@ export default class BattleController {
 
     if (!enemy) return await this._setUserReady(ws.user);
 
-    const battleCollection = await this._newBattle(ws.user, enemy);
-    const battleJSON = battleCollection.toJSON();
-    const battle = new Battle(battleJSON, ws.user.toJSON());
-
-    //battleCollection.updateState(battle.toJSON().battle);
+    const battleCollection = await this._createBattle(ws.user, enemy);
 
     this._send(BATTLE_REQUEST, enemy.socketId, {
-      data: battle.toJSON()
+      data: {
+        battle: battleCollection.toJSON()
+      }
     });
   }
 
@@ -52,41 +53,20 @@ export default class BattleController {
   // ============ addTestUnit ============
   //
 
-  public playCard = async ({ cardId, position }, cb) => {
-    const { battle: battleCollection, enemy, user } = this.ws;
-
-    const battleJSONInit = battleCollection.toJSON();
-    const userJSON = user.toJSON();
-
-    const battle = new Battle(battleJSONInit, userJSON);
-
-    try {
+  public playCard = async ({ cardId, position }) => {
+    initializeBattle(this, battle => {
       battle.playCard(cardId, position);
-
-      const data = battle.toJSON();
-
-      battleCollection.updateState(data);
-      this._send(BATTLE_REQUEST, enemy.socketId, { data });
-    } catch (err) {
-      // ?????????
-    }
+    });
   };
 
   //
   // ============ passTheTurn ============
   //
 
-  public passTheTurn = async () => {
-    const { user, battle: battleCollection, enemy } = this.ws;
-
-    const battle = new Battle(battleCollection.toJSON(), user.toJSON());
-
-    battle.nextTurn();
-
-    const data = battleCollection.toJSON();
-
-    battleCollection.updateState(data);
-    this._send(BATTLE_REQUEST, enemy.socketId, { data });
+  public passTheTurn = () => {
+    initializeBattle(this, battle => {
+      battle.nextTurn();
+    })
   };
 
   //
@@ -94,30 +74,9 @@ export default class BattleController {
   //
 
   public attack = async ({ unitId, targetId }) => {
-    const { store, battle, enemy } = this.ws;
-    const { dispatch, getState } = store;
-    const state = getState();
-
-    const turnOwner = getTurnOwner(state);
-    if (!isCurrentUserTurnOwner(state)) return;
-
-    const targetIds = getAllAvailableTargetIds(unitId, state);
-
-    if (!targetIds.includes(targetId)) return;
-
-    const rawUnit = getRawUnitSource(unitId, targetId, state);
-
-    dispatch(unitAttack(targetId, rawUnit.attack));
-    dispatch(unitDecreaseMoves(unitId, 1));
-
-    const deadUnits = getDeadEnemyUnits(getState());
-
-    deadUnits.forEach(unit => {
-      dispatch(playerRemoveUnit(unit._id, unit.ownerId));
-    });
-
-    battle.updateState(getState().battle);
-    this._send(BATTLE_REQUEST, enemy.socketId, { data: battle.toJSON() });
+    initializeBattle(this, battle => {
+      battle.attack(unitId, targetId);
+    })
   };
 
   //
@@ -135,9 +94,9 @@ export default class BattleController {
   }
 
   @log(_newBattleLog)
-  private async _newBattle(user, enemy) {
+  private async _createBattle(user, enemy) {
     await user.updateStatus(UserStatusType.Fight);
-    const battle = await this.Battle.newBattle(user, enemy);
+    const battle = await this.Battle.createBattle(user, enemy);
 
     this._broadcastStatusUpdate(user);
     this._broadcastStatusUpdate(enemy);
@@ -145,23 +104,23 @@ export default class BattleController {
     return battle;
   }
 
-  private async _createDeck(userId, enemyId, store) {
-    userId = userId.toString();
-    enemyId = enemyId.toString();
-    // let cards: any[] = (await new Promise(ok =>
-    //   this.ws.emit(SELECT_CARDS_FOR_DECK, createRandomCards(DECK_INIT_SIZE), ok)
-    // )) as any;
-    // if (cards.length < DECK_INIT_SIZE) {
-    //   cards = [...cards, ...createRandomCards(DECK_INIT_SIZE - cards.length)];
-    // }
-    // store.dispatch(playerAddCards(cards));
-    store.dispatch(
-      playerAddCards(userId.toString(), createRandomCards(3, userId))
-    );
-    store.dispatch(
-      playerAddCards(enemyId.toString(), createRandomCards(3, enemyId))
-    );
-  }
+  // private async _createDeck(userId, enemyId, store) {
+  //   // userId = userId.toString();
+  //   // enemyId = enemyId.toString();
+  //   // // let cards: any[] = (await new Promise(ok =>
+  //   // //   this.ws.emit(SELECT_CARDS_FOR_DECK, createRandomCards(DECK_INIT_SIZE), ok)
+  //   // // )) as any;
+  //   // // if (cards.length < DECK_INIT_SIZE) {
+  //   // //   cards = [...cards, ...createRandomCards(DECK_INIT_SIZE - cards.length)];
+  //   // // }
+  //   // // store.dispatch(playerAddCards(cards));
+  //   // store.dispatch(
+  //   //   playerAddCards(userId.toString(), createRandomCards(3, userId))
+  //   // );
+  //   // store.dispatch(
+  //   //   playerAddCards(enemyId.toString(), createRandomCards(3, enemyId))
+  //   // );
+  // }
 
   private _broadcastStatusUpdate({ name, status }) {
     this._broadcast(USERS_UPSERT, { name, status });
@@ -172,14 +131,45 @@ export default class BattleController {
     this.ws.to(enemySid).emit(event, ...args);
   }
 
-  private _sendWithCallBack(event, enemySid, ...args) {
-    const cb = args.pop();
-    this.ws.emit(event, ...args);
-    cb(...args);
-  }
-
   private _broadcast(event, ...args) {
     this.ws.emit(event, ...args);
     this.ws.broadcast.emit(event, ...args);
+  }
+}
+
+function initializeBattle(battleController, cb: (battle: Battle) => void) {
+  const { user, battle: battleCollection, enemy } = this.ws;
+
+  const battle = new Battle(battleCollection.toJSON(), user.toJSON());
+  battle.on(
+    Battle.BATTLE_EVENT,
+    handleBattleEvent(this, battleCollection, enemy.socketId)
+  );
+  battle.on(
+    Battle.BATTLE_ERROR,
+    handleBattleError(this, enemy.socketId)
+  );
+
+  cb(battle);
+}
+
+function handleBattleEvent(battleController, battleCollection, enemySocketId) {
+  return async function(ev) {
+    const battleJSON = this.toJSON();
+
+    await battleCollection.updateState(battleJSON);
+    battleController._send(BATTLE_UPDATE, enemySocketId, {
+      data: {
+        battle: battleJSON,
+        type: ev.type,
+        action: ev.action
+      }
+    });
+  };
+}
+
+function handleBattleError(battleController, enemySocketId) {
+  return error => {
+    battleController._send(BATTLE_UPDATE, enemySocketId, { error });
   }
 }
